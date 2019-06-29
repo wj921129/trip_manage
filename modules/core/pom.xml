@@ -10,10 +10,10 @@
 		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 	
-	<artifactId>jeesite-module-core</artifactId>
+	<artifactId>core</artifactId>
 	<packaging>jar</packaging>
 	
-	<name>JeeSite Module Core</name>
+	<name>core</name>
 	<url>http://jeesite.com</url>
 	<inceptionYear>2013-Now</inceptionYear>
 	

@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>com.jeesite</groupId>
-	<artifactId>jeesite-root</artifactId>
+	<artifactId>root</artifactId>
 	<version>4.1.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
-	<name>JeeSite</name>
+	<name>root</name>
 	<url>http://jeesite.com</url>
 	<inceptionYear>2013-Now</inceptionYear>
 	

@@ -10,10 +10,10 @@
 		<relativePath>../parent/pom.xml</relativePath>
 	</parent>
 	
-	<artifactId>jeesite-web</artifactId>
+	<artifactId>web</artifactId>
 	<packaging>war</packaging>
 	
-	<name>JeeSite Web</name>
+	<name>web</name>
 	<url>http://jeesite.com</url>
 	<inceptionYear>2013-Now</inceptionYear>
 	
