@@ -17,7 +17,14 @@
 	<name>parent</name>
 	<url>http://jeesite.com</url>
 	<inceptionYear>2013-Now</inceptionYear>
-	
+
+	<modules>
+		<!--<module>../parent</module>-->
+		<module>../common</module>
+		<module>../modules/core</module>
+		<module>../web</module>
+	</modules>
+
 	<properties>
 		
 		<!-- common version setting -->
@@ -206,24 +213,24 @@
 				</plugin>
 				
 				<!-- Java Document Generate -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<configuration>
-				        <aggregate>true</aggregate>
-					</configuration>
-					<executions>
-						<execution>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-							<configuration>
-								<additionalparam>-Xdoclint:none</additionalparam>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
+				<!--<plugin>-->
+					<!--<groupId>org.apache.maven.plugins</groupId>-->
+					<!--<artifactId>maven-javadoc-plugin</artifactId>-->
+					<!--<configuration>-->
+				        <!--<aggregate>true</aggregate>-->
+					<!--</configuration>-->
+					<!--<executions>-->
+						<!--<execution>-->
+							<!--<phase>prepare-package</phase>-->
+							<!--<goals>-->
+								<!--<goal>jar</goal>-->
+							<!--</goals>-->
+							<!--<configuration>-->
+								<!--<additionalparam>-Xdoclint:none</additionalparam>-->
+							<!--</configuration>-->
+						<!--</execution>-->
+					<!--</executions>-->
+				<!--</plugin>-->
 				
 				<!-- YUI Compressor (CSS/JS压缩) -->
 				<plugin>
