@@ -48,7 +48,7 @@ public class ThinkController extends BaseController {
 	/**
 	 * 查询列表
 	 */
-	@RequiresPermissions("test:testData:view")
+	@RequiresPermissions("qianying:think")
 	@RequestMapping(value = {"list", ""})
 	public String list(User user, Model model) {
 		model.addAttribute("user", user);
@@ -58,7 +58,7 @@ public class ThinkController extends BaseController {
 	/**
 	 * 查询列表数据
 	 */
-	@RequiresPermissions("test:testData:view")
+	@RequiresPermissions("qianying:think:view")
 	@RequestMapping(value = "listData")
 	@ResponseBody
 	public Page<User> listData(User user, HttpServletRequest request, HttpServletResponse response) {
