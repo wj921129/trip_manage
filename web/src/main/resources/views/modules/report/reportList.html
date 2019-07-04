@@ -1,0 +1,181 @@
+<% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
+
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('数据管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" action="${ctx}/report/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('动态kid')}：</label>
+					<div class="control-inline">
+						<#form:input path="discoverKid" maxlength="200" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('举报原因')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="reportReason" dictType="report_reason_menu" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+
+<div id="zhezhao">
+	<div id="cuang">
+		<div style="width: 100%;height: 85%">
+			<text id="content"></text>
+			<div id="appendDiv" >
+			</div>
+		</div>
+		<div style="float: right">
+			<span id="close">关闭</span>
+		</div>
+	</div>
+</div>
+
+</div>
+<% } %>
+<script type="text/javascript" src="../url.js"></script>
+<style>
+	#zhezhao{
+		display: none;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0,0,0,0.2);
+	}
+	#cuang{
+		width:650px;
+		margin: 3% auto;
+		background-color: white;
+		position: relative;
+		padding-top: 10px;
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-bottom: 40px;
+	}
+	#cuang span{
+		display: inline-block;
+		background: #2a579a;
+		padding: 2px 10px;
+		border-radius: 5px;
+		cursor:pointer;
+		color: white;
+		margin: 0 5px;
+	}
+	#appendDiv{
+		width: 100%;
+	}
+	#appendDiv img{
+		width: 200px;
+		height:200px;
+		display: inline-block;
+		margin-left: 5px;
+		margin-top: 5px;
+	}
+</style>
+
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	columnModel: [
+		{header:'${text("kid")}', name:'kid', width:100, align:"center", hidden:true},
+        {header:'${text("userKid")}', name:'userKid', width:100, align:"center", hidden:true},
+        {header:'${text("举报人")}', name:'nickname', width:100, align:"center"},
+		{header:'${text("举报动态kid")}', name:'discoverKid', width:100, align:"center", formatter: showDiscovery},
+		{header:'${text("举报原因")}', name:'reportReason', width:100, align:"center", formatter: function (val, obj, row, act) {
+                if(val == 10){
+                    return "诈骗信息";
+                }else if(val == 20){
+                    return "违法行为";
+                }else if(val == 30){
+                    return "涉黄信息";
+                }else if(val == 40){
+                    return "侵权行为";
+                }else if(val == 50){
+                    return "人身攻击";
+                }else if(val == 60){
+                    return "垃圾营销";
+                }else if(val == 70){
+                    return "其他";
+                }
+            }},
+		{header:'${text("举报补充说明")}', name:'reportExplain', width:100, align:"center", formatter: function (val, obj, row, act) {
+                if(val.length >= 10){
+                    return "<span title='" + val + "'>" + val.substring(0,10) + "...</span>";
+                }else{
+                    return "<span title='" + val + "'>" + val + "</span>";
+                }
+            }},
+		{header:'${text("举报时间")}', name:'reportTime', width:100, align:"center"}
+	],
+});
+
+function showDiscovery(val, obj, row, act) {
+
+    return "<a href='javascript:void(0);' style='cursor: pointer;text-decoration: none;color: black;' onclick='show(\""+val+"\");'>"+val+"</a>";
+}
+
+
+function show(discoverKid){
+    console.log(discoverKid);
+    $("#zhezhao").css("display","block")
+
+    $.ajax({
+        //url : "http://192.168.31.198:6130/dynamic/queryDynamic",
+        url : apiHost + "/dynamic/queryDynamic",
+        contentType : "application/json;charset=UTF-8",
+        data : {
+            kid : discoverKid
+        },
+        type : "get",
+        dataType : "json",
+        success : function(data) {
+            if(data.code = "200"){
+                console.log(data.data);
+                $("#content").text(data.data.discoverContent);
+                if(data.data.insertType == 1){
+                    var arr = data.data.picList;
+                    if(arr.length > 0){
+                        $("#appendDiv").html("");
+                        var str = "";
+                        for (var i=0;i<arr.length;i++){
+                            str += "<img src='"+arr[i]+"'>";
+						}
+                        $("#appendDiv").append(str);
+					}
+                }else if(data.data.insertType == 3){
+                    $("#appendDiv").append("<video src='"+data.data.mediaName+"' width='200px' height='200px' controls='controls'></video>");
+				}
+
+            }
+
+        },
+        error : function() {
+            alert("操作失败！");
+        }
+    });
+}
+
+$("#close").click(function () {
+    $("#zhezhao").css("display","none")
+})
+
+</script>

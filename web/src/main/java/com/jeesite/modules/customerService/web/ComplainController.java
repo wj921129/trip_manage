@@ -1,12 +1,11 @@
-package com.jeesite.modules.user.web;
+package com.jeesite.modules.customerService.web;
 
 import com.jeesite.common.entity.Page;
-import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.user.entity.UserInfo;
-import com.jeesite.modules.user.service.UserInfoService;
-import org.springframework.ui.Model;
+import com.jeesite.modules.customerService.entity.Complain;
+import com.jeesite.modules.customerService.service.ComplainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,20 +16,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "${adminPath}/user")
-public class UserInfoController extends BaseController {
+@RequestMapping(value = "${adminPath}/complain")
+public class ComplainController {
 
     @Autowired
-    private UserInfoService userInfoService;
+    private ComplainService complainService;
 
 
     /**
      * 查询列表
      */
     @RequestMapping(value = {"list", ""})
-    public String list(UserInfo user, Model model) {
-        model.addAttribute("user", user);
-        return "modules/user/userList";
+    public String list(Complain complain, Model model) {
+        model.addAttribute("complain", complain);
+        return "modules/complain/complainList";
     }
 
 
@@ -39,11 +38,11 @@ public class UserInfoController extends BaseController {
      */
     @RequestMapping(value = "listData")
     @ResponseBody
-    public Page<UserInfo> listData(UserInfo user, HttpServletRequest request, HttpServletResponse response) {
+    public Page<Complain> listData(Complain complain, HttpServletRequest request, HttpServletResponse response) {
         String pageSize = request.getParameter("pageSize");
         String pageNo = request.getParameter("pageNo");
 
-        Page<UserInfo> page = new Page<>();
+        Page<Complain> page = new Page<>();
         if(!StringUtils.isEmpty(pageSize)){
             page.setPageSize(Integer.parseInt(pageSize));
         }
@@ -52,14 +51,20 @@ public class UserInfoController extends BaseController {
         }
 
         Map<String, Object> paramterMap = new HashMap<>();
-        if(!StringUtils.isEmpty(request.getParameter("phone"))){
-            paramterMap.put("phone", request.getParameter("phone"));
+        if(request.getParameter("complainStatu") != null){
+            paramterMap.put("complainStatu", request.getParameter("complainStatu"));
         }
+        if(request.getParameter("complainReason") != null){
+            paramterMap.put("complainReason", request.getParameter("complainReason"));
+        }
+
         page.setOtherData(paramterMap);
 
-        Page<UserInfo> userInfoPage = userInfoService.queryAllUser(page);
+        Page<Complain> reportPage = complainService.queryAllComplain(page);
 
-        return userInfoPage;
+        return reportPage;
     }
+
+
 
 }

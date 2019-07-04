@@ -1,8 +1,16 @@
 <% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('数据管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+			</div>
+		</div>
 		<div class="box-body">
-			<#form:form id="searchForm" action="${ctx}/user/listData" method="post" class="form-inline"
+			<#form:form id="searchForm" action="${ctx}/user/listData" method="post" class="form-inline hide"
 					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
 				<div class="form-group">
 					<label class="control-label">${text('手机号码')}：</label>
@@ -25,8 +33,7 @@
 // 初始化DataGrid对象
 $('#dataGrid').dataGrid({
 	columnModel: [
-
-		{header:'${text("kid")}', name:'kid', width:100, align:"center"},
+		{header:'${text("kid")}', name:'kid', width:100, align:"center", hidden:true},
         {header:'${text("图像")}', name:'image', width:100, align:"center",formatter: function (val, obj, row, act) {
 				return '<image src="'+val+'" style="border-radius: 50%;width: 50px;height: 50px;"></image>'
             }},
