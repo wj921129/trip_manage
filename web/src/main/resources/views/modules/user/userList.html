@@ -2,8 +2,18 @@
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-body">
-			<#form:form id="searchForm" action="${ctx}/user/listData" method="post" class="form-inline hide"
+			<#form:form id="searchForm" action="${ctx}/user/listData" method="post" class="form-inline"
 					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('手机号码')}：</label>
+					<div class="control-inline">
+						<#form:input path="phone" maxlength="150" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
 			</#form:form>
 			<table id="dataGrid"></table>
 			<div id="dataGridPage"></div>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -20,9 +21,12 @@ public class UserInfoService {
     private String apiHost;
 
     public Page<UserInfo> queryAllUser(Page<UserInfo> page){
+        Map<String, Object> otherData = page.getOtherData();
+
         JSONObject ob = new JSONObject();
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
+        ob.put("phone", otherData.get("phone"));
 
         String requestUrl = apiHost + "/user/baseInfo/queryAllUser";
         String result = ApiUtils.get(requestUrl,ob);

@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "${adminPath}/user")
@@ -49,6 +51,12 @@ public class UserInfoController extends BaseController {
         if(!StringUtils.isEmpty(pageNo)){
             page.setPageNo(Integer.parseInt(pageNo));
         }
+
+        Map<String, Object> paramterMap = new HashMap<>();
+        if(!StringUtils.isEmpty(request.getParameter("phone"))){
+            paramterMap.put("phone", request.getParameter("phone"));
+        }
+        page.setOtherData(paramterMap);
 
         Page<UserInfo> userInfoPage = userInfoService.queryAllUser(page);
 
