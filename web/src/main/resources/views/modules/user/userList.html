@@ -1,0 +1,45 @@
+<% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-body">
+			<#form:form id="searchForm" action="${ctx}/user/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	columnModel: [
+
+		{header:'${text("kid")}', name:'kid', width:100, align:"center"},
+        {header:'${text("图像")}', name:'image', width:100, align:"center",formatter: function (val, obj, row, act) {
+				return '<image src="'+val+'" style="border-radius: 50%;width: 50px;height: 50px;"></image>'
+            }},
+		{header:'${text("昵称")}', name:'nickname', width:100, align:"center"},
+		{header:'${text("手机号码")}', name:'phone', width:100, align:"center"},
+		{header:'${text("姓名")}', name:'realname', width:100, align:"center"},
+		{header:'${text("性别")}', name:'sex', width:100, align:"center"},
+		{header:'${text("创建时间")}', name:'createTime', width:100, align:"center"}
+
+		/*{header:'${text("操作")}', name:'actions', width:200, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('test:testData:edit')){ %>
+				actions.push('<a href="${ctx}/test/testData/form?id='+row.id+'" class="btnList" title="${text("编辑数据")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				if (row.status == Global.STATUS_NORMAL){
+					actions.push('<a href="${ctx}/test/testData/disable?id='+row.id+'" class="btnList" title="${text("停用数据")}" data-confirm="${text("确认要停用该数据吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
+				}
+				if (row.status == Global.STATUS_DISABLE){
+					actions.push('<a href="${ctx}/test/testData/enable?id='+row.id+'" class="btnList" title="${text("启用数据")}" data-confirm="${text("确认要启用该数据吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
+				}
+				actions.push('<a href="${ctx}/test/testData/delete?id='+row.id+'" class="btnList" title="${text("删除数据")}" data-confirm="${text("确认要删除该数据吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}*/
+	],
+});
+</script>
