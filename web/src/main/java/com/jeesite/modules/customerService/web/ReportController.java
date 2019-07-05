@@ -29,7 +29,7 @@ public class ReportController {
     @RequestMapping(value = {"list", ""})
     public String list(Report report, Model model) {
         model.addAttribute("report", report);
-        return "modules/report/reportList";
+        return "modules/customerService/reportList";
     }
 
 

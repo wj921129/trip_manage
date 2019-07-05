@@ -21,7 +21,7 @@
 				</div>
 				<div class="form-group">
 					<label class="control-label">${text('举报原因')}：</label>
-					<div class="control-inline width-120">
+					<div class="control-inline" style="width: 150px;">
 						<#form:select path="reportReason" dictType="report_reason_menu" blankOption="true" class="form-control"/>
 					</div>
 				</div>
@@ -50,7 +50,6 @@
 
 </div>
 <% } %>
-<script type="text/javascript" src="../url.js"></script>
 <style>
 	#zhezhao{
 		display: none;
@@ -118,7 +117,7 @@ $('#dataGrid').dataGrid({
                 }
             }},
 		{header:'${text("举报补充说明")}', name:'reportExplain', width:100, align:"center", formatter: function (val, obj, row, act) {
-                if(val.length >= 10){
+                if(val.length > 10){
                     return "<span title='" + val + "'>" + val.substring(0,10) + "...</span>";
                 }else{
                     return "<span title='" + val + "'>" + val + "</span>";
@@ -135,36 +134,38 @@ function showDiscovery(val, obj, row, act) {
 
 
 function show(discoverKid){
-    console.log(discoverKid);
-    $("#zhezhao").css("display","block")
-
+    //console.log(discoverKid);
     $.ajax({
-        //url : "http://192.168.31.198:6130/dynamic/queryDynamic",
-        url : apiHost + "/dynamic/queryDynamic",
+        url : "http://192.168.31.198:6130/dynamic/queryByKid",
+        //url : apiHost + "/dynamic/queryDynamic",
         contentType : "application/json;charset=UTF-8",
         data : {
             kid : discoverKid
         },
         type : "get",
         dataType : "json",
+		async : false,
         success : function(data) {
-            if(data.code = "200"){
-                console.log(data.data);
-                $("#content").text(data.data.discoverContent);
-                if(data.data.insertType == 1){
-                    var arr = data.data.picList;
-                    if(arr.length > 0){
-                        $("#appendDiv").html("");
-                        var str = "";
-                        for (var i=0;i<arr.length;i++){
-                            str += "<img src='"+arr[i]+"'>";
-						}
-                        $("#appendDiv").append(str);
-					}
-                }else if(data.data.insertType == 3){
-                    $("#appendDiv").append("<video src='"+data.data.mediaName+"' width='200px' height='200px' controls='controls'></video>");
+            $("#appendDiv").html("");
+            if(data.code == "200"){
+                if(data.data != null){
+                    $("#content").text(data.data.discoverContent);
+                    if(data.data.insertType == 1){
+                        var arr = data.data.picList;
+                        if(arr.length > 0){
+                            var str = "";
+                            for (var i=0;i<arr.length;i++){
+                                str += "<img src='"+arr[i]+"'>";
+                            }
+                            $("#appendDiv").append(str);
+                        }
+                    }else if(data.data.insertType == 3){
+                        $("#appendDiv").append("<video src='"+data.data.mediaName+"' width='200px' height='200px' controls='controls'></video>");
+                    }
 				}
-
+                $("#zhezhao").css("display","block");
+            }else{
+                alert(data.msg);
             }
 
         },

@@ -29,7 +29,7 @@ public class ComplainController {
     @RequestMapping(value = {"list", ""})
     public String list(Complain complain, Model model) {
         model.addAttribute("complain", complain);
-        return "modules/complain/complainList";
+        return "modules/customerService/complainList";
     }
 
 
