@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-body">
+            <#form:form id="searchForm" action="${ctx}/refundOrder/listData" method="post" class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+        </#form:form>
+        <table id="dataGrid"></table>
+        <div id="dataGridPage"></div>
+    </div>
+</div>
 
-</body>
-</html>
+
+</div>
+<% } %>
+<script>
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        columnModel: [
+            {header:'${text("kid")}', name:'kid', width:100, align:"center", hidden:true},
+            {header:'${text("订单kid")}', name:'orderKid', width:100, align:"center", hidden:true},
+            {header:'${text("退款金额")}', name:'refundMoney', width:100, align:"center"},
+            {header:'${text("退款账户")}', name:'refundAccount', width:100, align:"center"},
+            {header:'${text("退款原因")}', name:'refundReason', width:100, align:"center", formatter: function (val, obj, row, act) {
+                    if(val.length > 10){
+                        return "<span title='" + val + "'>" + val.substring(0,10) + "...</span>";
+                    }else{
+                        return "<span title='" + val + "'>" + val + "</span>";
+                    }
+                }},
+            {header:'${text("申请时间")}', name:'applyTime', width:100, align:"center"}
+        ],
+    });
+
+</script>

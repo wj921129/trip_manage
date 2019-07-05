@@ -1,8 +1,6 @@
 package com.jeesite.modules.finance.web;
 
 import com.jeesite.common.entity.Page;
-import com.jeesite.modules.customerService.entity.Complain;
-import com.jeesite.modules.customerService.service.ComplainService;
 import com.jeesite.modules.finance.entity.RefundBail;
 import com.jeesite.modules.finance.service.RefundBailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +39,7 @@ public class RefundBailController {
     @RequestMapping(value = "listData")
     @ResponseBody
     public Page<RefundBail> listData(RefundBail refundBail, HttpServletRequest request, HttpServletResponse response) {
-        /*String pageSize = request.getParameter("pageSize");
+        String pageSize = request.getParameter("pageSize");
         String pageNo = request.getParameter("pageNo");
 
         Page<RefundBail> page = new Page<>();
@@ -53,19 +51,15 @@ public class RefundBailController {
         }
 
         Map<String, Object> paramterMap = new HashMap<>();
-        if(request.getParameter("complainStatu") != null){
-            paramterMap.put("complainStatu", request.getParameter("complainStatu"));
-        }
-        if(request.getParameter("complainReason") != null){
-            paramterMap.put("complainReason", request.getParameter("complainReason"));
+        if(request.getParameter("refundReason") != null){
+            paramterMap.put("refundReason", request.getParameter("refundReason"));
         }
 
         page.setOtherData(paramterMap);
 
         Page<RefundBail> reportPage = refundBailService.queryRefundBail(page);
 
-        return reportPage;*/
-        return null;
+        return reportPage;
     }
 
 
