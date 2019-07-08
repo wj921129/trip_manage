@@ -25,9 +25,10 @@ public class RefundOrderService {
         JSONObject ob = new JSONObject();
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
+        ob.put("refundStatu", 20);
 
         //String requestUrl = apiHost + "/support/report/queryReport";
-        String requestUrl = "http://192.168.31.198:6120/order/refund/queryRefundByStatu";
+        String requestUrl = "http://192.168.31.201:7120/order/refund/queryRefundByStatu";
         String result = ApiUtils.get(requestUrl,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
