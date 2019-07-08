@@ -2,11 +2,11 @@
 <div class="main-content">
     <div class="box box-main">
         <div class="box-header">
-            <div class="box-title">
-                <i class="fa fa-list-alt"></i> ${text('数据管理')}
-            </div>
-            <div class="box-tools pull-right">
-                <a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+            <div class="pl10 pb20">
+                <button class="btn btn-sm btn-primary" onclick="show();"><i class="fa fa-check"></i> ${text('审核')}</button>&nbsp;
+                <div class="box-tools pull-right">
+                    <a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+                </div>
             </div>
         </div>
         <div class="box-body">
@@ -28,10 +28,68 @@
     </div>
 </div>
 
+<div id="zhezhao">
+    <div id="cuang">
+        <div style="width: 100%;height: 80%;padding-top: 40px;padding-left: 40px;">
+            <table>
+                <tr style="display: block;">
+                    <td>审核：</td>
+                    <td>
+                        <select style="width:100px;" onchange="changeValue(this.value);" id="refundStatu">
+                            <option selected="selected" value="20">通过</option>
+                            <option value="30">不通过</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="remarkTr" style="display: none;padding-top: 20px;">
+                    <td>备注：</td>
+                    <td>
+                        <textarea required="required" id="remark" style="width: 250px;height: 80px;"></textarea>
+                        <font color="red">*</font>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="float: right">
+            <span onclick="save();">保存</span>
+            <span id="close">关闭</span>
+        </div>
+    </div>
+</div>
 
 </div>
 <% } %>
+<style>
+    #zhezhao{
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.2);
+    }
+    #cuang{
+        width:30%;
+        height:30%;
+        left:30%;
+        top:10%;
+        background-color: white;
+        position: relative;
+    }
+    #cuang span{
+        display: inline-block;
+        background: #2a579a;
+        padding: 2px 10px;
+        border-radius: 5px;
+        cursor:pointer;
+        color: white;
+        margin: 0 5px;
+    }
+</style>
 <script>
+    var kidArr = new Array();
+
     // 初始化DataGrid对象
     $('#dataGrid').dataGrid({
         columnModel: [
@@ -62,6 +120,103 @@
                 }},
             {header:'${text("申请时间")}', name:'applyTime', width:100, align:"center"}
         ],
+        showCheckbox: true,
+        onSelectRow: function (id, isSelect) {
+            var rowData = $("#dataGrid").jqGrid('getRowData',id);
+            var refundOrderKid = rowData.kid;
+            if (isSelect){
+                kidArr.push(refundOrderKid);
+            }else {
+                var index = kidArr.indexOf(refundOrderKid);
+                if (index > -1) {
+                    kidArr.splice(index, 1);
+                }
+            }
+        },
+        onSelectAll:function(rows, isSelect) {
+            if (isSelect){
+                kidArr = new Array();
+                for (let i = 0; i < rows.length; i++) {
+                    var rowData = $("#dataGrid").jqGrid('getRowData',rows[i]);
+                    kidArr.push(rowData.kid);
+                }
+            }else {
+                kidArr = new Array();
+            }
+        }
     });
+
+    function show() {
+        if(kidArr.length == 0){
+            alert("请至少选择一条数据！");
+        }else{
+            $("#zhezhao").css("display","block");
+            //console.log(kidArr);
+        }
+    }
+
+    function changeValue(obj){
+        if(obj == "20"){
+            $("#remarkTr").css("display","none");
+            $("#remark").val("");
+        }else if(obj == "30"){
+            $("#remarkTr").css("display","block");
+        }
+    }
+
+    function save(){
+        var refundBailKids = "";
+        for (let i = 0; i < kidArr.length; i++) {
+            refundBailKids += kidArr[i] + ",";
+        }
+        refundBailKids = refundBailKids.substring(0,refundBailKids.length-1);
+        //console.log(refundBailKids);
+
+        var data;
+        if($("#refundStatu").val() == 20){
+            data = {
+                refundBailKids : refundBailKids,
+                refundStatu : $("#refundStatu").val()
+            };
+
+        }else if($("#refundStatu").val() == 30){
+            if($("#remark").val() == "" || $("#remark").val() == null){
+                alert("备注不能为空！");
+                return;
+            }else{
+                data = {
+                    refundBailKids : refundBailKids,
+                    refundStatu : $("#refundStatu").val(),
+                    remarks : $("#remark").val()
+                };
+            }
+        }
+        $.ajax({
+            url : "http://192.168.31.198:6150/support/refundBail/auditRefundBail",
+            //url : apiHost + "/order/refund/auditRefund",
+            contentType : "application/json;charset=UTF-8",
+            data : JSON.stringify(data),
+            type : "post",
+            dataType : "json",
+            success : function(data) {
+                if(data.code == "200"){
+                    alert("审核成功！");
+                    $("#zhezhao").css("display","none");
+                    location.reload(true);
+                }else{
+                    alert(data.msg);
+                }
+                kidArr = new Array();
+            },
+            error : function() {
+                alert("操作失败！");
+            }
+        });
+    }
+
+    $("#close").click(function () {
+        $("#zhezhao").css("display","none");
+        kidArr = new Array();
+    })
 
 </script>
