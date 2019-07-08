@@ -1,0 +1,164 @@
+<% layout('/layouts/default.html', {title: '审核路线', libs: ['validate','dataGrid']}){ %>
+<div class="main-content">
+    <div class="box box-main">
+        <#form:form id="inputForm" model="${line}" method="post" class="form-horizontal">
+        <div class="box-body">
+            <div class="form-unit">${text('审核路线')}</div>
+            <div class="pl10 pb20">
+
+                <button type="submit" class="btn btn-sm btn-primary" id="batchesLine"><i class="fa fa-check"></i> ${text('批量上线')}</button>&nbsp;
+                <!--<button type="submit" class="btn btn-sm btn-primary" id="deletesLine"><i class="fa fa-check"></i> ${text('批量驳回')}</button>&nbsp;-->
+
+                <table id="roleGrid"></table>
+            </div>
+        </div>
+    </#form:form>
+</div>
+
+</div>
+<% } %>
+<script id="treeselectTpl" type="text/template"></script>
+<script>
+
+        Array.prototype.indexOf = function(val) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == val) return i;
+            }
+            return -1;
+        };
+
+        Array.prototype.remove = function(val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
+
+        var lineKids = []; // 全选
+
+        var roleGrid = $("#roleGrid").dataGrid({
+            url: '${ctx}/line/listData?lineStatus=10',
+            columnModel: [
+                {
+                    header:'${text("编号")}',
+                    name:'lineKid',
+                    width:150,
+                    align: "center"
+                },
+
+                {
+                    header: '${text("路线主题")}',
+                    name: 'lineTitle',
+                    width: 150,
+                    align: "center"
+                },
+                {
+                    header: '${text("导游姓名")}',
+                    name: 'realName',
+                    width: 150,
+                    align: "center"
+                },
+                {
+                    header: '${text("缩略图")}',
+                    name: 'linePics',
+                    width: 150,
+                    align: "center",
+                    formatter: function (val, obj, row, act) {
+                        return '<image src="'+val[0]+'" style="border-radius: 50%;width: 50px;height: 50px;"></image>'
+                    }
+                },
+                {
+                    header: '${text("价格")}',
+                    name: 'tripPrice',
+                    width: 150,
+                    align: "center"
+                },
+                {
+                    header: '${text("未完成的订单")}',
+                    name: 'inCompleteOrder',
+                    width: 150,
+                    align: "center"
+                },
+                {
+                    header: '${text("状态")}',
+                    name: 'status',
+                    width: 150,
+                    align: "center",
+                    formatter: function (val, obj, row, act) {
+                        return js.getDictLabel(${@DictUtils.getDictListJson('line_status')}, val, "未知", true);
+                    }
+                },
+                {
+                    header:'${text("操作")}', name:'actions', width:260, sortable:false, title:false, formatter: function(val, obj, row, act){
+
+                        var lineStatus = ${@DictUtils.getDictListJson('line_status')};
+
+                        var actions = [];
+                    <% if(hasPermi('line:edit')){ %>
+                            if (row.status == 10){
+                                actions.push('<a href="${ctx}/line/update?lineKid='+row.lineKid+'&op=edit" class="btnList" title="${text("上线")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+                                actions.push('<a href="${ctx}/line/form?lineKid='+row.lineKid+'&lineStatus=10" class="btnList" title="${text("查看")}" ><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
+                            }
+                        <% } %>
+                        return actions.join('');
+                    }}
+            ],
+            showCheckbox: true,
+            onSelectRow: function (id, isSelect) {
+
+                var rowData = $("#roleGrid").jqGrid('getRowData',id);
+                var lineKid = rowData.lineKid;
+                if (isSelect){
+                    lineKids.push(lineKid);
+                }else {
+                    lineKids.remove(lineKid);
+                }
+            },
+            onSelectAll:function(rows, isSelect) {
+
+                if (isSelect){
+                    lineKids = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        var rowData = $("#roleGrid").jqGrid('getRowData',rows[i]);
+                        lineKids.push(rowData.lineKid);
+                    }
+                }else {
+                    lineKids = [];
+                }
+            },
+            autoGridHeight: function(){
+                return 'auto';
+            },
+            autoGridWidth: function(){
+                return $('#inputForm .box-body').width()-20;
+            },
+            ajaxSuccess: function(){
+            }
+        });
+
+
+    $("#batchesLine").click(function () {
+
+        var lineKid = '';
+        for (let i = 0; i < lineKids.length; i++) {
+            lineKid += lineKids[i] + ',';
+        }
+        lineKid = lineKid.substring(0,lineKid.length-1);
+        $.ajax({
+            type: 'POST',
+            url: "${ctx}/line/update",
+            dataType: 'json',
+            async : false,
+            data: {
+                lineKid : lineKid,
+                lineStatus : 20
+            },
+            success: function (result) {
+                if (result.msg == 'success'){
+                    alert("批量上线成功!");
+                }
+            }
+
+        });
+    })
+</script>
