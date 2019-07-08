@@ -1,12 +1,12 @@
 package com.jeesite.modules.order.web;
-;
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.order.entity.AddOrderVo;
 import com.jeesite.modules.order.entity.OrderListVo;
 import com.jeesite.modules.order.service.OrderService;
-import com.jeesite.modules.test.entity.TestData;
-import com.jeesite.modules.user.entity.UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
 @Controller
 @RequestMapping(value = "${adminPath}/order/orderData")
+@Slf4j
 public class OrderController extends BaseController {
 
     @Autowired
@@ -87,10 +87,17 @@ public class OrderController extends BaseController {
     @RequiresPermissions("test:testData:edit")
     @PostMapping(value = "save")
     @ResponseBody
-    public String save(@Validated OrderListVo orderListVo) {
+    public String save(@Validated AddOrderVo addOrderVo) {
+        String enterParam = JSONObject.toJSONString(addOrderVo);
+        log.info("enter param :" +enterParam);
+        orderService.createOrder(addOrderVo);
         //调用保存订单接口服务
         return renderResult(Global.TRUE, text("保存数据成功！"));
     }
+
+    /**
+    * 查看订单详情
+    */
 
 
 }
