@@ -128,12 +128,5 @@
                 }
             }
         ],
-        // 双击表格行时调用
-        ondblClickRow: function (id, rownum, colnum, event) {
-            js.addTabPage(null, '编辑数据', '${ctx}/test/testData/form?id=' + id);
-        },
-        // 加载成功后执行事件
-        ajaxSuccess: function (data) {
-        }
     });
 </script>

@@ -96,7 +96,6 @@
                     var actions =[];
                 <%
                     if (hasPermi('test:testData:edit')) { %>
-                        console.log("123321:"+row.kid)
                         actions.push('<a href="${ctx}/investor/investorData/delete?kid=' + row.kid + '" class="btnList" title="${text("删除数据")}" data-confirm="${text("确认要删除该数据吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
                     <%
                     }

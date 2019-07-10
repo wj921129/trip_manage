@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
 import com.jeesite.modules.order.entity.AddOrderVo;
+import com.jeesite.modules.order.entity.OrderDetailsVo;
 import com.jeesite.modules.order.entity.OrderListVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,7 @@ public class OrderService {
     }
 
    public void createOrder(AddOrderVo addOrderVo) {
-       // String requestUrl = apiHost + "/order/tourist/queryOrderManageList";
+       // String requestUrl = apiHost + "/order/tourist/createOrder";
        String requestUrl = "http://192.168.31.201:7120/order/tourist/createOrder";
        String result = ApiUtils.post(requestUrl, addOrderVo);
        if(!StringUtils.isEmpty(result)){
@@ -57,6 +58,22 @@ public class OrderService {
                }
            }
        }
+   }
+
+   public OrderDetailsVo queryOrderDetails (OrderDetailsVo orderDetailsVo){
+       // String requestUrl = apiHost + "/order/tourist/queryOrderManageDetails";
+       String requestUrl = "http://192.168.31.201:7120/order/tourist/queryOrderManageDetails";
+       String result = ApiUtils.post(requestUrl, orderDetailsVo);
+       if(!StringUtils.isEmpty(result)){
+           JSONObject resultObject = JSON.parseObject(result);
+           if(resultObject != null){
+               if("200".equals(resultObject.getString("code"))){
+                   OrderDetailsVo data = resultObject.getObject("data", OrderDetailsVo.class);
+                   return data;
+               }
+           }
+       }
+       return null;
    }
 
 }

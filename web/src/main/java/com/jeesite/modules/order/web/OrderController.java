@@ -4,6 +4,7 @@ import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.order.entity.AddOrderVo;
+import com.jeesite.modules.order.entity.OrderDetailsVo;
 import com.jeesite.modules.order.entity.OrderListVo;
 import com.jeesite.modules.order.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +99,21 @@ public class OrderController extends BaseController {
     /**
     * 查看订单详情
     */
-
+    /**
+     * 查看编辑表单
+     */
+    @RequiresPermissions("test:testData:view")
+    @RequestMapping(value = "view")
+    public String form(OrderDetailsVo orderDetailsVo, Model model) {
+        log.info("查询订单详情入参:"+ JSONObject.toJSONString(orderDetailsVo));
+        OrderDetailsVo orderDetailsVo1 = orderService.queryOrderDetails(orderDetailsVo);
+        if(orderDetailsVo1 == null){
+            log.info("查询订单详情为空");
+            return null;
+        }else{
+            model.addAttribute("orderDetailsVo", orderDetailsVo1);
+            return "modules/order/orderDetailsForm";
+        }
+    }
 
 }
