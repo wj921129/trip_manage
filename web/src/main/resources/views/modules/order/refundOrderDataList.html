@@ -109,14 +109,12 @@
                 formatter: function (val, obj, row, act) {
                     var actions = [];
                  <% if (hasPermi('test:testData:edit')) { %>
-                        actions.push('<a href="${ctx}/order/refundData/view?refundKid=' + row.refundKid + '" class="btnList" title="${text("查看详情")}"><i class="fa fa-paper-plane"></i></a>&nbsp;');
+                        actions.push('<a href="${ctx}/order/refundOrderData/view?refundKid=' + row.refundKid + '" class="btnList" title="${text("查看详情")}"><i class="fa fa-paper-plane"></i></a>&nbsp;');
                         if(row.refundStatu == 20){
-                            actions.push('<a href="${ctx}/order/refundData/view?refundKid=' + row.refundKid + '" class="btnList" title="${text("同意退款")}"><i class="fa fa-check"></i></a>&nbsp;');
-                            actions.push('<a href="${ctx}/order/refundData/view?refundKid=' + row.refundKid + '" class="btnList" title="${text("拒绝退款")}"><i class="fa fa-close"></i></a>&nbsp;');
+                            actions.push('<a href="${ctx}/order/refundOrderData/examineYes?refundKid=' + row.refundKid + '" class="btnList" title="${text("同意退款")}"><i class="fa fa-check"></i></a>&nbsp;');
+                            actions.push('<a href="${ctx}/order/refundOrderData/examineNo?refundKid=' + row.refundKid + '" class="btnList" title="${text("拒绝退款")}"><i class="fa fa-close"></i></a>&nbsp;');
                         }
                     <% } %>
-
-
                     return actions.join('');
                 }
             }

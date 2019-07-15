@@ -1,6 +1,10 @@
 package com.jeesite.modules.order.web;
+import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.finance.entity.Investor;
+import com.jeesite.modules.order.entity.RefundOrderDetailsVo;
 import com.jeesite.modules.order.entity.RefundOrderListVo;
 import com.jeesite.modules.order.service.RefundOrderManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.jeesite.common.web.http.ServletUtils.renderResult;
 
 
 @Controller
@@ -66,21 +73,34 @@ public class RefundOrderManageController extends BaseController {
     }
 
 
-   /* *//**
-     * 查看退款单详情
-     *//*
+    /**
+     * 查询退款单详情
+     */
     @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "view")
-    public String form(OrderDetailsVo orderDetailsVo, Model model) {
-        log.info("查询订单详情入参:"+ JSONObject.toJSONString(orderDetailsVo));
-        OrderDetailsVo orderDetailsVo1 = orderService.queryOrderDetails(orderDetailsVo);
-        if(orderDetailsVo1 == null){
-            log.info("查询订单详情为空");
+    public String form(RefundOrderDetailsVo refundOrderDetailsVo, Model model) {
+        log.info("查询退款单详情入参:"+ JSONObject.toJSONString(refundOrderDetailsVo));
+        RefundOrderDetailsVo refundOrderDetailsVo1 = refundOrderManageService.queryRefundOrderDetails(refundOrderDetailsVo);
+        if(refundOrderDetailsVo1 == null){
+            log.info("查询退款单详情为空");
             return null;
         }else{
-            model.addAttribute("orderDetailsVo", orderDetailsVo1);
-            return "modules/order/orderDetailsForm";
+            model.addAttribute("refundOrderDetailsVo", refundOrderDetailsVo1);
+            return "modules/order/refundOrderDetailsForm";
         }
-    }*/
+    }
+
+    /**
+     * 后台通过审核
+     */
+    @RequiresPermissions("test:testData:edit")
+    @RequestMapping(value = "examineYes")
+    @ResponseBody
+    public String examineYes(@Validated RefundOrderListVo refundOrderListVo) {
+        log.info("后台同意退款入参:" +JSONObject.toJSONString(refundOrderListVo));
+        //调用通过审核接口
+        refundOrderManageService.backstageAgreeRefund(refundOrderListVo);
+        return renderResult(Global.TRUE, text("审核成功!"));
+    }
 
 }
