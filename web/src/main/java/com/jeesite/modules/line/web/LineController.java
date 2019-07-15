@@ -5,14 +5,11 @@ package com.jeesite.modules.line.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
-import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.commom.utils.ApiPage;
-import com.jeesite.modules.line.entity.AuditLinesInVo;
-import com.jeesite.modules.line.entity.Line;
-import com.jeesite.modules.line.entity.LineSearchOutVo;
-import com.jeesite.modules.line.entity.SearchLineInVo;
+import com.jeesite.modules.line.entity.*;
 import com.jeesite.modules.line.service.LineService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,17 +37,18 @@ public class LineController extends BaseController {
 	private LineService lineService;
 	
 	/**
-	 * 查询列表
+	 * 路线列表
 	 */
 	@RequiresPermissions("line:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(SearchLineInVo line, Model model) {
+		line.setPhone("9527");
 		model.addAttribute("line", line);
 		return "modules/line/lineList";
 	}
 
 	/**
-	 * 查询列表
+	 * 待审核路线列表
 	 */
 	@RequiresPermissions("line:view")
 	@RequestMapping(value = "audits")
@@ -58,6 +56,17 @@ public class LineController extends BaseController {
 
 		model.addAttribute("line", line);
 		return "modules/line/auditLine";
+	}
+
+	/**
+	 * 轮播图展示路线列表
+	 */
+	@RequiresPermissions("line:view")
+	@RequestMapping(value = "lineHomeList")
+	public String lineHomeList(SearchLineInVo line, Model model) {
+
+		model.addAttribute("line", line);
+		return "modules/line/lineHomeList";
 	}
 
 	private void page(HttpServletRequest request, SearchLineInVo searchLineInVo){
@@ -71,6 +80,14 @@ public class LineController extends BaseController {
 		}
 	}
 
+	/**
+	 * 根据状态查询路线结果
+	 * @param searchLineInVo
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequiresPermissions("line:view")
 	@RequestMapping(value = "listData")
 	@ResponseBody
@@ -84,8 +101,7 @@ public class LineController extends BaseController {
 		page.setList(lineSearchOutVoApiPage.getEntities());
 		page.setCount(lineSearchOutVoApiPage.getCount());
 		page.setPageNo(searchLineInVo.getPageNumber());
-		int pageSize = searchLineInVo.getPageSize() != null ? searchLineInVo.getPageSize() : 10;
-		page.setPageSize(pageSize);
+		page.setPageSize(searchLineInVo.getPageSize());
 
 		return page;
 	}
@@ -97,14 +113,7 @@ public class LineController extends BaseController {
 	@RequestMapping(value = "form")
 	public String form(SearchLineInVo searchLineInVo, Model model, HttpServletRequest request) {
 
-		page(request, searchLineInVo);
-		ApiPage<LineSearchOutVo> lineSearchOutVoApiPage = lineService.queryAll(searchLineInVo);
-		Page<LineSearchOutVo> page = new Page();
-		page.setList(lineSearchOutVoApiPage.getEntities());
-		page.setCount(lineSearchOutVoApiPage.getCount());
-		page.setPageNo(searchLineInVo.getPageNumber());
-		int pageSize = searchLineInVo.getPageSize() != null ? searchLineInVo.getPageSize() : 10;
-		page.setPageSize(pageSize);
+
 
 		return "modules/line/lineForm";
 	}
@@ -128,26 +137,26 @@ public class LineController extends BaseController {
 	@RequiresPermissions("line:edit")
 	@RequestMapping(value = "delete")
 	@ResponseBody
-	public String delete(String lineKid) {
+	public String delete(String lineKid, Integer flag) {
 
 		if (StringUtils.isEmpty(lineKid)){
 
-			return renderResult(Global.FALSE, "操作失败,lineKid不能为空！");
+			return renderResult(Global.TRUE, "操作失败,lineKid不能为空！");
 		}
 
-		lineService.delete(lineKid);
-		return renderResult(Global.TRUE, text("删除路线'{0}'成功", lineKid));
+		String message = lineService.delete(lineKid, flag);
+		return renderResult(Global.TRUE, message);
 	}
 
 	/**
-	 * 上线
+	 * 路线上线,可批量
 	 * @param empUser
 	 * @return
 	 */
 	@RequiresPermissions("line:edit")
 	@RequestMapping(value = "update")
 	@ResponseBody
-	public String update(String lineKid, Integer lineStatus) {
+	public String update(String lineKid, Integer lineStatus, String remarks) {
 
 		if (StringUtils.isEmpty(lineKid)){
 
@@ -157,9 +166,35 @@ public class LineController extends BaseController {
 		AuditLinesInVo auditLinesInVo = new AuditLinesInVo();
 		auditLinesInVo.setLineKids(lineKid);
 		auditLinesInVo.setLineStatus(lineStatus);
+		auditLinesInVo.setRemarks(remarks);
 
 		lineService.update(auditLinesInVo);
 		return renderResult(Global.TRUE, text("审核路线'{0}'成功", lineKid));
 	}
+
+	/**
+	 * 路线首页展示,可批量
+	 * @param empUser
+	 * @return
+	 */
+	@RequiresPermissions("line:edit")
+	@RequestMapping(value = "setHomeLine")
+	@ResponseBody
+	public String setHomeLine(String lineKid, Integer lineDisplay) {
+
+		if (StringUtils.isEmpty(lineKid)){
+
+			return renderResult(Global.FALSE, "操作失败,lineKid不能为空！");
+		}
+
+		LineDisplayInVo lineDisplayInVo = new LineDisplayInVo();
+		lineDisplayInVo.setLineKids(lineKid);
+		lineDisplayInVo.setLineDisplay(lineDisplay);
+
+		lineService.setLineToHome(lineDisplayInVo);
+		return renderResult(Global.TRUE, text("展示路线'{0}'成功", lineKid));
+	}
+
+
 	
 }

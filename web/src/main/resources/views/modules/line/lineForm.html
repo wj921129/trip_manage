@@ -1,326 +1,446 @@
 <% layout('/layouts/default.html', {title: '路线管理', libs: ['validate','fileupload','dataGrid']}){ %>
-<div class="main-content">
-    <div class="box box-main">
-        <div class="box-header with-border">
-            <div class="box-title">
-                <i class="fa fa-list-alt"></i> ${text(line.isNewRecord ? '新增数据' : '编辑数据')}
-            </div>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+<div class="container-fluid">
+    <div class="row" style="border-bottom:2px #F0F0F2 solid">
+        <h3 style="color: #666666;margin-left: 15px">路线管理</h3>
+        <h3 style="margin:20px 10px">已上线</h3>
+    </div>
+    <div class="row" style="border-bottom:2px #F0F0F2 solid;padding: 15px 0">
+        <div class="col-md-1">路线主题</div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="哈哈哈哈哈">
+        </div>
+    </div>
+    <div class="row lx_biaoti" style="border-bottom:2px #F0F0F2 solid;padding: 15px 0">
+        <div class="col-md-12" style="padding: 10px 0">
+            <div class="col-md-1">行程天数</div>
+            <div class="col-md-2">
+                <input type="text" class="form-control" placeholder="3天">
             </div>
         </div>
-        <#form:form id="inputForm" model="${line}" action="${ctx}/line/lineInfo/save" method="post"
-        class="form-horizontal">
-        <div class="box-body">
-            <div class="form-unit">${text('编号')}</div>
-            <#form:hidden path="lineKid"/>
-            <div class="row">
-                <div class="col-xs-6">
-                    <div class="form-group">
-                        <label class="control-label col-sm-4" title="">
-                            <span class="required hide">*</span> ${text('编号')}：<i
-                                class="fa icon-question hide"></i></label>
-                        <div class="col-sm-8">
-                            <#form:input path="lineKid" maxlength="200" class="form-control"/>
+        <div class="col-md-12" style="padding: 10px 0">
+            <div class="col-md-1">出发时间</div>
+            <div class="col-md-2">
+                <input type="text" class="form-control" placeholder="2019-01-10">
+            </div>
+        </div>
+        <div class="col-md-12" style="padding: 10px 0">
+            <div class="col-md-1">路线价格</div>
+            <div class="col-md-2">
+                <input type="text" class="form-control" placeholder="3322元">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1" style="line-height:150px">
+            轮播顶图
+        </div>
+        <div class="col-md-10">
+            <div class="xq_img">
+                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
+            </div>
+            <div class="xq_img">
+                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
+            </div>
+            <div class="xq_img">
+                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
+            </div>
+            <div class="xq_img">
+                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-left:0">
+        <div class="col-md-12">
+            <ul id="myTab" class="nav nav-tabs" style="margin-bottom: 10px">
+                <li class="active">
+                    <a href="#guide" data-toggle="tab">导游信息</a>
+                </li>
+                <li><a href="#route" data-toggle="tab">路线特色</a></li>
+                <li><a href="#trip" data-toggle="tab">行程安排</a></li>
+                <li><a href="#cost" data-toggle="tab">费用须知</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content" style="margin-bottom: 50px">
+                <!--导游信息-->
+                <div class="tab-pane fade in active" id="guide" >
+                    <div class="homexq_touxiang">
+                        <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                    </div>
+                    <div class="homexq_xiangqing">
+                        <div style="margin-top: 25px">
+                                <span class="xq_xx">
+                                    <span style="font-size: 16px">xxxxxx</span>
+                                </span>
+                            <span class="xq_duigou">
+                                    <i class="icon iconfont icon-duigou"></i>
+                                    <span>身份以认证</span>
+                                <span>
+                                    <i class="glyphicon glyphicon-ok-circle"></i>
+                                    <span>粤语</span>
+                                </span>
+                                    <span>
+                                    <i class="glyphicon glyphicon-ok-circle"></i>
+                                    <span>英语</span>
+                                </span>
+                                </span>
+                        </div>
+                        <div style="margin-top: 15px">
+                            <span style="display:inline-block;width: 300px">昵称:<span style="color: #666666">{{touristInfo.nickName}}</span></span>
+                            <span>性别: <span style="color: #666666">{{touristInfo.sex}}</span></span><br/>
+                            <span style="display:inline-block;width: 300px">年龄:<span style="color: #666666">{{touristInfo.age}}</span></span>
+                            <span>学历:<span style="color: #666666">{{touristInfo.education}}</span></span>
+                        </div>
+                        <div class="xq_gr">
+                            个人标签
+                        </div>
+                        <div class="homexq_button">
+                            <div>{{i.labelName}}</div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" title="">
-                            <span class="required hide">*</span> ${text('路线主题')}：<i
-                                class="fa icon-question hide"></i></label>
-                        <div class="col-sm-10">
-                            <#form:textarea path="lineTitle" rows="4" maxlength="200" class="form-control"/>
+                <!--路线特色-->
+                <div class="tab-pane route" id="route">
+                    <p>{{xqarr.lineTitle}}</p>
+                    <p><span>行程介绍:</span>
+                        <span>高端出行:丽江机场百事特VIP送机服务。精选景点:5A玉龙雪山,5A丽江古城，5A普达措，拉市海。</span>
+                    </p>
+                    <p>
+                        <span>航班直达:</span>
+                        <span>{{xqarr.lineFeature}}</span>
+                        <span>豪华住宿:4晚体验不同风格的5星住宿，只有你想不到的舒适。</span>
+                    </p>
+                </div>
+                <!--行程安排-->
+                <div class="tab-pane" id="trip">
+                    <div class="xc_biao">
+                        <p>行程安排:</p>
+                        <div>路线安排(1天)</div>
+                    </div>
+                    <div class="panel-group" id="accordion1">
+                        <!--第一天-->
+                        <div class="panel panel-default" >
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a href="#collapse" data-toggle="collapse">第1天</a>
+                                </h4>
+                            </div>
+                            <div id="collapse" class="panel-collapse collapse">
+                                <div class="panel-body xc_kuai">
+                                    <div class="xc_hang">
+                                        <div class="xc_hang_1">
+                                            <div class="xc_shijian">
+                                                <p>早上:</p>
+                                            </div>
+                                            <div class="xc_shu">
+                                                <div class="xc_shu1"></div>
+                                                <div class="xc_shu2">1</div>
+                                            </div>
+                                        </div>
+                                        <div class="xc_hang_2">
+                                            <div class="xc_huoshi">
+                                                <div>
+                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                </div>
+                                                <p>
+                                                    早餐:{{b.lineDinners[0].dinnerDesc}}(参考价位{{b.lineDinners[0].dinnerPrice}}元)。
+                                                </p>
+                                                <p>
+                                                    早餐:自理。
+                                                </p>
+                                            </div>
+                                            <div class="xc_huoshi" >
+                                                <div>
+                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                </div>
+                                                <p>活动地点:{{b.lineSchedules[0].schedulingAddress}}。</p>
+                                                <p>活动:{{b.lineSchedules[0].activityName}}。</p>
+                                                <p>活动内容:{{b.lineSchedules[0].activityDesc}}。(参考价位{{b.lineSchedules[0].schedulingPrice}}元)。</p>
+                                                <p>
+                                                    <span>包含导游费用</span>
+                                                    <span>不包含导游费用</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="xc_hang">
+                                        <div class="xc_hang_1">
+                                            <div class="xc_shijian">
+                                                <p>中午:</p>
+                                            </div>
+                                            <div class="xc_shu">
+                                                <div class="xc_shu1"></div>
+                                                <div class="xc_shu2">1</div>
+                                            </div>
+                                        </div>
+                                        <div class="xc_hang_2">
+                                            <div class="xc_huoshi">
+                                                <div>
+                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                </div>
+                                                <p>
+                                                    午餐:{{b.lineDinners[1].dinnerDesc}}(参考价位{{b.lineDinners[1].dinnerPrice}}元)。
+                                                </p>
+                                            </div>
+                                            <div class="xc_huoshi">
+                                                <div>
+                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                </div>
+                                                <p>活动地点:{{b.lineSchedules[1].schedulingAddress}}。</p>
+                                                <p>活动:{{b.lineSchedules[1].activityName}}。</p>
+                                                <p>活动内容:{{b.lineSchedules[1].activityDesc}}。(参考价位{{b.lineSchedules[1].schedulingPrice}}元)。</p>
+                                                <p>
+                                                    <span>包含导游费用</span>
+                                                    <span>不包含导游费用</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="xc_hang">
+                                        <div class="xc_hang_1">
+                                            <div class="xc_shijian">
+                                                <p>晚上:</p>
+                                            </div>
+                                            <div class="xc_shu">
+                                                <div class="xc_shu1"></div>
+                                                <div class="xc_shu2">1</div>
+                                            </div>
+                                        </div>
+                                        <div class="xc_hang_2">
+                                            <div class="xc_huoshi">
+                                                <div>
+                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                </div>
+                                                <p>
+                                                    晚餐:{{b.lineDinners[2].dinnerDesc}}(参考价位{{b.lineDinners[2].dinnerPrice}}元)。
+                                                </p>
+                                            </div>
+                                            <div class="xc_huoshi">
+                                                <div>
+                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                </div>
+                                                <p>活动地点:{{b.lineSchedules[2].schedulingAddress}}。</p>
+                                                <p>活动:{{b.lineSchedules[2].activityName}}。</p>
+                                                <p>活动内容:{{b.lineSchedules[2].activityDesc}}。(参考价位{{b.lineSchedules[2].schedulingPrice}}元)。</p>
+                                                <p>
+                                                    <span>包含导游费用</span>
+                                                    <span>不包含导游费用</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="xc_hang">
+                                        <div class="xc_hang_1">
+                                            <div class="xc_shijian">
+                                                <p>住宿:</p>
+                                            </div>
+                                            <div class="xc_shu">
+                                                <div class="xc_shu1"></div>
+                                                <div class="xc_shu2">1</div>
+                                            </div>
+                                        </div>
+                                        <div class="xc_hang_2">
+                                            <div class="xc_huoshi">
+                                                <div>
+                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                </div>
+                                                <p>
+                                                    住宿类型:
+                                                    <span>酒店</span>
+                                                    <span>民宿</span>
+                                                    <span>青旅</span>。
+                                                </p>
+                                                <p>
+                                                    住宿地址:{{b.lineStays[0].stayAddress}}(参考价位{{b.lineStays[0].stayPrice}}元)。
+                                                </p>
+                                                <p>
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p style="float: right;margin-right:15px">行程交通:{{b.lineTraffics[0].trafficDesc}}(大约{{b.lineTraffics[0].trafficPrice}})元</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" title="">
-                            <span class="required hide">*</span> ${text('导游姓名')}：<i
-                                class="fa icon-question hide"></i></label>
-                        <div class="col-sm-10">
-                            <#form:textarea path="realName" rows="4" maxlength="200" class="form-control"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" title="">
-                            <span class="required hide">*</span> ${text('缩略图')}：<i
-                                class="fa icon-question hide"></i></label>
-                        <div class="col-sm-10">
-                            <#form:textarea path="picUrl" rows="4" maxlength="200" class="form-control"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" title="">
-                            <span class="required hide">*</span> ${text('价格')}：<i
-                                class="fa icon-question hide"></i></label>
-                        <div class="col-sm-10">
-                            <#form:textarea path="tripPrice" rows="4" maxlength="200" class="form-control"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" title="">
-                            <span class="required hide">*</span> ${text('未完成的订单')}：<i
-                                class="fa icon-question hide"></i></label>
-                        <div class="col-sm-10">
-                            <#form:textarea path="inCompleteOrder" rows="4" maxlength="200" class="form-control"/>
-                        </div>
-                    </div>
+                <!--费用须知-->
+                <div class="tab-pane homexq_fy" id="cost">
+                    <div>费用包含:</div>
+                    <p>{{lineCost.costInclude}}</p>
+                    <div>行程规则:</div>
+                    <p>{{lineCost.tripRule}}</p>
+                    <div>退款说明:</div>
+                    <p>{{lineCost.refundInstruction}}</p>
                 </div>
             </div>
         </div>
-        <div class="box-footer">
-            <div class="row">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <% if (hasPermi('line:lineInfo:edit')){ %>
-                    <button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i>
-                        ${text('保 存')}
-                    </button>&nbsp;
-                    <% } %>
-                    <button type="button" class="btn btn-sm btn-default" id="btnCancel"
-                            onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </#form:form>
+    </div>
 </div>
-</div>
+
 <% } %>
-<script>
-    //初始化测试数据子表DataGrid对象
-    $("#testDataChildDataGrid").dataGrid({
+<style>
+    .row{
+        margin-left: 15px;
+    }
+    .xq_img{
+        width: 240px;
+        display: inline-block;
 
-        data: ${toJson(testData.testDataChildList)},
-        datatype: "local", // 设置本地数据
-        autoGridHeight: function () {
-            return 'auto'
-        }, // 设置自动高度
+    }
+    .xq_img img{
+        width: 240px;
+        margin: 5px;
+    }
+    .homexq_touxiang{
+        float: left;
+        width: 100px;
+        height: 200px;
+        text-align: center;
+    }
+    .homexq_touxiang img{
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+        border-radius: 50%;
+        margin-top: 15px;
+    }
+    .homexq_xiangqing{
+        float: left;
+    }
+    .homexq_xiangqing div:nth-child(2){
+        line-height: 30px;
+    }
+    .xq_xx{
+        display:inline-block;width: 300px
+    }
+    .xq_gr{
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .homexq_button div{
+        padding: 3px 5px;
+        margin-top: 5px;
+        display:inline-block;
+        border: 1px #99DDF8 solid;
+        font-size: 15px;
+        color:#585858;
+        border-radius: 10px;
+        text-align: center;
+    }
+    .homexq_button div:nth-child(1){
+        display:inline-block;
+        border: 1px #99DDF8 solid;
+        font-size: 15px;
+        color:#585858;
+    }
+    . route p:nth-child(1){
+        font-weight: bold;
+        text-align: center;
+        font-size: 20px;
+        margin-top: 30px;
+        letter-spacing: 2px;
+        margin-bottom: 50px;
+    }
+    .route p:nth-child(2){
+        margin-top: 30px;
+        color: #585858;
+    }
+    .route p:nth-child(2) span:nth-child(1){
+        font-weight: bold;
+        color: #333333;
+    }
+    .route p:nth-child(3){
+        margin-top: 30px;
+        color: #585858;
+    }
+    .route p:nth-child(3) span:nth-child(1){
+        font-weight: bold;
+        color: #333333;
+    }
+    .xc_kuai{width: 100%;}
+    .xc_hang{
+        width: 100%;
+        min-width:800px;
+        margin-bottom:10px;
+        display: flex;
+    }
+    .xc_hang .xc_hang_1{
+        float: left; width:8%;
+    }
+    .xc_hang .xc_hang_2{
+        width: 88%;
+    }
+    .xc_shijian{
+        float: left;
+        width:50px;
+        height: 120px;
+        line-height: 120px;
+    }
+    .xc_shu{
+        float: left;
+        height: 120px;
+        position:relative;
+    }
+    .xc_shu1{
+        width: 2px;
+        background: #D8D8D8;
+        height: 120px;
 
-        // 设置数据表格列
-        columnModel: [
-            {header: '状态', name: 'status', editable: true, hidden: true},
-            {header: '主键', name: 'id', editable: true, hidden: true},
-            {
-                header: '${text("排序号")}',
-                name: 'testSort',
-                width: 150,
-                editable: true,
-                edittype: 'text',
-                editoptions: {'maxlength': '11', 'class': 'form-control digits'}
-            },
-            {header: '${text("父表主键")}', name: 'testData.id', editable: true, hidden: true},
-            {
-                header: '${text("单行文本")}',
-                name: 'testInput',
-                width: 150,
-                editable: true,
-                edittype: 'text',
-                editoptions: {'maxlength': '200', 'class': 'form-control'}
-            },
-            {
-                header: '${text("多行文本")}',
-                name: 'testTextarea',
-                width: 150,
-                editable: true,
-                edittype: 'textarea',
-                editoptions: {'maxlength': '200', 'class': 'form-control', 'rows': '1'}
-            },
-            {
-                header: '${text("下拉框")}', name: 'testSelect', width: 100,
-                editable: true, edittype: 'select', editoptions: {
-                    'class': 'form-control',
-                    items: $.merge([{
-                        dictLabel: '&nbsp;',
-                        dictValue: ''
-                    }], ${@DictUtils.getDictListJson('sys_menu_type')}),
-                    itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function (element) {
-                        $(element).select2().on("change", function () {
-                            $(this).resetValid()
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("下拉多选")}', name: 'testSelectMultiple', width: 100,
-                editable: true, edittype: 'select', editoptions: {
-                    multiple: true, 'class': 'form-control',
-                    items: $.merge([], ${@DictUtils.getDictListJson('sys_menu_type')}),
-                    itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function (element) {
-                        $(element).select2().on("change", function () {
-                            $(this).resetValid()
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("单选框")}', name: 'testRadio', width: 100,
-                editable: true, edittype: 'select', editoptions: {
-                    'class': 'form-control',
-                    items: $.merge([{
-                        dictLabel: '&nbsp;',
-                        dictValue: ''
-                    }], ${@DictUtils.getDictListJson('sys_menu_type')}),
-                    itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function (element) {
-                        $(element).select2().on("change", function () {
-                            $(this).resetValid()
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("复选框")}', name: 'testCheckbox', width: 100,
-                editable: true, edittype: 'select', editoptions: {
-                    multiple: true, 'class': 'form-control',
-                    items: $.merge([], ${@DictUtils.getDictListJson('sys_menu_type')}),
-                    itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function (element) {
-                        $(element).select2().on("change", function () {
-                            $(this).resetValid()
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("日期选择")}', name: 'testDate', width: 150,
-                formatter: 'date', formatoptions: {srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d'},
-                editable: true, edittype: 'text', editoptions: {
-                    'class': 'form-control Wdate', 'readonly': 'true',
-                    dataInit: function (element) {
-                        $(element).on('focus', function () {
-                            WdatePicker({dateFmt: 'yyyy-MM-dd', isShowClear: true});
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("日期时间")}', name: 'testDatetime', width: 150,
-                formatter: 'date', formatoptions: {srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s'},
-                editable: true, edittype: 'text', editoptions: {
-                    'class': 'form-control Wdate', 'readonly': 'true',
-                    dataInit: function (element) {
-                        $(element).on('focus', function () {
-                            WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: true});
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("用户选择")}', name: 'testUser', width: 150,
-                formatter: function (val, obj, row, act) {
-                    return js.val(row, 'testUser.userCode') + '|' + js.val(row, 'testUser.userName');
-                }, editable: true, edittype: "custom", editoptions: {
-                    custom_element: function (val, editOptions) {
-                        return js.template('treeselectTpl', {
-                            id: 'user_' + editOptions.id, title: '用户选择',
-                            name: 'testUser.userCode', value: val.split('|')[0],
-                            labelName: 'testUser.userName', labelValue: val.split('|')[1],
-                            url: '${ctx}/sys/office/treeData?isLoadUser=true', cssClass: ''
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("机构选择")}', name: 'testOffice', width: 150,
-                formatter: function (val, obj, row, act) {
-                    return js.val(row, 'testOffice.officeCode') + '|' + js.val(row, 'testOffice.officeName');
-                }, editable: true, edittype: "custom", editoptions: {
-                    custom_element: function (val, editOptions) {
-                        return js.template('treeselectTpl', {
-                            id: 'office_' + editOptions.id, title: '机构选择',
-                            name: 'testOffice.officeCode', value: val.split('|')[0],
-                            labelName: 'testOffice.officeName', labelValue: val.split('|')[1],
-                            url: '${ctx}/sys/office/treeData?officeTypes=1,2', cssClass: ''
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("区域选择")}', name: 'testAreaCode', width: 150,
-                formatter: function (val, obj, row, act) {
-                    return js.val(row, 'testAreaCode') + '|' + js.val(row, 'testAreaName');
-                }, editable: true, edittype: "custom", editoptions: {
-                    custom_element: function (val, editOptions) {
-                        return js.template('treeselectTpl', {
-                            id: 'area_' + editOptions.id, title: '区域选择',
-                            name: 'testAreaCode', value: val.split('|')[0],
-                            labelName: 'testAreaName', labelValue: val.split('|')[1],
-                            url: '${ctx}/sys/area/treeData', cssClass: ''
-                        });
-                    }
-                }
-            },
-            {
-                header: '${text("操作")}',
-                name: 'actions',
-                width: 80,
-                sortable: false,
-                fixed: true,
-                formatter: function (val, obj, row, act) {
-                    var actions = [];
-                    if (val == 'new') {
-                        actions.push('<a href="#" onclick="js.confirm(\'${text("你确认要删除这条数据吗？")}\', function(){$(\'#testDataChildDataGrid\').dataGrid(\'delRowData\',\'' + obj.rowId + '\')});return false;"><i class="fa fa-trash-o"></i></a>&nbsp;');
-                    } else {
-                        actions.push('<a href="#" onclick="js.confirm(\'${text("你确认要删除这条数据吗？")}\', function(){$(\'#testDataChildDataGrid\').dataGrid(\'setRowData\',\'' + obj.rowId + '\',null,{display:\'none\'});$(\'#' + obj.rowId + '_status\').val(\'' + Global.STATUS_DELETE + '\');});return false;"><i class="fa fa-trash-o"></i></a>&nbsp;');
-                    }
-                    return actions.join('');
-                },
-                editoptions: {defaultValue: 'new'}
-            }
-        ],
+    }
+    .xc_shu2{
+        width: 18px;
+        height: 18px;
+        background: #37BBFE;
+        color: white;
+        border-radius: 15px;
+        text-align: center;
+        line-height: 18px;
+        position: absolute;
+        top: 51px;
+        left:-8px;
 
-        // 编辑表格参数
-        editGrid: true,				// 是否是编辑表格
-        editGridInitRowNum: 1,		// 编辑表格的初始化新增行数
-        editGridAddRowBtn: $('#testDataChildDataGridAddRowBtn'),	// 子表增行按钮
-        editGridAddRowInitData: {id: '', status: Global.STATUS_NORMAL},	// 新增行的时候初始化的数据
+    }
+    .xc_huoshi{
+        width:100%;
+        margin-left:40px;
+        margin-top: 10px;
+    }
+    .xc_huoshi div img{
+        width: 100px;
+        margin-right: 30px;
+    }
+    .xc_huoshi p{
+        margin-top: 10px;
+    }
+    .xc_biao{
+        width: 100%;height: 30px;
+        line-height: 30px;
+        overflow: hidden;
+        clear: both;
 
-        // 编辑表格的提交数据参数
-        editGridInputFormListName: 'testDataChildList', // 提交的数据列表名
-        editGridInputFormListAttrs: 'status,id,testSort,testData.id,testInput,testTextarea,testSelect,testSelectMultiple,testRadio,testCheckbox,testDate,testDatetime,testUser.userCode,testOffice.officeCode,testAreaCode,testAreaName,', // 提交数据列表的属性字段
+    }
+    .xc_biao p{
+        float: left;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .xc_biao div{
+        float: right;
+        font-size: 15px;
+        color: #666666;
+    }
 
-        // 加载成功后执行事件
-        ajaxSuccess: function (data) {
-            $('#jqgh_testDataChildDataGrid_rn').append('<a href="javascript:" onclick="'
-                + '$(\'#testDataChildDataGridAddRowBtn\').click();">'
-                + '<i class="fa fa-plus"></i></a>');
-        }
-    });
-</script>
-<script id="treeselectTpl" type="text/template">//<!--<div>
-<#form:treeselect id="{{d.id}}" title="{{d.title}}" name="{{d.name}}" value="{{d.value}}"
-	labelName="{{d.labelName}}" labelValue="{{d.labelValue}}" url="{{d.url}}"
-	class="{{d.cssClass}}" btnClass="btn-sm" allowClear="true"/>
-</div>//--></script>
-<script>
-    $("#inputForm").validate({
-        submitHandler: function (form) {
-            js.ajaxSubmitForm($(form), function (data) {
-                js.showMessage(data.message);
-                if (data.result == Global.TRUE) {
-                    js.closeCurrentTabPage(function (contentWindow) {
-                        contentWindow.page();
-                    });
-                }
-            }, "json");
-        }
-    });
-</script>
+    .homexq_fy div{
+        color: #666666;
+        font-weight: bold;
+        margin-top: 30px;
+        font-size: 18px;
+    }
+    .homexq_fy p{
+        margin-top: 10px;
+    }
+
+</style>

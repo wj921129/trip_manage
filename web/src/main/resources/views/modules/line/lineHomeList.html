@@ -1,9 +1,9 @@
-<% layout('/layouts/default.html', {title: '审核路线', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '轮播图展示', libs: ['dataGrid']}){ %>
 <div class="main-content">
     <div class="box box-main">
         <div class="box-header">
             <div class="box-title">
-                <i class="fa fa-list-alt"></i> ${text('审核路线')}
+                <i class="fa fa-list-alt"></i> ${text('轮播图展示')}
             </div>
             <div class="box-tools pull-right">
                 <a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i>
@@ -11,14 +11,14 @@
             </div>
         </div>
         <div class="box-body">
-            <#form:form id="searchForm" model="${line}" action="${ctx}/line/listData?lineStatus=10" method="post"
+            <#form:form id="searchForm" model="${line}" action="${ctx}/line/listData?lineStatus=20" method="post"
             class="form-inline hide"
             data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
             data-order-by="${parameter.orderBy}">
             <#form:select path="pageSize" dictType="show_page_number" blankOption="true" class="form-control" class="form-inline hide"/>
         </#form:form>
         <button type="submit" class="btn btn-sm btn-primary" id="batchesLine"><i class="fa fa-check"></i>
-            ${text('批量上线')}
+            ${text('批量展示')}
         </button>&nbsp;
         <table id="dataGrid">
 
@@ -26,7 +26,6 @@
         <div id="dataGridPage"></div>
     </div>
 </div>
-
 </div>
 <% } %>
 <script>
@@ -99,22 +98,28 @@
                 }
             },
             {
-                header: '${text("备注")}',
-                name: 'remarks',
+                header: '${text("首页展示")}',
+                name: 'lineDisplay',
                 width: 150,
                 align: "center",
                 hidden: false,
                 formatter: function (val, obj, row, act) {
-                    return "<input type='hidden' id='"+row.lineKid+"' placeholder='驳回时填写!' />";
+                    return js.getDictLabel(${@DictUtils.getDictListJson('line_display_status')}, val, "未知", true);
                 }
             },
             {
                 header:'${text("操作")}', name:'actions', width:90,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
 
-                    if (row.status == 10){
-                        return "<a href='javascript:void(0);' onclick='agreeLine(\""+row.lineKid+"\");' title='${text('上线')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;"
-                            + "<a href='javascript:void(0);' onclick='refuseLine(\""+row.lineKid+"\");' title='${text('驳回')}'><i class='fa fa-pencil'></i></a>"  +"&nbsp;"
-                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                    if (row.status == 20){
+
+                        if (row.lineDisplay == 20){
+                            return "<a href='javascript:void(0);' onclick='showLine(\""+row.lineKid+"\");' title='${text('展示')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;"
+                                + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                        }
+                        if (row.lineDisplay == 10){
+                            return "<a href='javascript:void(0);' onclick='displayLine(\""+row.lineKid+"\");' title='${text('不展示')}'><i class='fa fa-pencil'></i></a>"  +"&nbsp;"
+                                + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                        }
                     }
                 }}
         ],
@@ -144,7 +149,6 @@
         }
     });
 
-
     $("#batchesLine").click(function () {
 
         var lineKid = '';
@@ -153,20 +157,19 @@
         }
         lineKid = lineKid.substring(0,lineKid.length-1);
 
-        auditLine(lineKid, 20, '');
+        setLineHome(lineKid, 10, '');
     });
 
-    function auditLine(lineKid, lineStatus, remarks) {
+    function setLineHome(lineKid, lineDisplay) {
 
         $.ajax({
             type: 'POST',
-            url: "${ctx}/line/update",
+            url: "${ctx}/line/setHomeLine",
             dataType: 'json',
             async : false,
             data: {
                 lineKid : lineKid,
-                lineStatus : lineStatus,
-                remarks : remarks
+                lineDisplay : lineDisplay
             },
             success: function (result) {
                 $('#dataGrid').dataGrid('reloadGrid');
@@ -175,26 +178,17 @@
         });
     }
 
-    function agreeLine(lineKid) {
+    function showLine(lineKid) {
 
-        js.confirm("确定上线该路线吗?",function () {
-            auditLine(lineKid, 20, '');
+        js.confirm("确定展示该路线吗?", function () {
+            setLineHome(lineKid, 10);
         });
     }
 
-    function refuseLine(lineKid) {
+    function displayLine(lineKid) {
 
-        $("#"+lineKid).attr('type','text');
-
-        var remarks = $("#"+lineKid).val();
-        if (remarks == null || remarks == '' || remarks == undefined){
-            js.confirm("驳回路线请填写备注原因!", function () {
-                console.log("");
-            });
-        }else {
-            js.confirm("确定驳回该路线吗?",function () {
-                auditLine(lineKid, 40, remarks)
-            });
-        }
+        js.confirm("确定不展示该路线吗?", function () {
+            setLineHome(lineKid, 20);
+        });
     }
 </script>

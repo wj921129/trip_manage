@@ -5,7 +5,6 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.JoinTable;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
-import com.jeesite.modules.sys.entity.Office;
 import com.jeesite.modules.sys.entity.User;
 import lombok.Data;
 

@@ -1,0 +1,305 @@
+<% layout('/layouts/default.html', {title: '动态管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('动态管理')}
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" model="${dynamic}" action="${ctx}/dynamic/listData" method="post"
+            class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
+            data-order-by="${parameter.orderBy}">
+            <#form:select path="pageSize" dictType="show_page_number" blankOption="true" class="form-control" class="form-inline hide"/>
+
+        </#form:form>
+        <table id="dataGrid">
+
+
+        </table>
+        <div id="dataGridPage"></div>
+    </div>
+
+    <!--<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">-->
+        <!--点击触发-->
+    <!--</button>-->
+</div>
+</div>
+<div class="modal fade myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="p_div">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="p_del_flag"></h4>
+            </div>
+            <div class="modal-body tanchuang_beiz">
+                <p>编号 : <span id="p_kid"></span></p>
+                <!--<div>13164864811164116</div>-->
+                <p>用户kid : <span id="p_user_kid"></span></p>
+                <p>发布时间 : <span id="p_publish_time"></span></p>
+                <p>动态内容 : </p>
+                <div id="p_discover_content"></div>
+                <div class="tanchuang_img" id="p_image" >
+                </div>
+                <div class="tanchuang_img" id="p_video">
+                </div>
+                <p>备注 : </p>
+                <div>
+                    <textarea class="form-control" rows="3" id="p_discover_remarks"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" id="p_button">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<% } %>
+<style>
+    .myModal .modal-dialog{
+        width: 1000px;
+    }
+    /*弹窗宽度*/
+    .tanchuang_beiz p{
+        color: #666666;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    .tanchuang_beiz p span{
+        color: #666666;
+    }
+    .tanchuang_beiz div{
+        font-size: 18px;
+        color: #666666;
+        margin-bottom: 10px;
+    }
+    .tanchuang_img img{
+        width:300px;
+        height: 300px;
+        margin-bottom: 5px;
+    }
+    .tanchuang_img video{
+        width:500px;
+        height: 500px;
+    }
+    #p_del_flag{
+        font-size: 20px;
+        color:#f99c08;
+    }
+</style>
+<script>
+
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        searchForm: $("#searchForm"),
+        columnModel: [
+            {
+                header:'${text("编号")}',
+                name:"kid",
+                width:150,
+                align: "center"},
+            {
+                header:'${text("用户kid")}',
+                name:"userKid",
+                width:150,
+                align: "center"},
+            {
+                header: '${text("动态内容")}',
+                name: 'discoverContent',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("动态类型")}',
+                name: 'insertType',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("动态图片")}',
+                name: 'picList',
+                width: 150,
+                align: "center",
+                formatter: function (val, obj, row, act) {
+                    return '<image src="'+val[0]+'" style="border-radius: 50%;width: 50px;height: 50px;"></image>'
+                }
+            },
+            {
+                header: '${text("视频封面")}',
+                name: 'videoPic',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("动态位置")}',
+                name: 'discoverAddress',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("发布时间")}',
+                name: 'publishTime',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("状态")}',
+                name: 'delFlag',
+                width: 150,
+                align: "center"/*,
+                formatter: function (val, obj, row, act) {
+                    return js.getDictLabel(${@DictUtils.getDictListJson('line_status')}, val, "未知", true);
+                }*/
+            },
+            {
+                header: '${text("备注")}',
+                name: 'discoverRemarks',
+                width: 150,
+                align: "center",
+                hidden: false,
+                formatter: function (val, obj, row, act) {
+                    return "<input type='hidden' id='"+row.kid+"' placeholder='下架时填写!' />";
+                }
+            },
+            {
+                header:'${text("操作")}', name:'actions', width:90,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
+
+                    if (row.delFlag == 10){
+                        return "<a href='javascript:void(0);' onclick='auditDynamic(20,\""+row.kid+"\",\""+row.userKid+"\",1);' title='${text('下架')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;"
+                            + "<a href='javascript:void(0);' data-toggle='modal' data-target='.myModal' onclick='showDetails(\""+row.kid+"\");' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                    }else {
+                        return "<a href='javascript:void(0);' onclick='auditDynamic(10,\""+row.kid+"\", null, null);' title='${text('上架')}'><i class='fa fa-remove'></i></a>" +"&nbsp;"
+                            + "<a href='javascript:void(0);' data-toggle='modal' data-target='.myModal' onclick='showDetails(\""+row.kid+"\");'  title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+
+                    }
+                }}
+        ],
+        // 双击表格行时调用
+        ondblClickRow: function (id, rownum, colnum, event) {
+            js.addTabPage(null, '编辑数据', '${ctx}/test/testData/form?id=' + id);
+        },
+        // 加载成功后执行事件
+        ajaxSuccess: function (data) {
+            console.log("--------------")
+        }
+    });
+
+    function edit(flag, kid, remarks, userKid) {
+        $.ajax({
+            type: 'POST',
+            url: "${ctx}/dynamic/edit",
+            dataType: 'json',
+            async : false,
+            data: {
+                dynamicKid : kid,
+                delFlag : flag,
+                discoverRemarks : remarks,
+                userKid : userKid
+            },
+            success: function (result) {
+
+                if (result.message){
+                    js.showMessage(result.message);
+                    $('.myModal').modal('hide')
+                    $('#dataGrid').dataGrid('reloadGrid');
+                }
+
+            }
+
+        });
+    }
+
+    function auditDynamic(flag, kid, userKid, remark) {
+
+        var remarks = null;
+        if (remark == 1){
+            $("#"+kid).attr('type','text');
+            remarks = $("#"+kid).val();
+        }
+        if (remark == 2){
+            remarks = $("#p_discover_remarks").val();
+        }
+        if (flag == 20){
+            if (remarks == null || remarks == ''){
+                js.confirm("下架请填写备注原因!", function () {
+                    console.log("-");
+                });
+            } else {
+                edit(flag, kid, remarks, userKid);
+            }
+        }else {
+            edit(flag, kid, null, null);
+        }
+
+    }
+
+    function showDetails(kid){
+        $.ajax({
+            type: 'POST',
+            url: "${ctx}/dynamic/listData",
+            dataType: 'json',
+            async : false,
+            data: {
+                dynamicKid : kid
+            },
+            success: function (result) {
+                let data = result.list[0];
+                formatData(data);
+            }
+
+        });
+    }
+
+    function formatData(data) {
+
+        if (data.delFlag == 10){
+            $("#p_del_flag").html("已上架");
+        } else if (data.delFlag == 20){
+            $("#p_del_flag").html("未上架");
+        }
+        $("#p_kid").html(data.kid);
+        $("#p_user_kid").html(data.userKid);
+        $("#p_publish_time").html(data.publishTime);
+        $("#p_discover_content").html(data.discoverContent);
+        var videoURL = "<p>动态视频 : </p>";
+        var innerHtml = "<p>动态图片 : </p>";
+
+        if (data.insertType == 1) {
+            var pics = data.picList
+
+            for (let i = 0; i < pics.size; i++) {
+                innerHtml += "<img src='"+pics[i]+"' alt='' class='img-rounded'>";
+            }
+
+            var videoURL = "";
+            $("#p_video").html(videoURL);
+            $("#p_image").html(innerHtml);
+        }else if (data.insertType == 3){
+
+            videoURL += "<video data-v-06c2955e='' src='"+data.mediaName+"' controls='controls' style='width: 100%;'></video>";
+            innerHtml = "";
+            $("#p_image").html(innerHtml);
+            $("#p_video").html(videoURL);
+        }else if (data.insertType == 0){
+            innerHtml = "";
+            videoURL = "";
+            $("#p_image").html(innerHtml);
+            $("#p_video").html(videoURL);
+        }
+
+        $("#p_discover_remarks").val("");
+        var p_button = "";
+        if (data.delFlag == 10){
+            p_button = "<button type='button' class='btn btn-default' data-dismiss='modal'>关闭</button>" +
+                "<button type='button' class='btn btn-primary' onclick='auditDynamic(20,\""+data.kid+"\",\""+data.userKid+"\", 2);'>下架</button>";
+        }else if (data.delFlag == 20){
+            p_button = "<button type='button' class='btn btn-default' data-dismiss='modal'>关闭</button>" +
+                "<button type='button' class='btn btn-primary' onclick='auditDynamic(10,\""+data.kid+"\", null, null);'>上架</button>";
+        }
+        $("#p_button").html(p_button);
+
+    }
+
+</script>

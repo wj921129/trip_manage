@@ -5,15 +5,12 @@ package com.jeesite.modules.line.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.commom.utils.ApiPage;
 import com.jeesite.modules.commom.utils.ApiResult;
 import com.jeesite.modules.commom.utils.ApiUtils;
-import com.jeesite.modules.line.entity.AuditLinesInVo;
-import com.jeesite.modules.line.entity.Line;
-import com.jeesite.modules.line.entity.LineSearchOutVo;
-import com.jeesite.modules.line.entity.SearchLineInVo;
+import com.jeesite.modules.line.entity.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,20 +26,33 @@ import java.util.List;
 @Transactional(readOnly=true)
 public class LineService {
 
-    private static final String line = "http://192.168.31.201:7020";
+    @Value("${api.201host}")
+    private String apiHost;
 
     private static final String queryLineStatus = "/line/queryByParams";
 
     private static final String deleteLine = "/line/deleteLine";
 
+    private static final String cancelLine = "/line/cancelLine";
+
     private static final String auditLines = "/line/auditLines";
+
+    private static final String setLineToHome = "/line/setLineToHome";
+
+    private static final String querySchedule = "/line/querySchedule";
 
     public ApiPage<LineSearchOutVo> queryAll(SearchLineInVo searchLineInVo){
 
-        ApiResult<ApiPage<LineSearchOutVo>> page = ApiUtils.getPage(line+queryLineStatus, searchLineInVo, LineSearchOutVo.class);
+        ApiResult<ApiPage<LineSearchOutVo>> page = ApiUtils.getPage(apiHost+queryLineStatus, searchLineInVo, LineSearchOutVo.class);
         ApiPage<LineSearchOutVo> data = page.getData();
 
         return data;
+    }
+
+    public void querySchedule(){
+
+
+
     }
 
     public Line get(String kid){
@@ -58,29 +68,63 @@ public class LineService {
         System.err.println("保存成功");
     }
 
-    public void delete(String lineKid){
+    public String delete(String lineKid, Integer flag){
 
-        String result = ApiUtils.post(line + deleteLine+"?lineKid="+lineKid, null);
-        if (result != null){
-            JSONObject jsonObject = JSONObject.parseObject(result);
-            if (jsonObject != null){
+        String message = "";
 
-                String code = jsonObject.getString("code");
-                if ("200".equals(code) && "success".equals(jsonObject.getString("msg"))){
+        if (flag == 0){ // 取消
+            String result = ApiUtils.post(apiHost + cancelLine+"?lineKid="+lineKid, null);
+            if (result != null){
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                if (jsonObject != null){
 
-                    log.info("路线 : " + lineKid + "删除成功!");
-                }else {
+                    String code = jsonObject.getString("code");
+                    if ("200".equals(code) && "success".equals(jsonObject.getString("msg"))){
 
-                    log.info(jsonObject.getString("errorMsg"));
+                        message = "操作成功!";
+                        log.info("路线 : " + lineKid + "删除成功!");
+                    }else {
+                        if (jsonObject.getString("errorMsg") != null){
+                            message = jsonObject.getString("errorMsg");
+                        }
+                        log.info(jsonObject.getString("errorMsg"));
+                    }
+                }
+            }
+            log.info(result);
+        }else if (flag == 1){ //删除
+
+            String result = ApiUtils.post(apiHost + deleteLine+"?lineKid="+lineKid, null);
+            if (result != null){
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                if (jsonObject != null){
+
+                    String code = jsonObject.getString("code");
+                    if ("200".equals(code) && "success".equals(jsonObject.getString("msg"))){
+                        message = "操作成功!";
+                        log.info("路线 : " + lineKid + "删除成功!");
+                    }else {
+                        if (jsonObject.getString("errorMsg") != null){
+                            message = jsonObject.getString("errorMsg");
+                        }
+                        log.info(jsonObject.getString("errorMsg"));
+                    }
                 }
             }
         }
+
+        return message;
     }
 
     public void update(AuditLinesInVo auditLinesInVo){
 
-        ApiUtils.post(line + auditLines, auditLinesInVo);
+        ApiUtils.post(apiHost + auditLines, auditLinesInVo);
 
+    }
+
+    public void setLineToHome(LineDisplayInVo lineDisplayInVo){
+
+        ApiUtils.post(apiHost + setLineToHome, lineDisplayInVo);
     }
 
 }

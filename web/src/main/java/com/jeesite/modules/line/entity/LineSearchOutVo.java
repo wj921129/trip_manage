@@ -31,4 +31,6 @@ public class LineSearchOutVo extends BaseEntity {
 
     private String remarks = "";
 
+    private Integer lineDisplay;
+
 }
