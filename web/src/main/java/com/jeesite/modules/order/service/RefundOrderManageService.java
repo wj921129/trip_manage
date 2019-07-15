@@ -79,5 +79,17 @@ public class RefundOrderManageService {
    }
 
     // 后台审核不同意退款
+    public void backstageRefuseRefund (ExamineReasonVo examineReasonVo){
+        // String requestUrl = apiHost + "/order/refund/backstageRefuseRefund";
+        String requestUrl = "http://192.168.31.201:7120/order/refund/backstageRefuseRefund";
+        String result = ApiUtils.post(requestUrl, examineReasonVo);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            if(!"200".equals(resultObject.getString("code"))){
+                log.info("后台拒绝退款失败");
+            }
+        }
+
+    }
 
 }
