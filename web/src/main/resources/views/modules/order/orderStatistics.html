@@ -262,7 +262,7 @@ function changeSize(size){
 
  function showDataByTime(fromDay,toDay,pageNo,pageSize){
      $.ajax({
-         url : "${ctx}/user/tableDataByTime?fromDay="+fromDay+"&toDay="+toDay+"&pageNo="+pageNo+"&pageSize="+pageSize,
+         url : "${ctx}/order/tableDataByTime?fromDay="+fromDay+"&toDay="+toDay+"&pageNo="+pageNo+"&pageSize="+pageSize,
          dataType : "json",
          success : function(data) {
              var total = data.total;
@@ -271,7 +271,7 @@ function changeSize(size){
              if(tableData.length > 0){
                  var str = "";
                  for (var i=0;i<tableData.length;i++){
-                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].registerCount+"</td><td>"+tableData[i].visitCount+"</td><td>"+totalRegisterCount+"</td></tr>";
+                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].orderCountTotal+"</td><td>"+tableData[i].orderStatu10+"</td><td>"+tableData[i].orderStatu20+"</td><td>"+tableData[i].orderStatu30+"</td><td>"+tableData[i].orderStatu40+"</td><td>"+tableData[i].orderStatu50+"</td><td>"+tableData[i].orderStatu60+"</td></tr>";
                  }
                  $("#dataTable").html(str);
 
@@ -289,7 +289,6 @@ function changeSize(size){
          error : function() {
              alert("操作失败！");
          }
-
      });
  }
 
@@ -303,7 +302,6 @@ function changeSize(size){
          }else{
              showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
          }
-
      }
  });
 

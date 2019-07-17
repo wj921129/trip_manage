@@ -31,7 +31,6 @@ public class OrderStatisticsController {
     public JSONObject echartsData(HttpServletRequest request) {
         int countValue = Integer.parseInt(request.getParameter("countValue"));
         JSONObject object = orderStatisticsService.echartsData(countValue);
-        System.err.println(object);
         return object;
     }
 
@@ -43,6 +42,18 @@ public class OrderStatisticsController {
         int pageNo = Integer.parseInt(request.getParameter("pageNo"));
         int pageSize = Integer.parseInt(request.getParameter("pageSize"));
         JSONObject object = orderStatisticsService.tableData(countValue, pageNo, pageSize);
+        return object;
+    }
+
+    //根据起止时间查询表格数据
+    @RequestMapping(value = "tableDataByTime")
+    @ResponseBody
+    public JSONObject tableDataByTime(HttpServletRequest request) {
+        String fromDay = request.getParameter("fromDay");
+        String toDay = request.getParameter("toDay");
+        int pageNo = Integer.parseInt(request.getParameter("pageNo"));
+        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        JSONObject object = orderStatisticsService.tableDataByTime(fromDay, toDay, pageNo, pageSize);
         return object;
     }
 }
