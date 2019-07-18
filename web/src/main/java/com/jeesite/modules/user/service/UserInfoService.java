@@ -64,7 +64,9 @@ public class UserInfoService {
         JSONObject jsonObject = getResult(ob);
         if(jsonObject != null){
             JSONObject temp = jsonObject.getJSONObject("data");
-            array = temp.getJSONObject("detailOutVos").getJSONArray("entities");
+            if(temp.getJSONObject("detailOutVos") != null){
+                array = temp.getJSONObject("detailOutVos").getJSONArray("entities");
+            }
             newRegisterCount = temp.getInteger("newRegisterCount");
             dailyVisitCount = temp.getInteger("dailyVisitCount");
             totalRegisterCount = temp.getInteger("totalRegisterCount");
