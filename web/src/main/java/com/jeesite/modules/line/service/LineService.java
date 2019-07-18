@@ -25,11 +25,12 @@ import java.util.List;
 @Service
 @Transactional(readOnly=true)
 public class LineService {
+//
+//    @Value("${api.201host}")
+//    private String apiHost;
+    private String apiHost = "http://192.168.31.40:7110";
 
-    @Value("${api.201host}")
-    private String apiHost;
-
-    private static final String queryLineStatus = "/line/queryByParams";
+    private static final String queryByParams = "/line/queryByParams";
 
     private static final String deleteLine = "/line/deleteLine";
 
@@ -43,15 +44,33 @@ public class LineService {
 
     public ApiPage<LineSearchOutVo> queryAll(SearchLineInVo searchLineInVo){
 
-        ApiResult<ApiPage<LineSearchOutVo>> page = ApiUtils.getPage(apiHost+queryLineStatus, searchLineInVo, LineSearchOutVo.class);
+        ApiResult<ApiPage<LineSearchOutVo>> page = ApiUtils.getPage(apiHost+queryByParams, searchLineInVo, LineSearchOutVo.class);
         ApiPage<LineSearchOutVo> data = page.getData();
 
         return data;
     }
 
-    public void querySchedule(){
+    public ScheduleOutVo querySchedule(String lineKid, String userKid){
 
+//        ApiResult<ScheduleOutVo> single = ApiUtils.getSingle(apiHost + querySchedule + "?lineKid=" + lineKid + "&userKid=" + userKid, ScheduleOutVo.class);
+//        ScheduleOutVo data = single.getData();
+        ScheduleOutVo scheduleOutVo = new ScheduleOutVo();
 
+        String result = ApiUtils.get(apiHost + querySchedule + "?lineKid=" + lineKid + "&userKid=" + userKid);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        if (jsonObject != null){
+
+            String code = jsonObject.getString("code");
+            if ("200".equals(code) && "success".equals(jsonObject.getString("msg"))){
+                scheduleOutVo = jsonObject.getObject("data", ScheduleOutVo.class);
+            }else {
+                if (jsonObject.getString("errorMsg") != null){
+                }
+                log.info(jsonObject.getString("errorMsg"));
+            }
+        }
+
+        return scheduleOutVo;
 
     }
 

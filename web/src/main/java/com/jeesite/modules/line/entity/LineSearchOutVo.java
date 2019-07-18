@@ -11,6 +11,8 @@ public class LineSearchOutVo extends BaseEntity {
 
     private String lineKid;
 
+    private String userKid;
+
     private String lineTitle = "";
 
     private String realName;
@@ -32,5 +34,9 @@ public class LineSearchOutVo extends BaseEntity {
     private String remarks = "";
 
     private Integer lineDisplay;
+
+    private Integer lineDay;
+
+    private String deparementDate;
 
 }

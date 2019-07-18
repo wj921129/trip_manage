@@ -1,54 +1,58 @@
 <% layout('/layouts/default.html', {title: '路线管理', libs: ['validate','fileupload','dataGrid']}){ %>
 <div class="container-fluid">
+
+    <#form:form id="searchForm" model="${lineInfo}">
     <div class="row" style="border-bottom:2px #F0F0F2 solid">
         <h3 style="color: #666666;margin-left: 15px">路线管理</h3>
-        <h3 style="margin:20px 10px">已上线</h3>
+        <% if(lineInfo.lineStatu == 10){%>
+        <h3 style="margin:20px 10px">审核中</h3>
+        <%} else if(lineInfo.lineStatu == 20){%>
+        <h3 style="margin:20px 10px">进行中</h3>
+        <%} else if(lineInfo.lineStatu == 30){%>
+        <h3 style="margin:20px 10px">已失效</h3>
+        <%}%>
+
     </div>
     <div class="row" style="border-bottom:2px #F0F0F2 solid;padding: 15px 0">
-        <div class="col-md-1">路线主题</div>
+        <div class="col-md-1">路线标题</div>
         <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="哈哈哈哈哈">
+            ${lineInfo.lineTitle}
         </div>
     </div>
     <div class="row lx_biaoti" style="border-bottom:2px #F0F0F2 solid;padding: 15px 0">
         <div class="col-md-12" style="padding: 10px 0">
-            <div class="col-md-1">行程天数</div>
+            <div class="col-md-1">旅行天数</div>
             <div class="col-md-2">
-                <input type="text" class="form-control" placeholder="3天">
+                ${lineInfo.travelDays}
             </div>
         </div>
         <div class="col-md-12" style="padding: 10px 0">
-            <div class="col-md-1">出发时间</div>
+            <div class="col-md-1">出发日期</div>
             <div class="col-md-2">
-                <input type="text" class="form-control" placeholder="2019-01-10">
+                ${lineInfo.departureDate}
             </div>
         </div>
         <div class="col-md-12" style="padding: 10px 0">
             <div class="col-md-1">路线价格</div>
             <div class="col-md-2">
-                <input type="text" class="form-control" placeholder="3322元">
+                ${lineInfo.tripPrice}
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-1" style="line-height:150px">
-            轮播顶图
+            主页图片
         </div>
         <div class="col-md-10">
             <div class="xq_img">
-                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
-            </div>
-            <div class="xq_img">
-                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
-            </div>
-            <div class="xq_img">
-                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
-            </div>
-            <div class="xq_img">
-                <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg"  class="img-rounded">
+            <% for (picUrl in lineInfo.homePics) {%>
+                <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+            <% }%>
             </div>
         </div>
     </div>
+    </#form:form>
+
     <div class="row" style="margin-left:0">
         <div class="col-md-12">
             <ul id="myTab" class="nav nav-tabs" style="margin-bottom: 10px">
@@ -62,219 +66,270 @@
             <div id="myTabContent" class="tab-content" style="margin-bottom: 50px">
                 <!--导游信息-->
                 <div class="tab-pane fade in active" id="guide" >
+                    <#form:form id="touristInfo" model="${touristInfo}">
                     <div class="homexq_touxiang">
-                        <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+
+                        <img src="${touristInfo.userImage}" alt="" >
                     </div>
                     <div class="homexq_xiangqing">
                         <div style="margin-top: 25px">
                                 <span class="xq_xx">
-                                    <span style="font-size: 16px">xxxxxx</span>
+                                    <span style="font-size: 16px">${touristInfo.nickName}</span>
                                 </span>
                             <span class="xq_duigou">
                                     <i class="icon iconfont icon-duigou"></i>
-                                    <span>身份以认证</span>
-                                <span>
-                                    <i class="glyphicon glyphicon-ok-circle"></i>
-                                    <span>粤语</span>
-                                </span>
-                                    <span>
-                                    <i class="glyphicon glyphicon-ok-circle"></i>
-                                    <span>英语</span>
-                                </span>
-                                </span>
+                                <%if(touristInfo.idAuth == 10){%>
+                                <span>身份未验证</span>
+                                <%}else if(touristInfo.idAuth == 20){%>
+                                <span>身份已验证</span>
+                                <%}else if(touristInfo.idAuth == 30){%>
+                                <span>身份验证不通过</span>
+                                <%}%>
+                                <%for(userLanguage in touristInfo.languages){%>
+                                    <span><i class='glyphicon glyphicon-ok-circle'></i><span>${userLanguage.languageName}</span></span>
+                                <% }%>
+                            </span>
                         </div>
                         <div style="margin-top: 15px">
-                            <span style="display:inline-block;width: 300px">昵称:<span style="color: #666666">{{touristInfo.nickName}}</span></span>
-                            <span>性别: <span style="color: #666666">{{touristInfo.sex}}</span></span><br/>
-                            <span style="display:inline-block;width: 300px">年龄:<span style="color: #666666">{{touristInfo.age}}</span></span>
-                            <span>学历:<span style="color: #666666">{{touristInfo.education}}</span></span>
+                            <span style="display:inline-block;width: 300px">昵称:<span style="color: #666666">${touristInfo.nickName}</span></span>
+                            <span>性别: <span style="color: #666666">${touristInfo.sex}</span></span><br/>
+                            <span style="display:inline-block;width: 300px">年龄:<span style="color: #666666">${touristInfo.age}</span></span>
+                            <span>学历:<span style="color: #666666">${touristInfo.education}</span></span>
                         </div>
                         <div class="xq_gr">
                             个人标签
                         </div>
-                        <div class="homexq_button">
-                            <div>{{i.labelName}}</div>
-                        </div>
+                        <%for(userLabel in touristInfo.labelOutvoList){%>
+                        <div class='homexq_button'><div>${userLabel.labelName}</div></div>
+                        <%}%>
                     </div>
+                </#form:form>
                 </div>
+
                 <!--路线特色-->
                 <div class="tab-pane route" id="route">
-                    <p>{{xqarr.lineTitle}}</p>
-                    <p><span>行程介绍:</span>
-                        <span>高端出行:丽江机场百事特VIP送机服务。精选景点:5A玉龙雪山,5A丽江古城，5A普达措，拉市海。</span>
-                    </p>
-                    <p>
-                        <span>航班直达:</span>
-                        <span>{{xqarr.lineFeature}}</span>
-                        <span>豪华住宿:4晚体验不同风格的5星住宿，只有你想不到的舒适。</span>
-                    </p>
+                    <#form:form id="lineFeature" model="${lineFeature}">
+                    <p>${lineFeature.lineFeature}</p>
+                </#form:form>
                 </div>
-                <!--行程安排-->
-                <div class="tab-pane" id="trip">
-                    <div class="xc_biao">
-                        <p>行程安排:</p>
-                        <div>路线安排(1天)</div>
-                    </div>
-                    <div class="panel-group" id="accordion1">
-                        <!--第一天-->
-                        <div class="panel panel-default" >
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#collapse" data-toggle="collapse">第1天</a>
-                                </h4>
-                            </div>
-                            <div id="collapse" class="panel-collapse collapse">
-                                <div class="panel-body xc_kuai">
-                                    <div class="xc_hang">
-                                        <div class="xc_hang_1">
-                                            <div class="xc_shijian">
-                                                <p>早上:</p>
-                                            </div>
-                                            <div class="xc_shu">
-                                                <div class="xc_shu1"></div>
-                                                <div class="xc_shu2">1</div>
-                                            </div>
-                                        </div>
-                                        <div class="xc_hang_2">
-                                            <div class="xc_huoshi">
-                                                <div>
-                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                    <!--行程安排-->
+                    <div class="tab-pane" id="trip">
+                        <#form:form id="scheduleInfo" model="${scheduleInfo}">
+                        <div class="xc_biao">
+                            <p>行程安排:</p>
+                        </div>
+                        <%for(schedule in scheduleInfo){%>
+                        <div class="panel-group" id="accordion1">
+                            <!--第一天-->
+                            <div class="panel panel-default" >
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                            <a href="#collapse${schedule.lineDay}" data-toggle="collapse">第${schedule.lineDay}天</a>
+                                    </h4>
+                                </div>
+                                <div id="collapse${schedule.lineDay}" class="panel-collapse collapse">
+                                    <div class="panel-body xc_kuai">
+                                        <div class="xc_hang">
+                                            <div class="xc_hang_1">
+                                                <div class="xc_shijian">
+                                                    <p>早上:</p>
                                                 </div>
-                                                <p>
-                                                    早餐:{{b.lineDinners[0].dinnerDesc}}(参考价位{{b.lineDinners[0].dinnerPrice}}元)。
-                                                </p>
-                                                <p>
-                                                    早餐:自理。
-                                                </p>
-                                            </div>
-                                            <div class="xc_huoshi" >
-                                                <div>
-                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                <div class="xc_shu">
+                                                    <div class="xc_shu1"></div>
+                                                    <div class="xc_shu2">1</div>
                                                 </div>
-                                                <p>活动地点:{{b.lineSchedules[0].schedulingAddress}}。</p>
-                                                <p>活动:{{b.lineSchedules[0].activityName}}。</p>
-                                                <p>活动内容:{{b.lineSchedules[0].activityDesc}}。(参考价位{{b.lineSchedules[0].schedulingPrice}}元)。</p>
-                                                <p>
-                                                    <span>包含导游费用</span>
-                                                    <span>不包含导游费用</span>
-                                                </p>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="xc_hang">
-                                        <div class="xc_hang_1">
-                                            <div class="xc_shijian">
-                                                <p>中午:</p>
-                                            </div>
-                                            <div class="xc_shu">
-                                                <div class="xc_shu1"></div>
-                                                <div class="xc_shu2">1</div>
-                                            </div>
-                                        </div>
-                                        <div class="xc_hang_2">
-                                            <div class="xc_huoshi">
-                                                <div>
-                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                            <div class="xc_hang_2">
+                                                <div class="xc_huoshi">
+                                                    <div>
+                                                        <%for(picUrl in schedule.morning.scheduleDinnerOutVo.dinnerPics){ %>
+                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>;
+                                                        <%}%>
+                                                    </div>
+                                                    <p>
+                                                        早餐描述:${schedule.morning.scheduleDinnerOutVo.dinnerDesc}
+                                                    </p>
+                                                    <p>
+                                                        早餐是否自理:<% if(schedule.morning.scheduleDinnerOutVo.dinnerIsSelf == 10){%>
+                                                            自理
+                                                        <%}else if(schedule.morning.scheduleDinnerOutVo.dinnerIsSelf == 20){%>
+                                                            不自理
+                                                        <%}%>
+                                                    </p>
                                                 </div>
-                                                <p>
-                                                    午餐:{{b.lineDinners[1].dinnerDesc}}(参考价位{{b.lineDinners[1].dinnerPrice}}元)。
-                                                </p>
-                                            </div>
-                                            <div class="xc_huoshi">
-                                                <div>
-                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                <div class="xc_huoshi" >
+                                                    <div>
+                                                        <%for(picUrl in schedule.morning.scheduleActivityOutVo.schedulingPics){ %>
+                                                         <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%}%>
+                                                    </div>
+                                                    <p>活动地点 :${schedule.morning.scheduleActivityOutVo.schedulingAddress}</p>
+                                                    <p>活动名称 :${schedule.morning.scheduleActivityOutVo.activityName}</p>
+                                                    <p>活动内容 :${schedule.morning.scheduleActivityOutVo.activityDesc}</p>
+                                                    <p>
+                                                        是否包含导游费用 :
+                                                        <%if(schedule.morning.scheduleActivityOutVo.guideCost == 10){%>
+                                                        <span>包含导游费用</span>
+                                                        <%}else if(schedule.morning.scheduleActivityOutVo.guideCost == 20){%>
+                                                        <span>不包含导游费用</span>
+                                                        <%}%>
+                                                    </p>
                                                 </div>
-                                                <p>活动地点:{{b.lineSchedules[1].schedulingAddress}}。</p>
-                                                <p>活动:{{b.lineSchedules[1].activityName}}。</p>
-                                                <p>活动内容:{{b.lineSchedules[1].activityDesc}}。(参考价位{{b.lineSchedules[1].schedulingPrice}}元)。</p>
-                                                <p>
-                                                    <span>包含导游费用</span>
-                                                    <span>不包含导游费用</span>
-                                                </p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="xc_hang">
-                                        <div class="xc_hang_1">
-                                            <div class="xc_shijian">
-                                                <p>晚上:</p>
-                                            </div>
-                                            <div class="xc_shu">
-                                                <div class="xc_shu1"></div>
-                                                <div class="xc_shu2">1</div>
-                                            </div>
-                                        </div>
-                                        <div class="xc_hang_2">
-                                            <div class="xc_huoshi">
-                                                <div>
-                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                        <div class="xc_hang">
+                                            <div class="xc_hang_1">
+                                                <div class="xc_shijian">
+                                                    <p>中午:</p>
                                                 </div>
-                                                <p>
-                                                    晚餐:{{b.lineDinners[2].dinnerDesc}}(参考价位{{b.lineDinners[2].dinnerPrice}}元)。
-                                                </p>
-                                            </div>
-                                            <div class="xc_huoshi">
-                                                <div>
-                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                                <div class="xc_shu">
+                                                    <div class="xc_shu1"></div>
+                                                    <div class="xc_shu2">1</div>
                                                 </div>
-                                                <p>活动地点:{{b.lineSchedules[2].schedulingAddress}}。</p>
-                                                <p>活动:{{b.lineSchedules[2].activityName}}。</p>
-                                                <p>活动内容:{{b.lineSchedules[2].activityDesc}}。(参考价位{{b.lineSchedules[2].schedulingPrice}}元)。</p>
-                                                <p>
-                                                    <span>包含导游费用</span>
-                                                    <span>不包含导游费用</span>
-                                                </p>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="xc_hang">
-                                        <div class="xc_hang_1">
-                                            <div class="xc_shijian">
-                                                <p>住宿:</p>
-                                            </div>
-                                            <div class="xc_shu">
-                                                <div class="xc_shu1"></div>
-                                                <div class="xc_shu2">1</div>
-                                            </div>
-                                        </div>
-                                        <div class="xc_hang_2">
-                                            <div class="xc_huoshi">
-                                                <div>
-                                                    <img src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/dynamic/9.jpeg" alt="" >
+                                            <div class="xc_hang_2">
+                                                <div class="xc_huoshi">
+                                                    <div>
+                                                        <%for(picUrl in schedule.afternoon.scheduleDinnerOutVo.dinnerPics){%>
+                                                         <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%}%>
+                                                    </div>
+                                                    <p>
+                                                        午餐描述:${schedule.afternoon.scheduleDinnerOutVo.dinnerDesc}
+                                                    </p>
+                                                    <p>
+                                                        午餐是否自理:<% if(schedule.afternoon.scheduleDinnerOutVo.dinnerIsSelf == 10){%>
+                                                        自理
+                                                        <%}else if(schedule.afternoon.scheduleDinnerOutVo.dinnerIsSelf == 20){%>
+                                                        不自理
+                                                        <%}%>
+                                                    </p>
                                                 </div>
-                                                <p>
-                                                    住宿类型:
-                                                    <span>酒店</span>
-                                                    <span>民宿</span>
-                                                    <span>青旅</span>。
-                                                </p>
-                                                <p>
-                                                    住宿地址:{{b.lineStays[0].stayAddress}}(参考价位{{b.lineStays[0].stayPrice}}元)。
-                                                </p>
-                                                <p>
-
-                                                </p>
+                                                <div class="xc_huoshi">
+                                                    <div>
+                                                        <%for(picUrl in schedule.afternoon.scheduleActivityOutVo.schedulingPics){%>
+                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%}%>
+                                                    </div>
+                                                    <p>活动地点:${schedule.afternoon.scheduleActivityOutVo.schedulingAddress}</p>
+                                                    <p>活动名称:${schedule.afternoon.scheduleActivityOutVo.activityName}</p>
+                                                    <p>活动内容:${schedule.afternoon.scheduleActivityOutVo.activityDesc}</p>
+                                                    <p>
+                                                        是否包含导游费用 :
+                                                        <%if(schedule.afternoon.scheduleActivityOutVo.guideCost == 10){%>
+                                                        <span>包含导游费用</span>
+                                                        <%}else if(schedule.afternoon.scheduleActivityOutVo.guideCost == 20){%>
+                                                        <span>不包含导游费用</span>
+                                                        <%}%>
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <p style="float: right;margin-right:15px">行程交通:{{b.lineTraffics[0].trafficDesc}}(大约{{b.lineTraffics[0].trafficPrice}})元</p>
+                                        <div class="xc_hang">
+                                            <div class="xc_hang_1">
+                                                <div class="xc_shijian">
+                                                    <p>晚上:</p>
+                                                </div>
+                                                <div class="xc_shu">
+                                                    <div class="xc_shu1"></div>
+                                                    <div class="xc_shu2">1</div>
+                                                </div>
+                                            </div>
+                                            <div class="xc_hang_2">
+                                                <div class="xc_huoshi">
+                                                    <div>
+                                                        <%for(picUrl in schedule.night.scheduleDinnerOutVo.dinnerPics){%>
+                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%}%>
+                                                    </div>
+                                                    <p>
+                                                        晚餐:${schedule.night.scheduleDinnerOutVo.dinnerDesc}
+                                                    </p>
+                                                    <p>
+                                                        晚餐是否自理:<% if(schedule.night.scheduleDinnerOutVo.dinnerIsSelf == 10){%>
+                                                        自理
+                                                        <%}else if(schedule.night.scheduleDinnerOutVo.dinnerIsSelf == 20){%>
+                                                        不自理
+                                                        <%}%>
+                                                    </p>
+                                                </div>
+                                                <div class="xc_huoshi">
+                                                    <div>
+                                                        <%for(picUrl in schedule.night.scheduleActivityOutVo.schedulingPics){%>
+                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%}%>
+                                                    </div>
+                                                    <p>活动地点:${schedule.night.scheduleActivityOutVo.schedulingAddress}</p>
+                                                    <p>活动名称:${schedule.night.scheduleActivityOutVo.activityName}</p>
+                                                    <p>活动内容:${schedule.night.scheduleActivityOutVo.activityDesc}</p>
+                                                    <p>
+                                                        是否包含导游费用 :
+                                                        <%if(schedule.night.scheduleActivityOutVo.guideCost == 10){%>
+                                                        <span>包含导游费用</span>
+                                                        <%}else if(schedule.night.scheduleActivityOutVo.guideCost == 20){%>
+                                                        <span>不包含导游费用</span>
+                                                        <%}%>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="xc_hang">
+                                            <div class="xc_hang_1">
+                                                <div class="xc_shijian">
+                                                    <p>住宿:</p>
+                                                </div>
+                                                <div class="xc_shu">
+                                                    <div class="xc_shu1"></div>
+                                                    <div class="xc_shu2">1</div>
+                                                </div>
+                                            </div>
+                                            <div class="xc_hang_2">
+                                                <div class="xc_huoshi">
+                                                    <div>
+                                                        <%for(picUrl in schedule.stay.stayPics){%>
+                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%}%>
+                                                    </div>
+                                                    <p>
+                                                        住宿类型:
+                                                        <%if(schedule.stay.stayType == 10){%>
+                                                        <span>酒店</span>
+                                                        <%}else if(schedule.stay.stayType == 20){%>
+                                                        <span>名宿</span>
+                                                        <%} else if(schedule.stay.stayType == 30){%>
+                                                        <span>青旅</span>
+                                                        <%}%>
+                                                    </p>
+                                                    <p>
+                                                        住宿地址:${schedule.stay.stayAddress}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p style="float: right;margin-right:15px">行程交通:${schedule.traffic.trafficDesc}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <%}%>
+                    </#form:form>
                     </div>
-                </div>
+
                 <!--费用须知-->
                 <div class="tab-pane homexq_fy" id="cost">
+                    <#form:form id="lineCost" model="${lineCost}">
                     <div>费用包含:</div>
-                    <p>{{lineCost.costInclude}}</p>
+                    <p>${lineCost.costInclude}</p>
                     <div>行程规则:</div>
-                    <p>{{lineCost.tripRule}}</p>
+                    <p>${lineCost.tripRule}</p>
                     <div>退款说明:</div>
-                    <p>{{lineCost.refundInstruction}}</p>
+                    <p>${lineCost.refundInstruction}</p>
+                </#form:form>
                 </div>
-            </div>
+
+         </div>
         </div>
     </div>
 </div>
@@ -285,12 +340,13 @@
         margin-left: 15px;
     }
     .xq_img{
-        width: 240px;
+        width: 100%;
         display: inline-block;
 
     }
     .xq_img img{
         width: 240px;
+        height: 120px;
         margin: 5px;
     }
     .homexq_touxiang{

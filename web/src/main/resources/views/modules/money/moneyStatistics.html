@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="${ctxStatic}/jquery/jquery-1.12.4.min.js"></script>
+    <!--<script src="${ctxStatic}/echarts/4.2/echarts.simple.min.js"></script>-->
+    <script src="http://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/571fe9f4-02eb-4075-85df-7d8c4bf1d7397.932331728752839"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        .div_top{
+            width: 100%;
+            height: 100px;
+            display: flex;
+        }
+        .div_top div{
+            flex: 1;
+            text-align: center;
+            line-height: 80px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .div_top div:nth-child(2n+1){
+            text-align: right;
+            border-bottom: 1px #eaedf1 solid;
+            border-top: 1px #eaedf1 solid;
+            border-left: 1px #eaedf1 solid;
+        }
+        .div_top div:nth-child(2n){
+            text-align:left;
+            border-bottom: 1px #eaedf1 solid;
+            border-top: 1px #eaedf1 solid;
+            border-right: 1px #eaedf1 solid;
+            font-weight: bold;
+        }
+        #countValue{
+            width: 120px;
+            height: 25px;
+            margin-left:20px;
+        }
+        #dataTable tr th{
+            text-align: center;
+        }
+        .table_xc tr th{
+            width: 200px;
+            text-align: center;
+        }
+        .table_xc tr td{
+            width: 200px;
+        }
+        #div_fenye .pagination{
+            margin: 0 0;
+            display: inline-block;
+        }
+        #div_fenye .pagination> li{
+            line-height: 39px;
+            margin: 0 0 0 5px;
+        }
+        #div_fenye{
+            position: absolute;
+            bottom: 25px;
+            left: 10px;
+        }
+    </style>
+    <title>资金统计</title>
+</head>
+<body>
+<div style="width: 100%;height:50px;background:#eaedf1;padding: 10px 10px;line-height: 30px;font-size:16px;">
+    <select id="countValue" onchange="changeValue(this.value)">
+        <option value="1">昨日流水指标</option>
+        <option value="7">7流水指标</option>
+        <option value="15">15流水指标</option>
+        <option value="30">30流水指标</option>
+    </select>
+</div>
+<div class="div_top">
+    <div>总资产:</div>
+    <div><font id="totalMoney">0</font> 元</div>
+    <div><font id="dayFont1">昨日</font>资金流入:</div>
+    <div><font id="inMoney">0</font> 元</div>
+    <div><font id="dayFont2">昨日</font>资金流出:</div>
+    <div><font id="outMoney">0</font> 元</div>
+    <div><font id="dayFont3">昨日</font>净流入:</div>
+    <div><font id="realMoney">0</font> 元</div>
+</div>
+<div style="width: 100%;display: flex">
+    <div id="main" style="flex: 8;height:530px;display: inline-block"></div>
+    <div style="flex: 5;height:530px;display: inline-block;margin-top: 10px;margin-left:1%;position: relative ">
+        <div><span><input type="date" id="fromDay"></span>&nbsp;&nbsp;--&nbsp;&nbsp;<span><input type="date" id="toDay"></span>
+            <span style="cursor: pointer;margin-left:20px;padding:5px;border: 1px solid #ccc;" onclick="searchData();">搜索</span></div>
+        <table class="table_xc" style="height: 30px;">
+            <tr><th>时间</th><th>资金流入</th><th>资金流出</th><th>净收入</th></tr>
+        </table>
+        <table class="table table-hover text-center table_xc" id="dataTable" style="overflow: auto;display: block;height: 400px">
+
+        </table>
+        <div class="row" id="div_fenye">
+            <ul class="pagination">
+                <li><span><select id="pageSize" style="border: 1px solid #ccc" onchange="changeSize(this.value);">
+					<option value="10" selected="selected">10条/页</option>
+					<option value="20">20条/页</option>
+					<option value="30">30条/页</option>
+					<option value="50">50条/页</option>
+                </select></span></li>
+                <li><a href="#"><font id="prevPage">«</font></a></li>
+                <li><a href="#"><font id="nowPage">1</font></a></li>
+                <li><a href="#"><font id="nextPage">»</font></a></li>
+                <li>当前第&nbsp;&nbsp;<font id="nowPage1">1</font>&nbsp;&nbsp;页,</li>
+                <li>共&nbsp;&nbsp;<font id="totalPage">1</font>&nbsp;&nbsp;页,</li>
+                <li>共&nbsp;&nbsp;<font id="total">0</font>&nbsp;&nbsp;条</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+
+    showEcarts(1);
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var totalMoney = 0;
+    function showEcarts(value){
+        $.ajax({
+            url : "${ctx}/money/echartsData?countValue="+value,
+            dataType : "json",
+            success : function(data) {
+                x_data=[];
+                y_data=[];
+                z_data=[];
+                $("#outMoney").text(data.outMoney);
+                $("#inMoney").text(data.inMoney);
+                $("#totalMoney").text(data.totalInMoney);
+                $("#realMoney").text(data.diffValue);
+                var echartsData = data.moneyDetailsOutVo.entities;
+                if(echartsData.length > 0){
+                    for (var i=0;i<echartsData.length;i++){
+                        x_data.push(echartsData[i].date);
+                        y_data.push(echartsData[i].inMoney);
+                        z_data.push(echartsData[i].outMoney);
+                    }
+                    option = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['入账','出账']
+                        },
+                        grid: {
+
+                            left: '5%',
+                            right: '5%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: x_data
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                name:'入账',
+                                type:'line',
+                                stack: '总量',
+                                data:y_data
+                            },
+                            {
+                                name:'出账',
+                                type:'line',
+                                stack: '总量',
+                                data:z_data
+                            }
+                        ]
+                    };
+
+                    myChart.setOption(option);
+                }
+            },
+            error : function(e) {
+                alert("操作失败！");
+            }
+
+        });
+    }
+
+    function changeValue(value){
+        $("#nowPage").text(1);
+        $("#nowPage1").text(1);
+        $("#totalPage").text(1);
+        $("#total").text(0);
+        $("#pageSize").val(10);
+
+        if(value == 1){
+            $("#dayFont").text("昨日");
+            $("#dayFont1").text("昨日");
+        }else{
+            $("#dayFont").text(value + "日");
+            $("#dayFont1").text(value + "日");
+            $("#dayFont2").text(value + "日");
+            $("#dayFont3").text(value + "日");
+        }
+
+        // $("#fromDay").val("");
+        // $("#toDay").val("");
+
+        showEcarts(value);
+        showData(value,parseInt($("#nowPage").text()),$("#pageSize").val());
+    }
+
+    function showData(value,pageNo,pageSize){
+        $.ajax({
+            url : "${ctx}/money/echartsData?countValue="+value+"&pageNo="+pageNo+"&pageSize="+pageSize,
+            dataType : "json",
+            success : function(data) {
+                var total = data.moneyDetailsOutVo.count;
+                $("#total").text(total);
+                var tableData = data.moneyDetailsOutVo.entities;
+                if(tableData.length > 0){
+                    var str = "";
+                    for (var i=0;i<tableData.length;i++){
+                        str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].inMoney+"</td><td>"+tableData[i].outMoney+"</td><td>"+tableData[i].theDaydiffValue+"</td></tr>";
+                    }
+                    $("#dataTable").html(str);
+
+                    //分页处理
+                    var totalPage = 0;
+                    var size = $("#pageSize").val();
+                    if(total/size > parseInt(total/size)){
+                        totalPage=parseInt(total/size)+1;
+                    }else{
+                        totalPage=parseInt(total/size);
+                    }
+                    $("#totalPage").text(totalPage);
+                }
+            },
+            error : function() {
+                alert("操作失败！");
+            }
+
+        });
+    }
+
+
+    function showDataByTime(fromDay,toDay,pageNo,pageSize){
+        $.ajax({
+            url : "${ctx}/money/echartsData?fromDay="+fromDay+"&toDay="+toDay+"&pageNo="+pageNo+"&pageSize="+pageSize,
+            dataType : "json",
+            success : function(data) {
+                var total = data.moneyDetailsOutVo.count;
+                $("#total").text(total);
+                var tableData = data.moneyDetailsOutVo.entities;
+                if(tableData.length > 0){
+                    var str = "";
+                    for (var i=0;i<tableData.length;i++){
+                        str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].inMoney+"</td><td>"+tableData[i].outMoney+"</td><td>"+0+"</td></tr>";
+                    }
+                    $("#dataTable").html(str);
+
+                    //分页处理
+                    var totalPage = 0;
+                    var size = $("#pageSize").val();
+                    if(total/size > parseInt(total/size)){
+                        totalPage=parseInt(total/size)+1;
+                    }else{
+                        totalPage=parseInt(total/size);
+                    }
+                    $("#totalPage").text(totalPage);
+                }
+            },
+            error : function(e) {
+                alert("操作失败！");
+            }
+
+        });
+    }
+
+    function searchData() {
+        $("#nowPage").text(1);
+        $("#nowPage1").text(1);
+        $("#totalPage").text(1);
+        $("#total").text(0);
+        $("#pageSize").val(10);
+        showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+    }
+
+    function changeSize(size){
+        $("#nowPage").text(1);
+        $("#nowPage1").text(1);
+        if($("#fromDay").val() == "" && $("#toDay").val() == ""){
+            showData($("#countValue").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+        }else{
+            showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+        }
+    }
+
+
+    $("#nextPage").click(function(){
+        if(parseInt($("#nowPage").text()) != parseInt($("#totalPage").text())){
+            $("#nowPage").text(parseInt($("#nowPage").text())+1);
+            $("#nowPage1").text($("#nowPage").text());
+            if($("#fromDay").val() == "" && $("#toDay").val() == ""){
+                showData($("#countValue").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+            }else{
+                showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+            }
+        }
+    });
+
+    $("#prevPage").click(function(){
+        if(parseInt($("#nowPage").text()) != 1){
+            $("#nowPage").text(parseInt($("#nowPage").text())-1);
+            $("#nowPage1").text($("#nowPage").text());
+            if($("#fromDay").val() == "" && $("#toDay").val() == ""){
+                showData($("#countValue").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+            }else{
+                showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+            }
+
+        }
+    });
+
+</script>
+
+<!--<script type="text/javascript">
+
+ $(function(){
+    showEcarts(1);
+    showData(1,1,10);
+});
+
+var myChart = echarts.init(document.getElementById('main'));
+var x_data=[];
+var y_data=[];
+
+var totalRegisterCount = 0;
+ function showEcarts(value){
+     $.ajax({
+         url : "${ctx}/user/echartsData?countValue="+value,
+         dataType : "json",
+         success : function(data) {
+             x_data=[];
+             y_data=[];
+             totalRegisterCount = data.totalRegisterCount;
+             $("#newRegisterCount").text(data.newRegisterCount);
+             $("#newVisitCount").text(data.dailyVisitCount);
+             $("#totalRegisterCount").text(totalRegisterCount);
+             var echartsData = data.echartsData;
+             if(echartsData.length > 0){
+                 for (var i=0;i<echartsData.length;i++){
+                     x_data.push(echartsData[i].date);
+                     y_data.push(echartsData[i].registerCount);
+                 }
+                 option = {
+                     tooltip: {
+                         show:true
+                     },
+                     /*legend: {
+                         data:['日注册量']
+                     },*/
+                     grid: {
+                         top:'2%',
+                         left: '5%',
+                         right: '5%',
+                         bottom: '3%',
+                         containLabel: true
+                     },
+                     xAxis: {
+                         type: 'category',
+                         boundaryGap: false,
+                         data: x_data
+                     },
+                     yAxis: {
+                         type: 'value'
+                     },
+                     series: [
+                         {
+                             name:'日注册量',
+                             type:'line',
+                             stack: '总量',
+                             data:y_data
+                         }
+                     ]
+                 };
+                 myChart.setOption(option);
+             }
+         },
+         error : function() {
+             alert("操作失败！");
+         }
+
+     });
+ }
+
+function changeSize(size){
+    $("#nowPage").text(1);
+    $("#nowPage1").text(1);
+    if($("#fromDay").val() == "" && $("#toDay").val() == ""){
+        showData($("#countValue").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+    }else{
+        showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+    }
+}
+
+
+/*function showData(value,pageNo,pageSize){
+    if(value == 1){
+        $("#dayFont").text("昨日");
+        $("#dayFont1").text("昨日");
+    }else{
+        $("#dayFont").text(value + "日");
+        $("#dayFont1").text(value + "日");
+    }
+    $.ajax({
+        url : "http://localhost:7150/support/userStatistics/queryCount",
+        contentType : "application/json;charset=UTF-8",
+        type : "post",
+        data : JSON.stringify({
+            countValue : value,
+            pageNumber : pageNo,
+            pageSize : pageSize
+        }),
+        dataType : "json",
+        success : function(data) {
+            if(data.code == "200"){
+                var totalRegisterCount = data.data.totalRegisterCount;
+                $("#totalRegisterCount").text(totalRegisterCount);
+                $("#newRegisterCount").text(data.data.newRegisterCount);
+                $("#newVisitCount").text(data.data.dailyVisitCount);
+                var total = data.data.detailOutVos.count;
+                $("#total").text(total);
+                var tableData = data.data.detailOutVos.entities;
+                if(tableData.length > 0){
+                    var str = "";
+                    for (var i=0;i<tableData.length;i++){
+                        str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].registerCount+"</td><td>"+tableData[i].visitCount+"</td><td>"+totalRegisterCount+"</td></tr>";
+                    }
+                    $("#dataTable").html(str);
+
+                    //分页处理
+                    var totalPage = 0;
+                    var size = $("#pageSize").val();
+                    if(total/size > parseInt(total/size)){
+                        totalPage=parseInt(total/size)+1;
+                    }else{
+                        totalPage=parseInt(total/size);
+                    }
+                    $("#totalPage").text(totalPage);
+                }
+            }
+        },
+        error : function() {
+            alert("操作失败！");
+        }
+
+    });
+}*/
+
+
+ function showData(value,pageNo,pageSize){
+     $.ajax({
+         url : "${ctx}/user/tableData?countValue="+value+"&pageNo="+pageNo+"&pageSize="+pageSize,
+         dataType : "json",
+         success : function(data) {
+             var total = data.total;
+             $("#total").text(total);
+             var tableData = data.tableData;
+             if(tableData.length > 0){
+                 var str = "";
+                 for (var i=0;i<tableData.length;i++){
+                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].registerCount+"</td><td>"+tableData[i].visitCount+"</td><td>"+totalRegisterCount+"</td></tr>";
+                 }
+                 $("#dataTable").html(str);
+
+                 //分页处理
+                 var totalPage = 0;
+                 var size = $("#pageSize").val();
+                 if(total/size > parseInt(total/size)){
+                     totalPage=parseInt(total/size)+1;
+                 }else{
+                     totalPage=parseInt(total/size);
+                 }
+                 $("#totalPage").text(totalPage);
+             }
+         },
+         error : function() {
+             alert("操作失败！");
+         }
+
+     });
+ }
+
+
+ function showDataByTime(fromDay,toDay,pageNo,pageSize){
+     $.ajax({
+         url : "${ctx}/user/tableDataByTime?fromDay="+fromDay+"&toDay="+toDay+"&pageNo="+pageNo+"&pageSize="+pageSize,
+         dataType : "json",
+         success : function(data) {
+             var total = data.total;
+             $("#total").text(total);
+             var tableData = data.tableData;
+             if(tableData.length > 0){
+                 var str = "";
+                 for (var i=0;i<tableData.length;i++){
+                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].registerCount+"</td><td>"+tableData[i].visitCount+"</td><td>"+totalRegisterCount+"</td></tr>";
+                 }
+                 $("#dataTable").html(str);
+
+                 //分页处理
+                 var totalPage = 0;
+                 var size = $("#pageSize").val();
+                 if(total/size > parseInt(total/size)){
+                     totalPage=parseInt(total/size)+1;
+                 }else{
+                     totalPage=parseInt(total/size);
+                 }
+                 $("#totalPage").text(totalPage);
+             }
+         },
+         error : function() {
+             alert("操作失败！");
+         }
+
+     });
+ }
+
+
+ $("#prevPage").click(function(){
+     if(parseInt($("#nowPage").text()) != 1){
+         $("#nowPage").text(parseInt($("#nowPage").text())-1);
+         $("#nowPage1").text($("#nowPage").text());
+         if($("#fromDay").val() == "" && $("#toDay").val() == ""){
+             showData($("#countValue").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+         }else{
+             showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+         }
+
+     }
+ });
+
+
+
+ $("#nextPage").click(function(){
+     if(parseInt($("#nowPage").text()) != parseInt($("#totalPage").text())){
+         $("#nowPage").text(parseInt($("#nowPage").text())+1);
+         $("#nowPage1").text($("#nowPage").text());
+         if($("#fromDay").val() == "" && $("#toDay").val() == ""){
+             showData($("#countValue").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+         }else{
+             showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+         }
+     }
+ });
+
+
+ function searchData() {
+     $("#nowPage").text(1);
+     $("#nowPage1").text(1);
+     $("#totalPage").text(1);
+     $("#total").text(0);
+     $("#pageSize").val(10);
+     showDataByTime($("#fromDay").val(),$("#toDay").val(),parseInt($("#nowPage").text()),$("#pageSize").val());
+ }
+
+
+
+</script>-->
+</html>

@@ -56,6 +56,12 @@
                 align: "center"
             },
             {
+                header:'${text("用户编号")}',
+                name:'userKid',
+                width:150,
+                align: "center"
+            },
+            {
                 header: '${text("路线主题")}',
                 name: 'lineTitle',
                 width: 150,
@@ -114,11 +120,11 @@
 
                         if (row.lineDisplay == 20){
                             return "<a href='javascript:void(0);' onclick='showLine(\""+row.lineKid+"\");' title='${text('展示')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;"
-                                + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                                + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
                         }
                         if (row.lineDisplay == 10){
                             return "<a href='javascript:void(0);' onclick='displayLine(\""+row.lineKid+"\");' title='${text('不展示')}'><i class='fa fa-pencil'></i></a>"  +"&nbsp;"
-                                + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                                + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
                         }
                     }
                 }}

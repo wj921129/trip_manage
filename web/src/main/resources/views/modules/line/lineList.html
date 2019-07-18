@@ -83,6 +83,12 @@
                 formatter: function(val, obj, row, act){
                     return '<a href="${ctx}/line/lineInfo/form?id='+row.id+'" class="btnList" data-title="编辑参数">'+val+'</a>';
                 }},
+            {
+                header:'${text("用户编号")}',
+                name:'userKid',
+                width:150,
+                align: "center"
+            },
 
             {
                 header: '${text("路线主题")}',
@@ -131,10 +137,10 @@
 
                     if (row.status == 30){
                         return "<a href='javascript:void(0);' onclick='deleteLine(1,\""+row.lineKid+"\");' title='${text('删除')}'><i class='fa fa-trash-o'></i></a>" +"&nbsp;"
-                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
                     }else {
                         return "<a href='javascript:void(0);' onclick='deleteLine(0,\""+row.lineKid+"\");' title='${text('取消')}'><i class='fa fa-remove'></i></a>" +"&nbsp;"
-                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
                     }
                 }}
         ],
@@ -170,5 +176,23 @@
 
         });
     }
+
+
+    // $.ajax({
+    //     type: 'get',
+    //     url: "${ctx}/line/form?lineKid=1150963457965686784&userKid=1116223167073878016",
+    //     dataType: 'json',
+    //     data: {
+    //     },
+    //     success: function (result) {
+    //         console.log(result);
+    //         // if (result.message){
+    //         //     js.showMessage(result.message);
+    //         //     $('#dataGrid').dataGrid('reloadGrid');
+    //         // }
+    //
+    //     }
+    //
+    // });
 
 </script>

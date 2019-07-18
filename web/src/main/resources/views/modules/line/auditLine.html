@@ -57,6 +57,12 @@
                 align: "center"
             },
             {
+                header:'${text("用户编号")}',
+                name:'userKid',
+                width:150,
+                align: "center"
+            },
+            {
                 header: '${text("路线主题")}',
                 name: 'lineTitle',
                 width: 150,
@@ -114,7 +120,7 @@
                     if (row.status == 10){
                         return "<a href='javascript:void(0);' onclick='agreeLine(\""+row.lineKid+"\");' title='${text('上线')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;"
                             + "<a href='javascript:void(0);' onclick='refuseLine(\""+row.lineKid+"\");' title='${text('驳回')}'><i class='fa fa-pencil'></i></a>"  +"&nbsp;"
-                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&lineStatus=10' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
                     }
                 }}
         ],
