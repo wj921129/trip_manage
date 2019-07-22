@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true)
 public class DynamicService {
 
-    @Value("${api.201host}")
+    @Value("${api.host}")
     private String apiHost;
 
 //    private static final String apiHost = "http://192.168.31.40:7130";

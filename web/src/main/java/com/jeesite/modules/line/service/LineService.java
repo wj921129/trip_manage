@@ -26,9 +26,9 @@ import java.util.List;
 @Transactional(readOnly=true)
 public class LineService {
 //
-//    @Value("${api.201host}")
-//    private String apiHost;
-    private String apiHost = "http://192.168.31.40:7110";
+    @Value("${api.host}")
+    private String apiHost;
+//    private String apiHost = "http://192.168.31.40:7110";
 
     private static final String queryByParams = "/line/queryByParams";
 

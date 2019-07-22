@@ -12,6 +12,12 @@
             height: 100px;
             display: flex;
         }
+        .div_tops{
+            width: 100%;
+            height: 80px;
+            text-align: center;
+            line-height: 80px;
+        }
         .div_top div{
             flex: 1;
             text-align: center;
@@ -72,9 +78,10 @@
         <option value="30">30流水指标</option>
     </select>
 </div>
+<div class="div_tops" >
+    <div>总资产:<font id="totalMoney">0</font> 元</div>
+</div>
 <div class="div_top">
-    <div>总资产:</div>
-    <div><font id="totalMoney">0</font> 元</div>
     <div><font id="dayFont1">昨日</font>资金流入:</div>
     <div><font id="inMoney">0</font> 元</div>
     <div><font id="dayFont2">昨日</font>资金流出:</div>

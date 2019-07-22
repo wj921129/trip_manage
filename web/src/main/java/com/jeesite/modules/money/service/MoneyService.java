@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MoneyService {
 
 
-    @Value("${api.201host}")
+    @Value("${api.host}")
     private String apiHost;
 
 //    private static final String apiHost = "http://192.168.31.40:7150";
