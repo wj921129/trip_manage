@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
 import java.util.List;
+
 
 
 @Service
@@ -31,8 +31,8 @@ public class RefundOrderManageService {
         object.put("refundKid",page.getOtherData().get("refundKid"));
         object.put("refundStatu",page.getOtherData().get("refundStatu"));
 
-        // String requestUrl = apiHost + "/order/refund/queryRefundManageByPage";
-        String requestUrl = "http://192.168.31.201:7120/order/refund/queryRefundManageByPage";
+          String requestUrl = apiHost + "/order/refund/queryRefundManageByPage";
+       // String requestUrl = "http://192.168.31.201:7120/order/refund/queryRefundManageByPage";
         String result = ApiUtils.post(requestUrl, object);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -49,8 +49,8 @@ public class RefundOrderManageService {
 
     //退款单详情
    public RefundOrderDetailsVo queryRefundOrderDetails (RefundOrderDetailsVo refundOrderDetailsVo){
-       // String requestUrl = apiHost + "/order/refund/queryRefundManageDetails";
-       String requestUrl = "http://192.168.31.201:7120/order/refund/queryRefundManageDetails";
+         String requestUrl = apiHost + "/order/refund/queryRefundManageDetails";
+      // String requestUrl = "http://192.168.31.201:7120/order/refund/queryRefundManageDetails";
        String result = ApiUtils.post(requestUrl, refundOrderDetailsVo);
        if(!StringUtils.isEmpty(result)){
            JSONObject resultObject = JSON.parseObject(result);
@@ -66,8 +66,8 @@ public class RefundOrderManageService {
 
    //后台审核同意退款
    public void backstageAgreeRefund (RefundOrderListVo refundOrderListVo){
-       // String requestUrl = apiHost + "/order/refund/backstageAgreeRefund";
-       String requestUrl = "http://192.168.31.201:7120/order/refund/backstageAgreeRefund";
+         String requestUrl = apiHost + "/order/refund/backstageAgreeRefund";
+      // String requestUrl = "http://192.168.31.201:7120/order/refund/backstageAgreeRefund";
        String result = ApiUtils.post(requestUrl, refundOrderListVo);
        if(!StringUtils.isEmpty(result)){
            JSONObject resultObject = JSON.parseObject(result);
@@ -75,13 +75,12 @@ public class RefundOrderManageService {
                log.info("后台同意退款失败");
            }
        }
-
    }
 
     // 后台审核不同意退款
     public void backstageRefuseRefund (ExamineReasonVo examineReasonVo){
-        // String requestUrl = apiHost + "/order/refund/backstageRefuseRefund";
-        String requestUrl = "http://192.168.31.201:7120/order/refund/backstageRefuseRefund";
+         String requestUrl = apiHost + "/order/refund/backstageRefuseRefund";
+       // String requestUrl = "http://192.168.31.201:7120/order/refund/backstageRefuseRefund";
         String result = ApiUtils.post(requestUrl, examineReasonVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);

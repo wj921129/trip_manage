@@ -81,8 +81,8 @@ public class OrderStatisticsService {
 
     //访问trip后台接口公共方法
     private JSONObject getResult(JSONObject paramter){
-        //String requestUrl = apiHost + "/support/statistics/order/queryOrderCount";
-        String requestUrl = "http://192.168.31.201:7150/support/statistics/order/queryOrderCount";
+          String requestUrl = apiHost + "/support/statistics/order/queryOrderCount";
+      //  String requestUrl = "http://192.168.31.201:7150/support/statistics/order/queryOrderCount";
         String result = ApiUtils.post(requestUrl, paramter);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);

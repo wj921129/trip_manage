@@ -30,8 +30,7 @@ public class OrderService {
         object.put("orderKid",page.getOtherData().get("orderKid"));
         object.put("orderStatu",page.getOtherData().get("orderStatu"));
 
-        // String requestUrl = apiHost + "/order/tourist/queryOrderManageList";
-        String requestUrl = "http://192.168.31.201:7120/order/tourist/queryOrderManageList";
+        String requestUrl = apiHost + "/order/tourist/queryOrderManageList";
         String result = ApiUtils.post(requestUrl, object);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -47,8 +46,8 @@ public class OrderService {
     }
 
    public void createOrder(AddOrderVo addOrderVo) {
-       // String requestUrl = apiHost + "/order/tourist/createOrder";
-       String requestUrl = "http://192.168.31.201:7120/order/tourist/createOrder";
+         String requestUrl = apiHost + "/order/tourist/createOrder";
+     //  String requestUrl = "http://192.168.31.201:7120/order/tourist/createOrder";
        String result = ApiUtils.post(requestUrl, addOrderVo);
        if(!StringUtils.isEmpty(result)){
            JSONObject resultObject = JSON.parseObject(result);
@@ -61,8 +60,8 @@ public class OrderService {
    }
 
    public OrderDetailsVo queryOrderDetails (OrderDetailsVo orderDetailsVo){
-       // String requestUrl = apiHost + "/order/tourist/queryOrderManageDetails";
-       String requestUrl = "http://192.168.31.201:7120/order/tourist/queryOrderManageDetails";
+         String requestUrl = apiHost + "/order/tourist/queryOrderManageDetails";
+     //  String requestUrl = "http://192.168.31.201:7120/order/tourist/queryOrderManageDetails";
        String result = ApiUtils.post(requestUrl, orderDetailsVo);
        if(!StringUtils.isEmpty(result)){
            JSONObject resultObject = JSON.parseObject(result);

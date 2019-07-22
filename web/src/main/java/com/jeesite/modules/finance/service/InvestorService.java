@@ -27,8 +27,8 @@ public class InvestorService {
         object.put("pageNumber",page.getPageNo());
         object.put("investorName",page.getOtherData().get("investorName"));
 
-        // String requestUrl = apiHost + "/support/invest/queryInvestorBypage";
-        String requestUrl = "http://192.168.31.201:7150/support/invest/queryInvestorBypage";
+          String requestUrl = apiHost + "/support/invest/queryInvestorBypage";
+      //  String requestUrl = "http://192.168.31.201:7150/support/invest/queryInvestorBypage";
         String result = ApiUtils.post(requestUrl, object);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -46,8 +46,8 @@ public class InvestorService {
 
     //添加投资人
     public void addInvestor(Investor investor){
-        // String requestUrl = apiHost + "/support/invest/addInvestor";
-        String requestUrl = "http://192.168.31.201:7150/support/invest/addInvestor";
+          String requestUrl = apiHost + "/support/invest/addInvestor";
+       // String requestUrl = "http://192.168.31.201:7150/support/invest/addInvestor";
         //请求后台接口
         String result = ApiUtils.post(requestUrl, investor);
         if(!StringUtils.isEmpty(result)){
@@ -60,8 +60,8 @@ public class InvestorService {
 
     //删除投资人
     public void deleteInvestor(Investor investor){
-        // String requestUrl = apiHost + "/support/invest/addInvestor";
-        String requestUrl = "http://192.168.31.201:7150/support/invest/deleteInvestor";
+         String requestUrl = apiHost + "/support/invest/deleteInvestor";
+       // String requestUrl = "http://192.168.31.201:7150/support/invest/deleteInvestor";
         //请求后台接口
         String result = ApiUtils.post(requestUrl, investor);
         if(!StringUtils.isEmpty(result)){
