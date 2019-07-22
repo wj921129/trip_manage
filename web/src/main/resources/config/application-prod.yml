@@ -2,17 +2,16 @@ server:
   port: 8980
 
 api:
-  host: http://62.234.156.67:5100
-  201host: http://192.168.31.201:7020
+  host: http://62.234.156.67:5020
+
 
 # 数据库连接
 jdbc: 
   # Mysql 数据库配置
   type: mysql
   driver: com.mysql.jdbc.Driver
-#  url: jdbc:mysql://127.0.0.1:3306/trip_manage?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
-  url: jdbc:mysql://192.168.31.113:3306/trip_manage?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+  url: jdbc:mysql://127.0.0.1:3306/trip_manage?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
   username: root
-  password: qianying
+  password: Qianying123!@#
   testSql: SELECT 1
 
