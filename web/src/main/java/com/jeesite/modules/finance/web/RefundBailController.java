@@ -1,12 +1,15 @@
 package com.jeesite.modules.finance.web;
 
+import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.modules.finance.entity.AuditRefundBailInVo;
 import com.jeesite.modules.finance.entity.RefundBail;
 import com.jeesite.modules.finance.service.RefundBailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -14,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.jeesite.common.web.http.ServletUtils.renderResult;
 
 @Controller
 @RequestMapping(value = "${adminPath}/refundBail")
@@ -63,5 +68,27 @@ public class RefundBailController {
     }
 
 
+
+    @PostMapping(value = "auditRefundBail")
+    @ResponseBody
+    public String auditRefundBail(String refundBailKids, Integer refundStatu, String remarks) {
+        if(StringUtils.isEmpty(refundBailKids)){
+            return renderResult(Global.FALSE, "退还保证金kid不能为空！");
+        }
+        if(refundStatu == null){
+            return renderResult(Global.FALSE, "退还审核状态不能为空！");
+        }
+
+        AuditRefundBailInVo auditRefundBailInVo = new AuditRefundBailInVo();
+        auditRefundBailInVo.setRefundBailKids(refundBailKids);
+        auditRefundBailInVo.setRefundStatu(refundStatu);
+        auditRefundBailInVo.setRemarks(remarks);
+        String result = refundBailService.auditRefundBail(auditRefundBailInVo);
+        if("200".equals(result)){
+            return renderResult(Global.TRUE, "成功！");
+        }else{
+            return renderResult(Global.FALSE, "失败！");
+        }
+    }
 
 }

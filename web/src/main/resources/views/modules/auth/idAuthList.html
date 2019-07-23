@@ -47,34 +47,38 @@ function showImage(imageSrc) {
 
 
 function audit(kid,val) {
-    var authStatu;
     if(val == "pass"){
-        authStatu = 30;
+        js.confirm("确定审核通过吗?",function () {
+            update(kid,30);
+        });
 	}else if(val == "failed"){
-        authStatu = 40;
+        js.confirm("确定审核不通过吗?",function () {
+            update(kid,40);
+        });
 	}
+
+}
+
+
+function update(kid,authStatu){
     $.ajax({
-        url : "http://192.168.31.198:6100/user/baseInfo/auditIdAuth",
-        //url : apiHost + "/support/complain/updateComplain",
-        contentType : "application/json;charset=UTF-8",
-        data : JSON.stringify({
+        url : "${ctx}/auth/auditIdAuth",
+        //url : apiHost + "/user/baseInfo/auditIdAuth",
+        //contentType : "application/json;charset=UTF-8",
+        data : {
             kid : kid,
             idAuth : authStatu
-        }),
+        },
         type : "post",
+        async : false,
         dataType : "json",
         success : function(data) {
-            if(data.code == "200"){
-                alert("成功！");
-            }else{
-                alert(data.msg);
-            }
-            location.reload(true);
+            js.showMessage(data.message);
+            $('#dataGrid').dataGrid('reloadGrid');
         },
-        error : function() {
-            alert("操作失败！");
-        }
+		error : function(){
+            js.showMessage("操作失败！");
+		}
     });
-
 }
 </script>

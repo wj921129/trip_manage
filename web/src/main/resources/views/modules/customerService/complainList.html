@@ -92,30 +92,27 @@ $('#dataGrid').dataGrid({
 
 function operate(complainKid) {
     //console.log(complainKid);
-	if(confirm("确定处理完成吗?")){
+    js.confirm("确定处理完成吗?",function () {
         $.ajax({
-            url : "http://192.168.31.198:6150/support/complain/updateComplain",
-            //url : apiHost + "/support/complain/updateComplain",
-            contentType : "application/json;charset=UTF-8",
-            data : JSON.stringify({
+            //url : "http://192.168.31.198:6150/support/complain/updateComplain",
+            url : "${ctx}/complain/updateComplain",
+            //contentType : "application/json;charset=UTF-8",
+            data : {
                 kid : complainKid,
                 complainStatu : 20
-            }),
+            },
             type : "post",
+            async : false,
             dataType : "json",
             success : function(data) {
-                if(data.code == "200"){
-                    alert("成功！");
-                }else{
-                    alert(data.msg);
-                }
-                location.reload(true);
+                js.showMessage(data.message);
+                $('#dataGrid').dataGrid('reloadGrid');
             },
-            error : function() {
-                alert("操作失败！");
+            error : function(){
+                js.showMessage("操作失败！");
             }
         });
-	}
+    });
 }
 
 </script>

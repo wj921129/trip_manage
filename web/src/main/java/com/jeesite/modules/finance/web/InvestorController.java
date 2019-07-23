@@ -5,7 +5,6 @@ import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.finance.entity.Investor;
 import com.jeesite.modules.finance.service.InvestorService;
-import com.jeesite.modules.test.entity.TestData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;

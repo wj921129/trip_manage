@@ -3,6 +3,8 @@ package com.jeesite.modules.auth.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
+import com.jeesite.modules.auth.entity.AuditEnterpriseAuthInVo;
+import com.jeesite.modules.auth.entity.AuditIdAuthInVo;
 import com.jeesite.modules.auth.entity.EnterpriseAuth;
 import com.jeesite.modules.auth.entity.IdAuth;
 import com.jeesite.modules.commom.utils.ApiUtils;
@@ -25,8 +27,8 @@ public class AuthService {
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
         ob.put("idAuth", 20);
-        //String requestUrl = apiHost + "/user/baseInfo/queryAllUser";
-        String requestUrl = "http://192.168.31.198:6100/user/baseInfo/idAuthInfoList";
+        String requestUrl = apiHost + "/user/baseInfo/idAuthInfoList";
+        //String requestUrl = "http://192.168.31.198:6100/user/baseInfo/idAuthInfoList";
         String result = ApiUtils.post(requestUrl,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -49,8 +51,8 @@ public class AuthService {
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
         ob.put("enterpriseAuth", 20);
-        //String requestUrl = apiHost + "/user/baseInfo/queryAllUser";
-        String requestUrl = "http://192.168.31.198:6100/user/baseInfo/enterpriseAuthInfoList";
+        String requestUrl = apiHost + "/user/baseInfo/enterpriseAuthInfoList";
+        //String requestUrl = "http://192.168.31.198:6100/user/baseInfo/enterpriseAuthInfoList";
         String result = ApiUtils.post(requestUrl,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -65,6 +67,27 @@ public class AuthService {
             }
         }
         return page;
+    }
+
+
+
+    public String auditIdAuth(AuditIdAuthInVo auditIdAuthInVo){
+        String result = ApiUtils.post(apiHost + "/user/baseInfo/auditIdAuth", auditIdAuthInVo);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            return resultObject.getString("code");
+        }
+        return null;
+    }
+
+
+    public String auditEnterpriseAuth(AuditEnterpriseAuthInVo auditEnterpriseAuthInVo){
+        String result = ApiUtils.post(apiHost + "/user/baseInfo/auditEnterpriseAuth", auditEnterpriseAuthInVo);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            return resultObject.getString("code");
+        }
+        return null;
     }
 
 

@@ -148,7 +148,9 @@
 
     function show() {
         if(kidArr.length == 0){
-            alert("请至少选择一条数据！");
+            js.confirm("请至少选择一条数据！",function () {
+                console.log("");
+            });
         }else{
             $("#zhezhao").css("display","block");
             //console.log(kidArr);
@@ -181,7 +183,9 @@
 
         }else if($("#refundStatu").val() == 30){
             if($("#remark").val() == "" || $("#remark").val() == null){
-                alert("备注不能为空！");
+                js.confirm("备注不能为空！",function () {
+                    console.log("");
+                });
                 return;
             }else{
                 data = {
@@ -192,24 +196,21 @@
             }
         }
         $.ajax({
-            url : "http://192.168.31.198:6150/support/refundBail/auditRefundBail",
-            //url : apiHost + "/order/refund/auditRefund",
-            contentType : "application/json;charset=UTF-8",
-            data : JSON.stringify(data),
+            //url : "http://192.168.31.198:6150/support/refundBail/auditRefundBail",
+            url : "${ctx}/refundBail/auditRefundBail",
+            //contentType : "application/json;charset=UTF-8",
+            data : data,
             type : "post",
+            async : false,
             dataType : "json",
             success : function(data) {
-                if(data.code == "200"){
-                    alert("审核成功！");
-                    $("#zhezhao").css("display","none");
-                    location.reload(true);
-                }else{
-                    alert(data.msg);
-                }
+                js.showMessage(data.message);
+                $('#dataGrid').dataGrid('reloadGrid');
+                $("#zhezhao").css("display","none");
                 kidArr = new Array();
             },
-            error : function() {
-                alert("操作失败！");
+            error : function(){
+                js.showMessage("操作失败！");
             }
         });
     }

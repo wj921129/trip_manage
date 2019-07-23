@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
+import com.jeesite.modules.finance.entity.AuditRefundBailInVo;
 import com.jeesite.modules.finance.entity.RefundBail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +31,8 @@ public class RefundBailService {
         ob.put("refundStatu", 10);
         ob.put("refundReason", otherData.get("refundReason"));
 
-        //String requestUrl = apiHost + "/support/report/queryReport";
-        String requestUrl = "http://192.168.31.198:6150/support/refundBail/queryRefundBail";
+        String requestUrl = apiHost + "/support/refundBail/queryRefundBail";
+        //String requestUrl = "http://192.168.31.198:6150/support/refundBail/queryRefundBail";
         String result = ApiUtils.get(requestUrl,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -48,5 +49,16 @@ public class RefundBailService {
 
         return page;
     }
+
+
+    public String auditRefundBail(AuditRefundBailInVo auditRefundBailInVo){
+        String result = ApiUtils.post(apiHost + "/support/refundBail/auditRefundBail", auditRefundBailInVo);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            return resultObject.getString("code");
+        }
+        return null;
+    }
+
 
 }

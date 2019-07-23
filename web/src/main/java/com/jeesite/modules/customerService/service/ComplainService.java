@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
 import com.jeesite.modules.customerService.entity.Complain;
+import com.jeesite.modules.customerService.entity.UpdateComplainInVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,8 @@ public class ComplainService {
         ob.put("complainStatu", otherData.get("complainStatu"));
         ob.put("complainReason", otherData.get("complainReason"));
 
-        //String requestUrl = apiHost + "/support/report/queryReport";
-        String requestUrl = "http://192.168.31.198:6150/support/complain/queryComplain";
+        String requestUrl = apiHost + "/support/complain/queryComplain";
+        //String requestUrl = "http://192.168.31.198:6150/support/complain/queryComplain";
         String result = ApiUtils.get(requestUrl,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -47,5 +48,17 @@ public class ComplainService {
 
         return page;
     }
+
+
+
+    public String updateComplain(UpdateComplainInVo updateComplainInVo){
+        String result = ApiUtils.post(apiHost + "/support/complain/updateComplain", updateComplainInVo);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            return resultObject.getString("code");
+        }
+        return null;
+    }
+
 
 }

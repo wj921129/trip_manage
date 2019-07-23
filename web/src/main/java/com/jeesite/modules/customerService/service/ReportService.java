@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
 import com.jeesite.modules.customerService.entity.Report;
+import com.jeesite.modules.dynamic.entity.DynamicByKidOutVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,8 @@ public class ReportService {
         ob.put("reportReason", otherData.get("reportReason"));
         ob.put("discoverKid", otherData.get("discoverKid"));
 
-        //String requestUrl = apiHost + "/support/report/queryReport";
-        String requestUrl = "http://192.168.31.198:6150/support/report/queryReport";
+        String requestUrl = apiHost + "/support/report/queryReport";
+        //String requestUrl = "http://192.168.31.198:6150/support/report/queryReport";
         String result = ApiUtils.get(requestUrl,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
@@ -47,5 +48,28 @@ public class ReportService {
 
         return page;
     }
+
+
+
+    public DynamicByKidOutVo showDynamic(String discoverKid){
+        DynamicByKidOutVo outVo = new DynamicByKidOutVo();
+        JSONObject ob = new JSONObject();
+        ob.put("kid", discoverKid);
+        String requestUrl = apiHost + "/dynamic/queryByKid";
+        String result = ApiUtils.get(requestUrl,ob);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            if(resultObject != null){
+                if("200".equals(resultObject.getString("code"))){
+                    JSONObject data = resultObject.getJSONObject("data");
+                    outVo = JSONObject.toJavaObject(data, DynamicByKidOutVo.class);
+                    outVo.setIfExist("true");
+                }
+            }
+        }
+        return outVo;
+
+    }
+
 
 }

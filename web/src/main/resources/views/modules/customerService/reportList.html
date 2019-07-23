@@ -136,41 +136,39 @@ function showDiscovery(val, obj, row, act) {
 function show(discoverKid){
     //console.log(discoverKid);
     $.ajax({
-        url : "http://192.168.31.198:6130/dynamic/queryByKid",
-        //url : apiHost + "/dynamic/queryDynamic",
-        contentType : "application/json;charset=UTF-8",
+        //url : "http://192.168.31.198:6130/dynamic/queryByKid",
+        url : "${ctx}/report/showDynamic",
+        //contentType : "application/json;charset=UTF-8",
         data : {
-            kid : discoverKid
+            discoverKid : discoverKid
         },
         type : "get",
         dataType : "json",
 		async : false,
         success : function(data) {
+            console.log(data);
             $("#appendDiv").html("");
-            if(data.code == "200"){
-                if(data.data != null){
-                    $("#content").text(data.data.discoverContent);
-                    if(data.data.insertType == 1){
-                        var arr = data.data.picList;
-                        if(arr.length > 0){
-                            var str = "";
-                            for (var i=0;i<arr.length;i++){
-                                str += "<img src='"+arr[i]+"'>";
-                            }
-                            $("#appendDiv").append(str);
-                        }
-                    }else if(data.data.insertType == 3){
-                        $("#appendDiv").append("<video src='"+data.data.mediaName+"' width='200px' height='200px' controls='controls'></video>");
-                    }
+            if(data.ifExist == "true"){
+				$("#content").text(data.discoverContent);
+				if(data.insertType == 1){
+					var arr = data.picList;
+					if(arr.length > 0){
+						var str = "";
+						for (var i=0;i<arr.length;i++){
+							str += "<img src='"+arr[i]+"'>";
+						}
+						$("#appendDiv").append(str);
+					}
+				}else if(data.insertType == 3){
+					$("#appendDiv").append("<video src='"+data.mediaName+"' width='200px' height='200px' controls='controls'></video>");
 				}
-                $("#zhezhao").css("display","block");
-            }else{
-                alert(data.msg);
-            }
-
+				$("#zhezhao").css("display","block");
+			}else{
+                js.showMessage("动态不存在！");
+			}
         },
-        error : function() {
-            alert("操作失败！");
+        error : function(){
+            js.showMessage("操作失败！");
         }
     });
 }

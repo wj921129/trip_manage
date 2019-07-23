@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
 import com.jeesite.modules.user.entity.UserInfo;
-import com.jeesite.modules.user.entity.UserStatistics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -93,8 +92,10 @@ public class UserInfoService {
         JSONObject jsonObject = getResult(ob);
         if(jsonObject != null){
             JSONObject temp = jsonObject.getJSONObject("data");
-            array = temp.getJSONObject("detailOutVos").getJSONArray("entities");
-            total = temp.getJSONObject("detailOutVos").getInteger("count");
+            if(temp.getJSONObject("detailOutVos") != null){
+                array = temp.getJSONObject("detailOutVos").getJSONArray("entities");
+                total = temp.getJSONObject("detailOutVos").getInteger("count");
+            }
         }
 
         result.put("tableData", array);
@@ -120,8 +121,10 @@ public class UserInfoService {
         JSONObject jsonObject = getResult(ob);
         if(jsonObject != null){
             JSONObject temp = jsonObject.getJSONObject("data");
-            array = temp.getJSONObject("detailOutVos").getJSONArray("entities");
-            total = temp.getJSONObject("detailOutVos").getInteger("count");
+            if(temp.getJSONObject("detailOutVos") != null){
+                array = temp.getJSONObject("detailOutVos").getJSONArray("entities");
+                total = temp.getJSONObject("detailOutVos").getInteger("count");
+            }
         }
 
         result.put("tableData", array);
@@ -133,15 +136,14 @@ public class UserInfoService {
 
     private JSONObject getResult(JSONObject paramter){
         //String requestUrl = "http://localhost:7150/support/userStatistics/queryCount";
-        //String requestUrl = apiHost + "/support/userStatistics/queryCount";
-        String requestUrl = "http://192.168.31.198:6150/support/userStatistics/queryCount";
+        String requestUrl = apiHost + "/support/userStatistics/queryCount";
+        //String requestUrl = "http://192.168.31.198:6150/support/userStatistics/queryCount";
         String result = ApiUtils.post(requestUrl, paramter);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
                 if("200".equals(resultObject.getString("code"))){
                     return resultObject;
-
                 }
             }
         }

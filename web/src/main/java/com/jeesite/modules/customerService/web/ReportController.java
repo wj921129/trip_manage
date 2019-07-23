@@ -3,6 +3,7 @@ package com.jeesite.modules.customerService.web;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.customerService.entity.Report;
 import com.jeesite.modules.customerService.service.ReportService;
+import com.jeesite.modules.dynamic.entity.DynamicByKidOutVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,6 +64,20 @@ public class ReportController {
         Page<Report> reportPage = reportService.queryAllReport(page);
 
         return reportPage;
+    }
+
+
+
+    /**
+     * 根据动态kid动态
+     */
+    @RequestMapping(value = "showDynamic")
+    @ResponseBody
+    public DynamicByKidOutVo showDynamic(String discoverKid) {
+
+        DynamicByKidOutVo dynamicByKidOutVo = reportService.showDynamic(discoverKid);
+
+        return dynamicByKidOutVo;
     }
 
 
