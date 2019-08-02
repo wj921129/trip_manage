@@ -1,6 +1,11 @@
 server:
   port: 8980
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:5010/eureka/
+
 api:
   host: http://62.234.156.67:5020
 
