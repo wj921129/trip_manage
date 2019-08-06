@@ -1,5 +1,5 @@
 server:
-  port: 8980
+  port: 6300
 
 api:
   host: http://192.168.31.198:6020
@@ -7,7 +7,7 @@ api:
 eureka:
   client:
     service-url:
-      defaultZone: http://127.0.0.1:7010/eureka/
+      defaultZone: http://192.168.31.198:6010/eureka/
 
 
 # 数据库连接
