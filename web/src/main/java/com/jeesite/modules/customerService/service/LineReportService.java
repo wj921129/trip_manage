@@ -1,12 +1,11 @@
-package com.jeesite.modules.line.service;
+package com.jeesite.modules.customerService.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
-import com.jeesite.modules.finance.entity.Withdraw;
-import com.jeesite.modules.line.entity.LineReport;
+import com.jeesite.modules.customerService.entity.LineReport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

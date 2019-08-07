@@ -1,0 +1,40 @@
+<% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('数据管理')}
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" action="${ctx}/form/listData" method="post" class="form-inline hide"
+			data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}"
+		</#form:form>
+		<table id="dataGrid"></table>
+		<div id="dataGridPage"></div>
+	</div>
+</div>
+</div>
+<% } %>
+<script>
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        columnModel: [
+            {header:'${text("kid")}', name:'kid', width:100, align:"center", hidden:true},
+            {header:'${text("用户kid")}', name:'userKid', width:100, align:"center", hidden:true},
+            {header:'${text("用户昵称")}', name:'nickname', width:100, align:"center"},
+            {header:'${text("分类kid")}', name:'categoryKid', width:100, align:"center", hidden:true},
+            {header:'${text("分类名称")}', name:'categoryName', width:100, align:"center"},
+            {header:'${text("问题描述")}', name:'questionDesc', width:200, align:"center", formatter: function (val, obj, row, act) {
+                    if(val.length > 20){
+                        return "<span title='" + val + "'>" + val.substring(0,20) + "...</span>";
+                    }else{
+                        return "<span title='" + val + "'>" + val + "</span>";
+                    }
+                }},
+            {header:'${text("真实姓名")}', name:'realname', width:100, align:"center"},
+            {header:'${text("电话")}', name:'phone', width:100, align:"center"},
+            {header:'${text("邮箱")}', name:'email', width:100, align:"center"}
+        ],
+    });
+</script>

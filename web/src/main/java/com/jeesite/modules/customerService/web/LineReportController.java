@@ -1,9 +1,9 @@
-package com.jeesite.modules.line.web;
+package com.jeesite.modules.customerService.web;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
-import com.jeesite.modules.line.entity.LineReport;
-import com.jeesite.modules.line.service.LineReportService;
+import com.jeesite.modules.customerService.entity.LineReport;
+import com.jeesite.modules.customerService.service.LineReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +28,7 @@ public class LineReportController {
     @RequestMapping(value = {"list", ""})
     public String list(LineReport lineReport, Model model) {
         model.addAttribute("withdraw", lineReport);
-        return "modules/line/lineReportList";
+        return "modules/customerService/lineReportList";
     }
 
 

@@ -1,4 +1,4 @@
-package com.jeesite.modules.line.entity;
+package com.jeesite.modules.customerService.entity;
 
 import lombok.Data;
 
