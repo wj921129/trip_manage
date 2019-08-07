@@ -26,7 +26,7 @@ public class FormService {
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
 
-        //String requestUrl = apiHost + "/workorder/answer/queryAnswerList";
+        //String requestUrl = apiHost + "/workorder/form/queryFormList";
         String requestUrl = "http://127.0.0.1:7400/workorder/form/queryFormList";
         String result = ApiUtils.get(requestUrl,ob);
         if(!StringUtils.isEmpty(result)){

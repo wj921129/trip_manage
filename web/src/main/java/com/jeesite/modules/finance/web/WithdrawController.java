@@ -1,6 +1,7 @@
 package com.jeesite.modules.finance.web;
 
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.finance.entity.Withdraw;
 import com.jeesite.modules.finance.service.WithdrawService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value = "${adminPath}/withdraw")
-public class WithdrawController {
+public class WithdrawController  extends BaseController {
 
     @Autowired
     private WithdrawService withdrawService;

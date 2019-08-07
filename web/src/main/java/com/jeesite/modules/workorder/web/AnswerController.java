@@ -1,6 +1,7 @@
 package com.jeesite.modules.workorder.web;
 
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.user.entity.UserInfo;
 import com.jeesite.modules.workorder.entity.Answer;
 import com.jeesite.modules.workorder.service.AnswerService;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "${adminPath}/answer")
-public class AnswerController {
+public class AnswerController  extends BaseController {
 
     @Autowired
     private AnswerService answerService;

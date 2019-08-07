@@ -2,6 +2,7 @@ package com.jeesite.modules.customerService.web;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.customerService.entity.LineReport;
 import com.jeesite.modules.customerService.service.LineReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value = "${adminPath}/lineReport")
-public class LineReportController {
+public class LineReportController  extends BaseController {
 
     @Autowired
     private LineReportService lineReportService;

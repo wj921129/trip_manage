@@ -2,6 +2,7 @@ package com.jeesite.modules.finance.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.finance.entity.AuditRefundOrderlInVo;
 import com.jeesite.modules.finance.entity.RefundOrder;
 import com.jeesite.modules.finance.service.RefundOrderService;
@@ -20,7 +21,7 @@ import static com.jeesite.common.web.http.ServletUtils.renderResult;
 
 @Controller
 @RequestMapping(value = "${adminPath}/refundOrder")
-public class RefundOrderController {
+public class RefundOrderController  extends BaseController {
 
     @Autowired
     private RefundOrderService refundOrderService;

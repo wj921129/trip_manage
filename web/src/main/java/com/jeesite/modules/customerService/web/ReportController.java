@@ -1,6 +1,7 @@
 package com.jeesite.modules.customerService.web;
 
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.customerService.entity.Report;
 import com.jeesite.modules.customerService.service.ReportService;
 import com.jeesite.modules.dynamic.entity.DynamicByKidOutVo;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "${adminPath}/report")
-public class ReportController {
+public class ReportController  extends BaseController {
 
     @Autowired
     private ReportService reportService;

@@ -7,7 +7,8 @@
 		<groupId>com.jeesite</groupId>
 		<artifactId>jeesite-parent</artifactId>
 		<version>4.1.5-SNAPSHOT</version>
-		<relativePath>../parent/pom.xml</relativePath>
+		<!--<relativePath>../parent/pom.xml</relativePath>-->
+		<relativePath/>
 	</parent>
 	
 	<artifactId>web</artifactId>

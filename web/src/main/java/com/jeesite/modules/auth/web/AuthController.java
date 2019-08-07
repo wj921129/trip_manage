@@ -2,6 +2,7 @@ package com.jeesite.modules.auth.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.auth.entity.AuditEnterpriseAuthInVo;
 import com.jeesite.modules.auth.entity.AuditIdAuthInVo;
 import com.jeesite.modules.auth.entity.EnterpriseAuth;
@@ -22,7 +23,7 @@ import static com.jeesite.common.web.http.ServletUtils.renderResult;
 
 @Controller
 @RequestMapping(value = "${adminPath}/auth")
-public class AuthController {
+public class AuthController  extends BaseController {
 
     @Autowired
     private AuthService authService;

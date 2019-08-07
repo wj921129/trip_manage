@@ -2,6 +2,7 @@ package com.jeesite.modules.customerService.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.customerService.entity.Complain;
 import com.jeesite.modules.customerService.entity.UpdateComplainInVo;
 import com.jeesite.modules.customerService.service.ComplainService;
@@ -22,7 +23,7 @@ import static com.jeesite.common.web.http.ServletUtils.renderResult;
 
 @Controller
 @RequestMapping(value = "${adminPath}/complain")
-public class ComplainController {
+public class ComplainController  extends BaseController {
 
     @Autowired
     private ComplainService complainService;

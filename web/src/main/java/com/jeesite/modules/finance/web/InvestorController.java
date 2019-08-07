@@ -3,6 +3,7 @@ package com.jeesite.modules.finance.web;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.finance.entity.Investor;
 import com.jeesite.modules.finance.service.InvestorService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import static com.jeesite.common.web.http.ServletUtils.renderResult;
 @Controller
 @RequestMapping(value = "${adminPath}/investor/investorData")
 @Slf4j
-public class InvestorController {
+public class InvestorController  extends BaseController {
     @Autowired
     private InvestorService investorService;
 

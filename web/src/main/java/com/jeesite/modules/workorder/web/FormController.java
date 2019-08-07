@@ -1,6 +1,7 @@
 package com.jeesite.modules.workorder.web;
 
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.workorder.entity.Answer;
 import com.jeesite.modules.workorder.entity.Form;
 import com.jeesite.modules.workorder.service.FormService;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value = "${adminPath}/form")
-public class FormController {
+public class FormController  extends BaseController {
 
     @Autowired
     private FormService formService;

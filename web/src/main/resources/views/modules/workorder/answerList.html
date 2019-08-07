@@ -1,18 +1,18 @@
 <% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
 <div class="main-content">
-	<div class="box box-main">
-		<div class="box-header">
-			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('数据管理')}
-			</div>
-		</div>
-		<div class="box-body">
-			<#form:form id="searchForm" action="${ctx}/answer/listData" method="post" class="form-inline hide"
-			data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}"
-		</#form:form>
-		<table id="dataGrid"></table>
-		<div id="dataGridPage"></div>
-	</div>
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('数据管理')}
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" action="${ctx}/answer/listData" method="post" class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+        </#form:form>
+        <table id="dataGrid"></table>
+        <div id="dataGridPage"></div>
+    </div>
 </div>
 </div>
 <% } %>
@@ -23,15 +23,15 @@
             {header:'${text("kid")}', name:'kid', width:100, align:"center", hidden:true},
             {header:'${text("问题kid")}', name:'questionKid', width:100, align:"center", hidden:true},
             {header:'${text("问题名称")}', name:'questionName', width:200, align:"center", formatter: function (val, obj, row, act) {
-                    if(val.length > 20){
-                        return "<span title='" + val + "'>" + val.substring(0,20) + "...</span>";
+                    if(val.length > 30){
+                        return "<span title='" + val + "'>" + val.substring(0,30) + "...</span>";
                     }else{
                         return "<span title='" + val + "'>" + val + "</span>";
                     }
                 }},
             {header:'${text("答案")}', name:'answer', width:200, align:"center", formatter: function (val, obj, row, act) {
-                    if(val.length > 20){
-                        return "<span title='" + val + "'>" + val.substring(0,20) + "...</span>";
+                    if(val.length > 30){
+                        return "<span title='" + val + "'>" + val.substring(0,30) + "...</span>";
                     }else{
                         return "<span title='" + val + "'>" + val + "</span>";
                     }

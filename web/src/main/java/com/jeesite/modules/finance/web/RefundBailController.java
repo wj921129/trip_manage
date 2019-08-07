@@ -2,6 +2,7 @@ package com.jeesite.modules.finance.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.finance.entity.AuditRefundBailInVo;
 import com.jeesite.modules.finance.entity.RefundBail;
 import com.jeesite.modules.finance.service.RefundBailService;
@@ -22,7 +23,7 @@ import static com.jeesite.common.web.http.ServletUtils.renderResult;
 
 @Controller
 @RequestMapping(value = "${adminPath}/refundBail")
-public class RefundBailController {
+public class RefundBailController  extends BaseController {
 
     @Autowired
     private RefundBailService refundBailService;
