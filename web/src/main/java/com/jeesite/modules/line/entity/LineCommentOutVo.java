@@ -19,5 +19,7 @@ public class LineCommentOutVo {
 
     private String commentUserKid = ""; // 第一条评论用户kid
 
+    private Integer commentNum = 0; // 路线评价数量
+
 
 }

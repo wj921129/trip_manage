@@ -76,6 +76,16 @@
             {header:'${text("路线标题")}', name:'lineTitle', width:100, align:"center", formatter: showLine},
             {header:'${text("举报次数")}', name:'reportCount', width:100, align:"center", formatter: showLineReportInfo},
             {
+                header: '${text("备注")}',
+                name: 'remarks',
+                width: 150,
+                align: "center",
+                hidden: false,
+                formatter: function (val, obj, row, act) {
+                    return "<input type='hidden' id='"+row.lineKid+"' placeholder='驳回时填写!' />";
+                }
+            },
+            {
                 header: '${text("操作")}',
                 name: 'actions',
                 width: 100,
@@ -83,7 +93,8 @@
                 sortable: false,
                 title: false,
                 formatter: function (val, obj, row, act) {
-                    return "<a href='javascript:void(0);' onclick='pullOffLine(\"" + row.lineKid + "\");' title='${text('下架')}'><i class='fa fa-pencil'></i></a>";
+                    return "<a href='javascript:void(0);' onclick='pullOffLine(\"" + row.lineKid + "\");' title='${text('下架')}'><i class='fa fa-pencil'></i></a>"+
+                        "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
                 }
             }
         ]
@@ -134,8 +145,39 @@
     
     
     function pullOffLine(lineKid) {
-        console.log(lineKid);
-    }
 
+        $("#"+lineKid).attr('type','text');
+
+        var remarks = $("#"+lineKid).val();
+        if (remarks == null || remarks == '' || remarks == undefined){
+            js.confirm("强制下架路线请填写备注原因!", function () {
+                console.log("");
+            });
+        }else {
+            js.confirm("确定强制下架该路线吗?",function () {
+                $.ajax({
+                    type: 'POST',
+                    url: "${ctx}/line/upperOrLower",
+                    dataType: 'json',
+                    async : false,
+                    data: {
+                        lineKid : lineKid,
+                        flag : 5,
+                        remarks: remarks
+                    },
+                    success: function (result) {
+
+                        if (result.message){
+                            js.showMessage(result.message);
+                            $('#dataGrid').dataGrid('reloadGrid');
+                        }
+
+                    }
+
+                });
+            });
+        }
+
+    }
 
 </script>

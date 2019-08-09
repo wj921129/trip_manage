@@ -17,7 +17,7 @@ public class LineSearchOutVo extends BaseEntity {
 
     private String realName;
 
-    private List linePics = new ArrayList();
+    private List homePics = new ArrayList();
 
     private Double tripPrice = 0.0; //路线价格
 

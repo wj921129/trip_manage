@@ -1,7 +1,12 @@
+<%
+DIRECTIVE SAFE_OUTPUT_OPEN;
+%>
+
 <% layout('/layouts/default.html', {title: '路线管理', libs: ['validate','fileupload','dataGrid']}){ %>
 <div class="container-fluid">
 
-    <#form:form id="searchForm" model="${lineInfo}">
+    <#form:form id="lineCost" model="${lineCost}">
+    <#form:form id="lineInfo" model="${lineInfo}">
     <div class="row" style="border-bottom:2px #F0F0F2 solid">
         <h3 style="color: #666666;margin-left: 15px">路线管理</h3>
         <% if(lineInfo.lineStatu == 10){%>
@@ -23,19 +28,13 @@
         <div class="col-md-12" style="padding: 10px 0">
             <div class="col-md-1">旅行天数</div>
             <div class="col-md-2">
-                ${lineInfo.travelDays}
-            </div>
-        </div>
-        <div class="col-md-12" style="padding: 10px 0">
-            <div class="col-md-1">出发日期</div>
-            <div class="col-md-2">
-                ${lineInfo.departureDate}
+                ${lineCost.travelDays}
             </div>
         </div>
         <div class="col-md-12" style="padding: 10px 0">
             <div class="col-md-1">路线价格</div>
             <div class="col-md-2">
-                ${lineInfo.tripPrice}
+                ${lineCost.tripPrice}
             </div>
         </div>
     </div>
@@ -46,12 +45,14 @@
         <div class="col-md-10">
             <div class="xq_img">
             <% for (picUrl in lineInfo.homePics) {%>
-                <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                <img src="${picUrl.picUrl}"  class='img-rounded' style='display: inline-block'>
             <% }%>
             </div>
         </div>
     </div>
     </#form:form>
+    </#form:form>
+
 
     <div class="row" style="margin-left:0">
         <div class="col-md-12">
@@ -128,7 +129,9 @@
                                     </h4>
                                 </div>
                                 <div id="collapse${schedule.lineDay}" class="panel-collapse collapse">
-                                    <div class="panel-body xc_kuai">
+                                <div class="panel-body xc_kuai">
+                                    <%for(scheduleAndActivity in schedule.schedules){%>
+                                        <% if(scheduleAndActivity.schedulingType == 10){ %>
                                         <div class="xc_hang">
                                             <div class="xc_hang_1">
                                                 <div class="xc_shijian">
@@ -142,41 +145,46 @@
                                             <div class="xc_hang_2">
                                                 <div class="xc_huoshi">
                                                     <div>
-                                                        <%for(picUrl in schedule.morning.scheduleDinnerOutVo.dinnerPics){ %>
-                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>;
+                                                        <%for(dinner in scheduleAndActivity.dinners){ %>
+                                                            <% for(pics in dinner.dinnerPics){ %>
+                                                                <img src="${pics.picUrl}"  class='img-rounded' style='display: inline-block'>;
+                                                           <%}%>
+                                                            <p>
+                                                                早餐描述:${dinner.dinnerDesc}
+                                                            </p>
+                                                            <p>
+                                                                早餐是否自理:<% if(dinner.dinnerIsSelf == 10){%>
+                                                                自理
+                                                                <%}else if(dinner.dinnerIsSelf == 20){%>
+                                                                不自理
+                                                                <%}%>
+                                                            </p>
                                                         <%}%>
                                                     </div>
-                                                    <p>
-                                                        早餐描述:${schedule.morning.scheduleDinnerOutVo.dinnerDesc}
-                                                    </p>
-                                                    <p>
-                                                        早餐是否自理:<% if(schedule.morning.scheduleDinnerOutVo.dinnerIsSelf == 10){%>
-                                                            自理
-                                                        <%}else if(schedule.morning.scheduleDinnerOutVo.dinnerIsSelf == 20){%>
-                                                            不自理
-                                                        <%}%>
-                                                    </p>
                                                 </div>
                                                 <div class="xc_huoshi" >
                                                     <div>
-                                                        <%for(picUrl in schedule.morning.scheduleActivityOutVo.schedulingPics){ %>
-                                                         <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%for(scheduling in scheduleAndActivity.activitys){ %>
+                                                           <%for(pics in scheduling.activityPics){%>
+                                                                <img src="${pics.picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                            <%}%>
+                                                        <p>活动地点 :${scheduling.schedulingAddress}</p>
+                                                        <p>活动名称 :${scheduling.activityName}</p>
+                                                        <p>活动内容 :${scheduling.activityDesc}</p>
+                                                        <p>
+                                                            是否包含导游费用 :
+                                                            <%if(scheduling.guideCost == 10){%>
+                                                            <span>包含导游费用</span>
+                                                            <%}else if(scheduling.guideCost == 20){%>
+                                                            <span>不包含导游费用</span>
+                                                            <%}%>
+                                                        </p>
                                                         <%}%>
                                                     </div>
-                                                    <p>活动地点 :${schedule.morning.scheduleActivityOutVo.schedulingAddress}</p>
-                                                    <p>活动名称 :${schedule.morning.scheduleActivityOutVo.activityName}</p>
-                                                    <p>活动内容 :${schedule.morning.scheduleActivityOutVo.activityDesc}</p>
-                                                    <p>
-                                                        是否包含导游费用 :
-                                                        <%if(schedule.morning.scheduleActivityOutVo.guideCost == 10){%>
-                                                        <span>包含导游费用</span>
-                                                        <%}else if(schedule.morning.scheduleActivityOutVo.guideCost == 20){%>
-                                                        <span>不包含导游费用</span>
-                                                        <%}%>
-                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
+                                        <% }else if(scheduleAndActivity.schedulingType == 20){ %>
                                         <div class="xc_hang">
                                             <div class="xc_hang_1">
                                                 <div class="xc_shijian">
@@ -190,41 +198,47 @@
                                             <div class="xc_hang_2">
                                                 <div class="xc_huoshi">
                                                     <div>
-                                                        <%for(picUrl in schedule.afternoon.scheduleDinnerOutVo.dinnerPics){%>
-                                                         <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%for(dinner in scheduleAndActivity.dinners){%>
+                                                            <%for(pics in dinner.dinnerPics){%>
+                                                                <img src="${pics.picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                            <%}%>
+                                                        <p>
+                                                            午餐描述:${dinner.dinnerDesc}
+                                                        </p>
+                                                        <p>
+                                                            午餐是否自理:<% if(dinner.dinnerIsSelf == 10){%>
+                                                            自理
+                                                            <%}else if(dinner.dinnerIsSelf == 20){%>
+                                                            不自理
+                                                            <%}%>
+                                                        </p>
                                                         <%}%>
                                                     </div>
-                                                    <p>
-                                                        午餐描述:${schedule.afternoon.scheduleDinnerOutVo.dinnerDesc}
-                                                    </p>
-                                                    <p>
-                                                        午餐是否自理:<% if(schedule.afternoon.scheduleDinnerOutVo.dinnerIsSelf == 10){%>
-                                                        自理
-                                                        <%}else if(schedule.afternoon.scheduleDinnerOutVo.dinnerIsSelf == 20){%>
-                                                        不自理
-                                                        <%}%>
-                                                    </p>
                                                 </div>
                                                 <div class="xc_huoshi">
                                                     <div>
-                                                        <%for(picUrl in schedule.afternoon.scheduleActivityOutVo.schedulingPics){%>
-                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%for(scheduling in scheduleAndActivity.activitys){%>
+                                                            <%for(pics in scheduling.activityPics){%>
+                                                              <img src="${pics.picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                            <%}%>
+                                                        <p>活动地点:${scheduling.schedulingAddress}</p>
+                                                        <p>活动名称:${scheduling.activityName}</p>
+                                                        <p>活动内容:${scheduling.activityDesc}</p>
+                                                        <p>
+                                                            是否包含导游费用 :
+                                                            <%if(scheduling.guideCost == 10){%>
+                                                            <span>包含导游费用</span>
+                                                            <%}else if(scheduling.guideCost == 20){%>
+                                                            <span>不包含导游费用</span>
+                                                            <%}%>
+                                                        </p>
+
                                                         <%}%>
                                                     </div>
-                                                    <p>活动地点:${schedule.afternoon.scheduleActivityOutVo.schedulingAddress}</p>
-                                                    <p>活动名称:${schedule.afternoon.scheduleActivityOutVo.activityName}</p>
-                                                    <p>活动内容:${schedule.afternoon.scheduleActivityOutVo.activityDesc}</p>
-                                                    <p>
-                                                        是否包含导游费用 :
-                                                        <%if(schedule.afternoon.scheduleActivityOutVo.guideCost == 10){%>
-                                                        <span>包含导游费用</span>
-                                                        <%}else if(schedule.afternoon.scheduleActivityOutVo.guideCost == 20){%>
-                                                        <span>不包含导游费用</span>
-                                                        <%}%>
-                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
+                                        <% } else if(scheduleAndActivity.schedulingType == 30){%>
                                         <div class="xc_hang">
                                             <div class="xc_hang_1">
                                                 <div class="xc_shijian">
@@ -238,78 +252,94 @@
                                             <div class="xc_hang_2">
                                                 <div class="xc_huoshi">
                                                     <div>
-                                                        <%for(picUrl in schedule.night.scheduleDinnerOutVo.dinnerPics){%>
-                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%for(dinner in scheduleAndActivity.dinners){%>
+                                                            <%for(pics in dinner.dinnerPics){%>
+                                                                 <img src="${pics.picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                            <%}%>
+                                                        <p>
+                                                            晚餐:${dinner.dinnerDesc}
+                                                        </p>
+                                                        <p>
+                                                            晚餐是否自理:<% if(dinner.dinnerIsSelf == 10){%>
+                                                            自理
+                                                            <%}else if(dinner.dinnerIsSelf == 20){%>
+                                                            不自理
+                                                            <%}%>
+                                                        </p>
                                                         <%}%>
                                                     </div>
-                                                    <p>
-                                                        晚餐:${schedule.night.scheduleDinnerOutVo.dinnerDesc}
-                                                    </p>
-                                                    <p>
-                                                        晚餐是否自理:<% if(schedule.night.scheduleDinnerOutVo.dinnerIsSelf == 10){%>
-                                                        自理
-                                                        <%}else if(schedule.night.scheduleDinnerOutVo.dinnerIsSelf == 20){%>
-                                                        不自理
-                                                        <%}%>
-                                                    </p>
+
                                                 </div>
                                                 <div class="xc_huoshi">
                                                     <div>
-                                                        <%for(picUrl in schedule.night.scheduleActivityOutVo.schedulingPics){%>
-                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                        <%for(scheduling in scheduleAndActivity.activitys){%>
+                                                            <%for(pics in scheduling.activityPics){%>
+                                                                 <img src="${pics.picUrl}"  class='img-rounded' style='display: inline-block'>
+                                                            <%}%>
+                                                        <p>活动地点:${scheduling.schedulingAddress}</p>
+                                                        <p>活动名称:${scheduling.activityName}</p>
+                                                        <p>活动内容:${scheduling.activityDesc}</p>
+                                                        <p>
+                                                            是否包含导游费用 :
+                                                            <%if(scheduling.guideCost == 10){%>
+                                                            <span>包含导游费用</span>
+                                                            <%}else if(scheduling.guideCost == 20){%>
+                                                            <span>不包含导游费用</span>
+                                                            <%}%>
+                                                        </p>
+
                                                         <%}%>
                                                     </div>
-                                                    <p>活动地点:${schedule.night.scheduleActivityOutVo.schedulingAddress}</p>
-                                                    <p>活动名称:${schedule.night.scheduleActivityOutVo.activityName}</p>
-                                                    <p>活动内容:${schedule.night.scheduleActivityOutVo.activityDesc}</p>
-                                                    <p>
-                                                        是否包含导游费用 :
-                                                        <%if(schedule.night.scheduleActivityOutVo.guideCost == 10){%>
-                                                        <span>包含导游费用</span>
-                                                        <%}else if(schedule.night.scheduleActivityOutVo.guideCost == 20){%>
-                                                        <span>不包含导游费用</span>
-                                                        <%}%>
-                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="xc_hang">
-                                            <div class="xc_hang_1">
-                                                <div class="xc_shijian">
-                                                    <p>住宿:</p>
-                                                </div>
-                                                <div class="xc_shu">
-                                                    <div class="xc_shu1"></div>
-                                                    <div class="xc_shu2">1</div>
-                                                </div>
+                                        <% }%>
+                                    <%}%>
+                                    <div class="xc_hang">
+                                        <div class="xc_hang_1">
+                                            <div class="xc_shijian">
+                                                <p>住宿:</p>
                                             </div>
-                                            <div class="xc_hang_2">
-                                                <div class="xc_huoshi">
-                                                    <div>
-                                                        <%for(picUrl in schedule.stay.stayPics){%>
-                                                        <img src="${picUrl}"  class='img-rounded' style='display: inline-block'>
+                                            <div class="xc_shu">
+                                                <div class="xc_shu1"></div>
+                                                <div class="xc_shu2">1</div>
+                                            </div>
+                                        </div>
+                                        <div class="xc_hang_2">
+                                            <div class="xc_huoshi">
+                                                <div>
+                                                    <%for(stay1 in schedule.stay){%>
+                                                        <%for(pics in stay1.stayPics){%>
+                                                           <img src="${pics.picUrl}"  class='img-rounded' style='display: inline-block'>
                                                         <%}%>
-                                                    </div>
                                                     <p>
                                                         住宿类型:
-                                                        <%if(schedule.stay.stayType == 10){%>
+                                                        <%if(stay1.stayType == 10){%>
                                                         <span>酒店</span>
-                                                        <%}else if(schedule.stay.stayType == 20){%>
+                                                        <%}else if(stay1.stayType == 20){%>
                                                         <span>名宿</span>
-                                                        <%} else if(schedule.stay.stayType == 30){%>
+                                                        <%} else if(stay1.stayType == 30){%>
                                                         <span>青旅</span>
                                                         <%}%>
                                                     </p>
                                                     <p>
-                                                        住宿地址:${schedule.stay.stayAddress}
+                                                        住宿地址:${stay1.stayAddress}
                                                     </p>
+
+                                                    <%}%>
                                                 </div>
+
                                             </div>
                                         </div>
-                                        <div>
-                                            <p style="float: right;margin-right:15px">行程交通:${schedule.traffic.trafficDesc}</p>
-                                        </div>
                                     </div>
+                                    <div>
+                                        <%for(traffic1 in schedule.traffic){%>
+                                          <p style="float: right;margin-right:15px">行程交通:${traffic1.trafficDesc}</p>
+                                        <%}%>
+                                    </div>
+                                </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -500,3 +530,8 @@
     }
 
 </style>
+
+<%
+//关闭安全输出。
+DIRECTIVE SAFE_OUTPUT_CLOSE;
+%>

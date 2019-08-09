@@ -7,7 +7,7 @@ public class AuditLinesInVo {
 
     private String lineKids;
 
-    private Integer lineStatus;
+    private Integer lineStatu;
 
     private String remarks;
 

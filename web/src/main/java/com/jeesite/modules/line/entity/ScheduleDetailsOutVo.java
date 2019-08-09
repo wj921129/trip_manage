@@ -2,19 +2,17 @@ package com.jeesite.modules.line.entity;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ScheduleDetailsOutVo {
 
     private Integer lineDay;
 
-    private ScheduleAfternoonOutVo morning; // 上午
+    private List<NewSchedulingOutVo> schedules;
 
-    private ScheduleAfternoonOutVo afternoon; // 下午
+    private List<NewLineInfoStayOutVo> stay; // 住宿
 
-    private ScheduleAfternoonOutVo night; // 晚上
-
-    private ScheduleStayOutVo stay; // 住宿
-
-    private ScheduleTrafficOutVo traffic; // 交通
+    private List<LineInfoTrafficOutVo> traffic; // 交通
 
 }

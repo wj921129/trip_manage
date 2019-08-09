@@ -26,16 +26,6 @@
                     <#form:input path="lineTitle" maxlength="200" class="form-control width-120"  placeholder="请输入路线主题" />
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="control-label">${text('出发时间')}：</label>
-                <div class="control-inline">
-                    <#form:input path="departureDate" readonly="true" maxlength="20" class="form-control Wdate-date" placeholder="请选择出发时间"
-                    dataFormat="date"
-                    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false,onpicked:function(){testDate_lte.click()}});"/>
-                </div>
-            </div>
-
             <div class="form-group">
                 <label class="control-label">${text('导游姓名')}：</label>
                 <div class="control-inline">
@@ -45,7 +35,7 @@
             <div class="form-group">
                 <label class="control-label">${text('状态')}：</label>
                 <div class="control-inline width-120">
-                    <#form:select path="lineStatus" dictType="line_status" blankOption="true" class="form-control"/>
+                    <#form:select path="lineStatu" dictType="line_status" blankOption="true" class="form-control"/>
                 </div>
             </div>
             <div class="form-group">
@@ -67,7 +57,13 @@
     </div>
 </div>
 </div>
+
 <% } %>
+<style>
+    .ui-jqgrid .actions>a i{
+     margin: 0 3px 2px 3px;
+ }
+</style>
 <script>
 
     console.log($("#searchForm"))
@@ -79,10 +75,8 @@
                 header:'${text("编号")}',
                 name:'lineKid',
                 width:150,
-                align: "center",
-                formatter: function(val, obj, row, act){
-                    return '<a href="${ctx}/line/lineInfo/form?id='+row.id+'" class="btnList" data-title="编辑参数">'+val+'</a>';
-                }},
+                align: "center"
+            },
             {
                 header:'${text("用户编号")}',
                 name:'userKid',
@@ -104,10 +98,11 @@
             },
             {
                 header: '${text("缩略图")}',
-                name: 'linePics',
+                name: 'homePics',
                 width: 150,
                 align: "center",
                 formatter: function (val, obj, row, act) {
+
                     return '<image src="'+val[0]+'" style="border-radius: 50%;width: 50px;height: 50px;"></image>'
                 }
             },
@@ -135,18 +130,32 @@
             {
                 header:'${text("操作")}', name:'actions', width:90,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
 
-                    if (row.status == 30){
-                        return "<a href='javascript:void(0);' onclick='deleteLine(1,\""+row.lineKid+"\");' title='${text('删除')}'><i class='fa fa-trash-o'></i></a>" +"&nbsp;"
-                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
-                    }else {
-                        return "<a href='javascript:void(0);' onclick='deleteLine(0,\""+row.lineKid+"\");' title='${text('取消')}'><i class='fa fa-remove'></i></a>" +"&nbsp;"
-                            + "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
+                    if (row.status == 10){ // 待审核
+                        return "<a href='javascript:void(0);' onclick='deleteLine(1,\""+row.lineKid+"\");' title='${text('上架')}'><i class='fa fa-upload bian' ></i></a>" +
+                            "<a href='javascript:void(0);' onclick='deleteLine(2,\""+row.lineKid+"\");' title='${text('下架')}'><i class='fa fa-download bian'></i></a>" +
+                            "<a href='javascript:void(0);' onclick='deleteLine(4,\""+row.lineKid+"\");' title='${text('删除')}'><i class='fa fa-trash-o bian'></i></a>" +
+                            "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
+                    }else if (row.status == 20) { // 进行中
+                        return "<a href='javascript:void(0);' onclick='deleteLine(2,\""+row.lineKid+"\");' title='${text('下架')}'><i class='fa fa-download bian'></i></a>" +
+                            "<a href='javascript:void(0);' onclick='deleteLine(4,\""+row.lineKid+"\");' title='${text('删除')}'><i class='fa fa-trash-o bian'></i></a>" +
+                            "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
+                    }else if(row.status == 30 || row.status == 40 || row.status == 60){ // 已失效 审核不通过 管理员强制下架
+                        return "<a href='javascript:void(0);' onclick='deleteLine(1,\""+row.lineKid+"\");' title='${text('上架')}'><i class='fa fa-upload bian'></i></a>" +
+                            "<a href='javascript:void(0);' onclick='deleteLine(4,\""+row.lineKid+"\");' title='${text('删除')}'><i class='fa fa-trash-o bian'></i></a>" +
+                            "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
+                    } else if (row.status == 50){ // 编辑状态
+
                     }
                 }}
         ],
         // 双击表格行时调用
         ondblClickRow: function (id, rownum, colnum, event) {
-            js.addTabPage(null, '编辑数据', '${ctx}/test/testData/form?id=' + id);
+
+            console.log(id);
+            console.log(rownum);
+            console.log(colnum);
+            console.log(event);
+            js.addTabPage(null, '编辑数据', '${ctx}/line/form?lineKid='+row.lineKid+'&userKid='+row.userKid);
         },
         // 加载成功后执行事件
         ajaxSuccess: function (data) {
@@ -155,15 +164,15 @@
     });
 
     function deleteLine(flag, lineKid) {
-
         $.ajax({
             type: 'POST',
-            url: "${ctx}/line/delete",
+            url: "${ctx}/line/upperOrLower",
             dataType: 'json',
             async : false,
             data: {
                 lineKid : lineKid,
-                flag : flag
+                flag : flag,
+                remarks : null
             },
             success: function (result) {
 
@@ -176,23 +185,5 @@
 
         });
     }
-
-
-    // $.ajax({
-    //     type: 'get',
-    //     url: "${ctx}/line/form?lineKid=1150963457965686784&userKid=1116223167073878016",
-    //     dataType: 'json',
-    //     data: {
-    //     },
-    //     success: function (result) {
-    //         console.log(result);
-    //         // if (result.message){
-    //         //     js.showMessage(result.message);
-    //         //     $('#dataGrid').dataGrid('reloadGrid');
-    //         // }
-    //
-    //     }
-    //
-    // });
 
 </script>

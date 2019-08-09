@@ -119,128 +119,19 @@ public class LineController extends BaseController {
 
 		LineDetailsOutVo lineDetails = new LineDetailsOutVo();
 
-		ScheduleOutVo scheduleOutVo = lineService.querySchedule(searchLineInVo.getLineKid(), searchLineInVo.getUserKid());
-		LineInfoOutVo lineInfo = scheduleOutVo.getLine();
-		lineDetails.setLineInfo(lineInfo);
-		model.addAttribute("lineInfo", lineInfo);
+        NewLineDetailsOutVo lineDetailsOutVo = lineService.querySchedule(searchLineInVo.getLineKid(), searchLineInVo.getUserKid());
+        model.addAttribute("lineInfo", lineDetailsOutVo.getLine());
 
-		LineTouristInfoOutVo touristInfo = scheduleOutVo.getTouristInfo();
-		lineDetails.setTouristInfo(touristInfo);
-		model.addAttribute("touristInfo", touristInfo);
+		model.addAttribute("touristInfo", lineDetailsOutVo.getTouristInfo());
 
-		LineCostOutVo lineCost = scheduleOutVo.getLineCost();
-		lineDetails.setLineCost(lineCost);
-		model.addAttribute("lineCost", lineCost);
+		model.addAttribute("lineCost", lineDetailsOutVo.getLineCost());
 
-		LineFeatureOutVo lineFeature = new LineFeatureOutVo();
-		lineFeature.setLineFeature(scheduleOutVo.getLineFeature());
-		lineDetails.setLineFeature(lineFeature);
-		model.addAttribute("lineFeature", lineFeature);
+		model.addAttribute("lineFeature", lineDetailsOutVo.getLineFeature());
 
-		LineCommentOtherOutVo lineCommentOtherOutVo = new LineCommentOtherOutVo();
-		LineCommentOutVo lineComment = scheduleOutVo.getLineComment();
-		lineCommentOtherOutVo.setCommentContent(lineComment.getCommentContent());
-		lineCommentOtherOutVo.setCommentNum(scheduleOutVo.getCommentNum());
-		lineCommentOtherOutVo.setCommentTime(lineComment.getCommentTime());
-		lineCommentOtherOutVo.setCommentUserBail(lineComment.getCommentUserBail());
-		lineCommentOtherOutVo.setCommentUserImage(lineComment.getCommentUserImage());
-		lineCommentOtherOutVo.setCommentUserKid(lineComment.getCommentUserKid());
-		lineCommentOtherOutVo.setCommentUserNickname(lineComment.getCommentUserNickname());
-		lineCommentOtherOutVo.setCommentUserStarLevel(lineComment.getCommentUserStarLevel());
-		lineDetails.setLineComment(lineCommentOtherOutVo);
-		model.addAttribute("lineComment", lineCommentOtherOutVo);
+		model.addAttribute("lineComment", lineDetailsOutVo.getLineComment());
 
-		List<ScheduleDetailsOutVo> scheduleDetailsOutVos = new ArrayList<>();
-		List<LineScheduleOutVo> scheduleList = scheduleOutVo.getScheduleList();
-		for (int i = 0; i < scheduleList.size(); i++) {
+		model.addAttribute("scheduleInfo", lineDetailsOutVo.getScheduleDetails());
 
-			LineScheduleOutVo lineScheduleOutVo = scheduleList.get(i);
-			List<SchedulingOutVo> lineSchedules = lineScheduleOutVo.getLineSchedules();
-			List<DinnerOutVo> lineDinners = lineScheduleOutVo.getLineDinners();
-
-			ScheduleDetailsOutVo scheduleDetailsOutVo = new ScheduleDetailsOutVo();
-
-
-			ScheduleDinnerOutVo dinner = new ScheduleDinnerOutVo();
-
-			scheduleDetailsOutVo.setLineDay(lineScheduleOutVo.getLineDay());
-
-			ScheduleAfternoonOutVo morning = new ScheduleAfternoonOutVo();
-			ScheduleAfternoonOutVo afternoon = new ScheduleAfternoonOutVo();
-			ScheduleAfternoonOutVo night = new ScheduleAfternoonOutVo();
-
-			for (int j = 0; j < lineSchedules.size(); j++) {
-
-				ScheduleActivityOutVo activity = new ScheduleActivityOutVo();
-
-				SchedulingOutVo schedulingOutVo = lineSchedules.get(j);
-
-				activity.setActivityDesc(schedulingOutVo.getActivityDesc());
-				activity.setActivityName(schedulingOutVo.getActivityName());
-				activity.setGuideCost(schedulingOutVo.getGuideCost());
-				activity.setKid(schedulingOutVo.getKid());
-				activity.setSchedulingAddress(schedulingOutVo.getSchedulingAddress());
-				activity.setSchedulingPics(schedulingOutVo.getSchedulingPics());
-				activity.setSchedulingPrice(schedulingOutVo.getSchedulingPrice());
-				activity.setSchedulingType(schedulingOutVo.getSchedulingType());
-
-				if (schedulingOutVo.getSchedulingType() == 10){
-					morning.setScheduleActivityOutVo(activity);
-				}else if (schedulingOutVo.getSchedulingType() == 20){
-					afternoon.setScheduleActivityOutVo(activity);
-				}else if (schedulingOutVo.getSchedulingType() == 30){
-					night.setScheduleActivityOutVo(activity);
-				}
-			}
-
-				for (int j = 0; j < lineDinners.size(); j++) {
-				DinnerOutVo dinnerOutVo = lineDinners.get(j);
-
-				ScheduleDinnerOutVo scheduleDinnerOutVo = new ScheduleDinnerOutVo();
-				scheduleDinnerOutVo.setDinnerDesc(dinnerOutVo.getDinnerDesc());
-				scheduleDinnerOutVo.setDinnerIsSelf(dinnerOutVo.getDinnerIsSelf());
-				scheduleDinnerOutVo.setDinnerPics(dinnerOutVo.getDinnerPics());
-				scheduleDinnerOutVo.setDinnerPrice(dinnerOutVo.getDinnerPrice());
-				scheduleDinnerOutVo.setDinnerType(dinnerOutVo.getDinnerType());
-
-				if (dinnerOutVo.getDinnerType() == 10){
-					morning.setScheduleDinnerOutVo(scheduleDinnerOutVo);
-				}else if (dinnerOutVo.getDinnerType() == 20){
-					afternoon.setScheduleDinnerOutVo(scheduleDinnerOutVo);
-				}else if (dinnerOutVo.getDinnerType() == 30){
-					night.setScheduleDinnerOutVo(scheduleDinnerOutVo);
-				}
-			}
-
-			scheduleDetailsOutVo.setAfternoon(afternoon);
-			scheduleDetailsOutVo.setMorning(morning);
-			scheduleDetailsOutVo.setNight(night);
-
-			ScheduleStayOutVo stay = new ScheduleStayOutVo();
-			List<StayOutVo> lineStays = lineScheduleOutVo.getLineStays();
-			StayOutVo stayOutVo = lineStays.get(0);
-			stay.setKid(stayOutVo.getKid());
-			stay.setStayAddress(stayOutVo.getStayAddress());
-			stay.setStayDesc(stayOutVo.getStayDesc());
-			stay.setStayPics(stayOutVo.getStayPics());
-			stay.setStayPrice(stayOutVo.getStayPrice());
-			stay.setStayType(stayOutVo.getStayType());
-			scheduleDetailsOutVo.setStay(stay);
-
-			ScheduleTrafficOutVo traffic = new ScheduleTrafficOutVo();
-			List<TrafficOutVo> lineTraffics = lineScheduleOutVo.getLineTraffics();
-			TrafficOutVo trafficOutVo = lineTraffics.get(0);
-			traffic.setKid(trafficOutVo.getKid());
-			traffic.setTrafficDesc(trafficOutVo.getTrafficDesc());
-			traffic.setTrafficPrice(trafficOutVo.getTrafficPrice());
-
-			scheduleDetailsOutVo.setTraffic(traffic);
-			scheduleDetailsOutVos.add(scheduleDetailsOutVo);
-
-		}
-
-		lineDetails.setScheduleDetailsOutVos(scheduleDetailsOutVos);
-		model.addAttribute("scheduleInfo", scheduleDetailsOutVos);
 		model.addAttribute("lineDetails", lineDetails);
 
 		return "modules/line/lineForm";
@@ -258,22 +149,26 @@ public class LineController extends BaseController {
 		return renderResult(Global.TRUE, text("保存数据成功！"));
 	}
 
-	/**
-	 * 删除路线
-	 * @param empUser
+	/**上架或下架路线
 	 * @return
 	 */
 	@RequiresPermissions("line:edit")
-	@RequestMapping(value = "delete")
+	@RequestMapping(value = "upperOrLower")
 	@ResponseBody
-	public String delete(String lineKid, Integer flag) {
+	public String upperOrLower(String lineKid, Integer flag, String remarks) {
 
 		if (StringUtils.isEmpty(lineKid)){
 
 			return renderResult(Global.TRUE, "操作失败,lineKid不能为空！");
 		}
 
-		String message = lineService.delete(lineKid, flag);
+		if (flag == 60){
+			if (StringUtils.isEmpty(remarks)){
+				return renderResult(Global.FALSE, "操作失败,强制下架请填写下架原因！");
+			}
+		}
+
+		String message = lineService.upperOrLower(lineKid, flag, remarks);
 		return renderResult(Global.TRUE, message);
 	}
 
@@ -294,7 +189,7 @@ public class LineController extends BaseController {
 
 		AuditLinesInVo auditLinesInVo = new AuditLinesInVo();
 		auditLinesInVo.setLineKids(lineKid);
-		auditLinesInVo.setLineStatus(lineStatus);
+		auditLinesInVo.setLineStatu(lineStatus);
 		auditLinesInVo.setRemarks(remarks);
 
 		lineService.update(auditLinesInVo);

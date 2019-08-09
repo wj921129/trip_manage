@@ -12,7 +12,7 @@ public class SearchLineInVo extends BaseEntity {
 
     private String lineTitle; // 路线主题
 
-    private Integer lineStatus; // 路线状态（10审核中  20进行中  30已失效 40待审核 50审核不通过）
+    private Integer lineStatu; // 路线状态（10审核中  20进行中  30已失效 40待审核 50审核不通过）
 
     private String phone; // 手机号
 

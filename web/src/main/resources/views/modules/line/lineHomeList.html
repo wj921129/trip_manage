@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="box-body">
-            <#form:form id="searchForm" model="${line}" action="${ctx}/line/listData?lineStatus=20" method="post"
+            <#form:form id="searchForm" model="${line}" action="${ctx}/line/listData?lineStatu=20" method="post"
             class="form-inline hide"
             data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
             data-order-by="${parameter.orderBy}">
@@ -75,7 +75,7 @@
             },
             {
                 header: '${text("缩略图")}',
-                name: 'linePics',
+                name: 'homePics',
                 width: 150,
                 align: "center",
                 formatter: function (val, obj, row, act) {
@@ -178,6 +178,7 @@
                 lineDisplay : lineDisplay
             },
             success: function (result) {
+                js.showMessage(result.message);
                 $('#dataGrid').dataGrid('reloadGrid');
             }
 
