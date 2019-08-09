@@ -96,6 +96,11 @@
                     }else{
                         return "<span title='" + val + "'>" + val + "</span>";
                     }
+                }},
+            {header:'${text("操作")}', name:'actions', width:50, align:"center", sortable:false, title:false, formatter: function(val, obj, row, act){
+                    return "<a href='javascript:void(0);' title='${text('提现完成')}'><i class='fa fa-check'></i></a>" +"&nbsp;"
+                        + "<a href='javascript:void(0);' class='btnList' title='${text('提现异常')}'><i class='fa fa-close'></i></a>";
+
                 }}
         ],
         showCheckbox: true,

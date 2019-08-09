@@ -14,9 +14,66 @@
         <div id="dataGridPage"></div>
     </div>
 </div>
+
+<div id="zhezhao">
+    <div id="cuang">
+        <div style="width: 100%;height: 85%">
+            <table style="width: 80%;margin:20px;">
+                <tr>
+                    <td>答案<span style="color: red;">*</span></td>
+                    <td><textarea id="answer" style="margin-top: 20px;resize:none;width:90%;"></textarea></td>
+                </tr>
+
+            </table>
+        </div>
+        <div style="float: right">
+            <span class="span" id="save" onclick="save();">提交</span>
+            <span class="span" id="close">关闭</span>
+        </div>
+    </div>
+</div>
+
 </div>
 <% } %>
+<style>
+    #zhezhao{
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.2);
+    }
+    #cuang{
+        width:600px;
+        margin: 10% auto;
+        background-color: white;
+        position: relative;
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 40px;
+    }
+    .span{
+        display: inline-block;
+        background: #2a579a;
+        padding: 2px 10px;
+        border-radius: 5px;
+        cursor:pointer;
+        color: white;
+        margin: 0 5px;
+    }
+    #appendDiv img{
+        width: 200px;
+        height:200px;
+        display: inline-block;
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+</style>
 <script>
+    var answerkid;
     // 初始化DataGrid对象
     $('#dataGrid').dataGrid({
         columnModel: [
@@ -35,7 +92,72 @@
                     }else{
                         return "<span title='" + val + "'>" + val + "</span>";
                     }
+                }},
+            {
+                header:'${text("操作")}', name:'actions', width:50,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
+                    return "<a href='javascript:void(0);' onclick='openUpdateWindow(\""+row.kid+"\");'title='${text('修改')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;&nbsp;&nbsp;"
+                        + "<a href='javascript:void(0);' onclick='deleteAnswer(\""+row.kid+"\");' title='${text('删除')}'><i class='fa fa-close'></i></a>"
                 }}
         ],
     });
+
+    function openUpdateWindow(kid) {
+        $("#zhezhao").css("display","block");
+        answerkid = kid;
+    }
+
+    $("#close").click(function () {
+        $("#zhezhao").css("display","none");
+    })
+
+    function save() {
+        if($("#answer").val() == ""){
+            js.showMessage("答案不能为空！");
+            return;
+        }
+
+        $.ajax({
+            url : "${ctx}/answer/updateAnswer",
+            data : {
+                kid : answerkid,
+                answer : $("#answer").val()
+            },
+            type : "post",
+            dataType : "json",
+            async : false,
+            success : function(data) {
+                js.showMessage(data.message);
+                $("#zhezhao").css("display","none");
+                $('#dataGrid').dataGrid('reloadGrid');
+            },
+            error : function(){
+                js.showMessage("操作失败！");
+            }
+        });
+    }
+
+
+    function deleteAnswer(kid) {
+        js.confirm("确定删除吗?",function () {
+            $.ajax({
+                url : "${ctx}/answer/deleteAnswer",
+                data : {
+                    kid : kid
+                },
+                type : "post",
+                dataType : "json",
+                async : false,
+                success : function(data) {
+                    js.showMessage(data.message);
+                    $("#zhezhao").css("display","none");
+                    $('#dataGrid').dataGrid('reloadGrid');
+                },
+                error : function(){
+                    js.showMessage("操作失败！");
+                }
+            });
+        });
+
+    }
+
 </script>

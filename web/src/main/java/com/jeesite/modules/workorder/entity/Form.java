@@ -19,7 +19,9 @@ public class Form {
 
     private String questionDesc = "";
 
-    private List<FormFile> formFileOutVos;
+    private List<FormFile> imageOutVos;
+
+    private List<FormFile> fileOutVos;
 
     private String realname = "";
 
