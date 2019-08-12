@@ -19,6 +19,13 @@ public class AnswerService {
 
     @Value("${api.host}")
     private String apiHost;
+    //private String apiHost = "http://127.0.0.1:7400";
+
+    private static final String queryAnswerList = "/workorder/answer/queryAnswerList";
+
+    private static final String updateAnswer = "/workorder/answer/updateAnswer";
+
+    private static final String deleteAnswer = "/workorder/answer/deleteAnswer";
 
     public Page<Answer> queryAllAnswer(Page<Answer> page){
 
@@ -26,9 +33,7 @@ public class AnswerService {
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
 
-        String requestUrl = apiHost + "/workorder/answer/queryAnswerList";
-        //String requestUrl = "http://127.0.0.1:7400/workorder/answer/queryAnswerList";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryAnswerList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -47,8 +52,7 @@ public class AnswerService {
 
 
     public String updateAnswer(AnswerUpdateInVo answerUpdateInVo){
-        String result = ApiUtils.post(apiHost + "/workorder/answer/updateAnswer", answerUpdateInVo);
-        //String result = ApiUtils.post("http://127.0.0.1:7400/workorder/answer/updateAnswer", answerUpdateInVo);
+        String result = ApiUtils.post(apiHost + updateAnswer, answerUpdateInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");
@@ -58,8 +62,7 @@ public class AnswerService {
 
 
     public String deleteAnswer(String kid){
-        String result = ApiUtils.post(apiHost + "/workorder/answer/deleteAnswer?kid="+kid, null);
-        //String result = ApiUtils.post("http://127.0.0.1:7400/workorder/answer/deleteAnswer?kid="+kid, null);
+        String result = ApiUtils.post(apiHost + deleteAnswer + "?kid="+kid, null);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");

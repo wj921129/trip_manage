@@ -21,6 +21,10 @@ public class RefundBailService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String idAuthInfoList = "/support/refundBail/queryRefundBail";
+
+    private static final String auditRefundBail = "/support/refundBail/auditRefundBail";
+
 
     public Page<RefundBail> queryRefundBail(Page<RefundBail> page){
         Map<String, Object> otherData = page.getOtherData();
@@ -31,9 +35,7 @@ public class RefundBailService {
         ob.put("refundStatu", 10);
         ob.put("refundReason", otherData.get("refundReason"));
 
-        String requestUrl = apiHost + "/support/refundBail/queryRefundBail";
-        //String requestUrl = "http://192.168.31.198:6150/support/refundBail/queryRefundBail";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + idAuthInfoList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -52,7 +54,7 @@ public class RefundBailService {
 
 
     public String auditRefundBail(AuditRefundBailInVo auditRefundBailInVo){
-        String result = ApiUtils.post(apiHost + "/support/refundBail/auditRefundBail", auditRefundBailInVo);
+        String result = ApiUtils.post(apiHost + auditRefundBail, auditRefundBailInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");

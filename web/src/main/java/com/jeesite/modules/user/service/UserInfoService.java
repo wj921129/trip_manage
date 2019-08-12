@@ -22,6 +22,10 @@ public class UserInfoService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String queryAllUser = "/user/baseInfo/queryAllUser";
+
+    private static final String queryCount = "/support/userStatistics/queryCount";
+
     public Page<UserInfo> queryAllUser(Page<UserInfo> page){
         Map<String, Object> otherData = page.getOtherData();
 
@@ -30,8 +34,7 @@ public class UserInfoService {
         ob.put("pageNumber", page.getPageNo());
         ob.put("phone", otherData.get("phone"));
 
-        String requestUrl = apiHost + "/user/baseInfo/queryAllUser";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryAllUser,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -135,10 +138,7 @@ public class UserInfoService {
 
 
     private JSONObject getResult(JSONObject paramter){
-        //String requestUrl = "http://localhost:7150/support/userStatistics/queryCount";
-        String requestUrl = apiHost + "/support/userStatistics/queryCount";
-        //String requestUrl = "http://192.168.31.198:6150/support/userStatistics/queryCount";
-        String result = ApiUtils.post(requestUrl, paramter);
+        String result = ApiUtils.post(apiHost + queryCount, paramter);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){

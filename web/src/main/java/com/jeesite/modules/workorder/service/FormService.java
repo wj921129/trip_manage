@@ -22,6 +22,13 @@ public class FormService {
 
     @Value("${api.host}")
     private String apiHost;
+    //private String apiHost = "http://127.0.0.1:7400";
+
+    private static final String queryFormList = "/workorder/form/queryFormList";
+
+    private static final String updateForm = "/workorder/form/updateForm";
+
+    private static final String queryByKid = "/workorder/form/queryByKid";
 
     public Page<Form> queryAllForm(Page<Form> page){
 
@@ -30,9 +37,7 @@ public class FormService {
         ob.put("pageNumber", page.getPageNo());
         ob.put("status", 10);
 
-        String requestUrl = apiHost + "/workorder/form/queryFormList";
-        //String requestUrl = "http://127.0.0.1:7400/workorder/form/queryFormList";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryFormList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -51,8 +56,7 @@ public class FormService {
 
 
     public String dealForm(FormUpdateInVo formUpdateInVo){
-        String result = ApiUtils.post(apiHost + "/workorder/form/updateForm", formUpdateInVo);
-        //String result = ApiUtils.post("http://127.0.0.1:7400/workorder/form/updateForm", formUpdateInVo);
+        String result = ApiUtils.post(apiHost + updateForm, formUpdateInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");
@@ -65,8 +69,7 @@ public class FormService {
         JSONObject obj = new JSONObject();
         JSONArray imageArr = new JSONArray();
         JSONArray fileArr = new JSONArray();
-        String result = ApiUtils.get(apiHost + "/workorder/form/queryByKid?kid="+kid);
-        //String result = ApiUtils.get("http://127.0.0.1:7400/workorder/form/queryByKid?kid="+kid);
+        String result = ApiUtils.get(apiHost + queryByKid + "?kid="+kid);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if("200".equals(resultObject.getString("code"))){

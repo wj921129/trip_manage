@@ -21,6 +21,10 @@ public class ComplainService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String queryComplain = "/support/complain/queryComplain";
+
+    private static final String updateComplain = "/support/complain/updateComplain";
+
     public Page<Complain> queryAllComplain(Page<Complain> page){
         Map<String, Object> otherData = page.getOtherData();
 
@@ -30,9 +34,7 @@ public class ComplainService {
         ob.put("complainStatu", otherData.get("complainStatu"));
         ob.put("complainReason", otherData.get("complainReason"));
 
-        String requestUrl = apiHost + "/support/complain/queryComplain";
-        //String requestUrl = "http://192.168.31.198:6150/support/complain/queryComplain";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryComplain,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -52,7 +54,7 @@ public class ComplainService {
 
 
     public String updateComplain(UpdateComplainInVo updateComplainInVo){
-        String result = ApiUtils.post(apiHost + "/support/complain/updateComplain", updateComplainInVo);
+        String result = ApiUtils.post(apiHost + updateComplain, updateComplainInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");

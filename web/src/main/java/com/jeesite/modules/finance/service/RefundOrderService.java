@@ -20,6 +20,9 @@ public class RefundOrderService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String queryRefundByStatu = "/order/refund/queryRefundByStatu";
+
+    private static final String auditRefund = "/order/refund/auditRefund";
 
     public Page<RefundOrder> queryRefundOrder(Page<RefundOrder> page){
 
@@ -28,9 +31,7 @@ public class RefundOrderService {
         ob.put("pageNumber", page.getPageNo());
         ob.put("refundStatu", 20);
 
-        String requestUrl = apiHost + "/order/refund/queryRefundByStatu";
-        //String requestUrl = "http://192.168.31.201:7120/order/refund/queryRefundByStatu";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryRefundByStatu,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -50,7 +51,7 @@ public class RefundOrderService {
 
 
     public String auditRefundOrder(AuditRefundOrderlInVo auditRefundOrderlInVo){
-        String result = ApiUtils.post(apiHost + "/order/refund/auditRefund", auditRefundOrderlInVo);
+        String result = ApiUtils.post(apiHost + auditRefund, auditRefundOrderlInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");

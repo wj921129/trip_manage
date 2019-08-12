@@ -22,14 +22,20 @@ public class AuthService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String idAuthInfoList = "/user/baseInfo/idAuthInfoList";
+
+    private static final String enterpriseAuthInfoList = "/user/baseInfo/enterpriseAuthInfoList";
+
+    private static final String auditIdAuth = "/user/baseInfo/auditIdAuth";
+
+    private static final String auditEnterpriseAuth = "/user/baseInfo/auditEnterpriseAuth";
+
     public Page<IdAuth> queryIdAuthInfo(Page<IdAuth> page){
         JSONObject ob = new JSONObject();
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
         ob.put("idAuth", 20);
-        String requestUrl = apiHost + "/user/baseInfo/idAuthInfoList";
-        //String requestUrl = "http://192.168.31.198:6100/user/baseInfo/idAuthInfoList";
-        String result = ApiUtils.post(requestUrl,ob);
+        String result = ApiUtils.post(apiHost + idAuthInfoList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -51,9 +57,7 @@ public class AuthService {
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
         ob.put("enterpriseAuth", 20);
-        String requestUrl = apiHost + "/user/baseInfo/enterpriseAuthInfoList";
-        //String requestUrl = "http://192.168.31.198:6100/user/baseInfo/enterpriseAuthInfoList";
-        String result = ApiUtils.post(requestUrl,ob);
+        String result = ApiUtils.post(apiHost + enterpriseAuthInfoList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -72,7 +76,7 @@ public class AuthService {
 
 
     public String auditIdAuth(AuditIdAuthInVo auditIdAuthInVo){
-        String result = ApiUtils.post(apiHost + "/user/baseInfo/auditIdAuth", auditIdAuthInVo);
+        String result = ApiUtils.post(apiHost + auditIdAuth, auditIdAuthInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");
@@ -82,7 +86,7 @@ public class AuthService {
 
 
     public String auditEnterpriseAuth(AuditEnterpriseAuthInVo auditEnterpriseAuthInVo){
-        String result = ApiUtils.post(apiHost + "/user/baseInfo/auditEnterpriseAuth", auditEnterpriseAuthInVo);
+        String result = ApiUtils.post(apiHost + auditEnterpriseAuth, auditEnterpriseAuthInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");

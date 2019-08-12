@@ -20,15 +20,17 @@ public class LineReportService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String queryByPage = "/support/lineReport/queryByPage";
+
+    private static final String queryByLineKid = "/support/lineReport/queryByLineKid";
+
     public Page<LineReport> queryLineReport(Page<LineReport> page){
 
         JSONObject ob = new JSONObject();
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
 
-        String requestUrl = apiHost + "/support/lineReport/queryByPage";
-        //String requestUrl = "http://localhost:6150/support/lineReport/queryByPage";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryByPage,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -53,9 +55,7 @@ public class LineReportService {
         JSONArray array = new JSONArray();
         JSONObject ob = new JSONObject();
         ob.put("lineKid", lineKid);
-        String requestUrl = apiHost + "/support/lineReport/queryByLineKid";
-        //String requestUrl = "http://localhost:6150/support/lineReport/queryByLineKid";
-        String requestResult = ApiUtils.get(requestUrl,ob);
+        String requestResult = ApiUtils.get(apiHost + queryByLineKid,ob);
         if(!StringUtils.isEmpty(requestResult)){
             JSONObject resultObject = JSON.parseObject(requestResult);
             if(resultObject != null){

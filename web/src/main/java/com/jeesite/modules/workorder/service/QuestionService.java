@@ -22,11 +22,13 @@ public class QuestionService  extends TreeService<QuestionDao, Question> {
 
     @Value("${api.host}")
     private String apiHost;
+    //private String apiHost = "http://127.0.0.1:7400";
+
+    private static final String queryQuestionList = "/workorder/question/queryQuestionList";
 
     public List<Question> questionList(){
         List<Question> questions = new ArrayList<>();
-        String result = ApiUtils.get(apiHost + "/workorder/question/queryQuestionList");
-        //String result = ApiUtils.get("http://127.0.0.1:7400/workorder/question/queryQuestionList");
+        String result = ApiUtils.get(apiHost + queryQuestionList);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if("200".equals(resultObject.getString("code"))){

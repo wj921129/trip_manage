@@ -20,6 +20,7 @@ public class WithdrawService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String queryWalletWithdrawList = "/user/userWallet/queryWalletWithdrawList";
 
     public Page<Withdraw> queryWithdraw(Page<Withdraw> page){
 
@@ -28,9 +29,7 @@ public class WithdrawService {
         ob.put("pageNumber", page.getPageNo());
         ob.put("withdrawStatu", 10);
 
-        String requestUrl = apiHost + "/user/userWallet/queryWalletWithdrawList";
-        //String requestUrl = "http://localhost:6100/user/userWallet/queryWalletWithdrawList";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryWalletWithdrawList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -47,16 +46,6 @@ public class WithdrawService {
         return page;
     }
 
-
-
-    public String auditRefundOrder(AuditRefundOrderlInVo auditRefundOrderlInVo){
-        String result = ApiUtils.post(apiHost + "/order/refund/auditRefund", auditRefundOrderlInVo);
-        if(!StringUtils.isEmpty(result)){
-            JSONObject resultObject = JSON.parseObject(result);
-            return resultObject.getString("code");
-        }
-        return null;
-    }
 
 
 }

@@ -21,6 +21,10 @@ public class ReportService {
     @Value("${api.host}")
     private String apiHost;
 
+    private static final String queryReport = "/support/report/queryReport";
+
+    private static final String queryByKid = "/dynamic/queryByKid";
+
     public Page<Report> queryAllReport(Page<Report> page){
         Map<String, Object> otherData = page.getOtherData();
 
@@ -30,9 +34,7 @@ public class ReportService {
         ob.put("reportReason", otherData.get("reportReason"));
         ob.put("discoverKid", otherData.get("discoverKid"));
 
-        String requestUrl = apiHost + "/support/report/queryReport";
-        //String requestUrl = "http://192.168.31.198:6150/support/report/queryReport";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryReport,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -55,8 +57,7 @@ public class ReportService {
         DynamicByKidOutVo outVo = new DynamicByKidOutVo();
         JSONObject ob = new JSONObject();
         ob.put("kid", discoverKid);
-        String requestUrl = apiHost + "/dynamic/queryByKid";
-        String result = ApiUtils.get(requestUrl,ob);
+        String result = ApiUtils.get(apiHost + queryByKid,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
