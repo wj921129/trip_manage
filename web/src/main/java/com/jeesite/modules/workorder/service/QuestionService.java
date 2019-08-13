@@ -1,45 +1,69 @@
 package com.jeesite.modules.workorder.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.service.TreeService;
-import com.jeesite.modules.commom.utils.ApiUtils;
-import com.jeesite.modules.test.dao.TestTreeDao;
-import com.jeesite.modules.test.entity.TestTree;
+import com.jeesite.modules.file.utils.FileUploadUtils;
 import com.jeesite.modules.workorder.dao.QuestionDao;
 import com.jeesite.modules.workorder.entity.Question;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Slf4j
+@Transactional(readOnly=true)
 public class QuestionService  extends TreeService<QuestionDao, Question> {
 
-    @Value("${api.host}")
-    private String apiHost;
-    //private String apiHost = "http://127.0.0.1:7400";
-
-    private static final String queryQuestionList = "/workorder/question/queryQuestionList";
-
-    public List<Question> questionList(){
-        List<Question> questions = new ArrayList<>();
-        String result = ApiUtils.get(apiHost + queryQuestionList);
-        if(!StringUtils.isEmpty(result)){
-            JSONObject resultObject = JSON.parseObject(result);
-            if("200".equals(resultObject.getString("code"))){
-                questions = (List<Question>)resultObject.get("data");
-            }
-        }
-        return questions;
+    /**
+     * 获取单条数据
+     * @param question
+     * @return
+     */
+    @Override
+    public Question get(Question question) {
+        return super.get(question);
     }
 
-
-    /*public List<Question> findList(Question question) {
+    /**
+     * 查询列表数据
+     * @param question
+     * @return
+     */
+    @Override
+    public List<Question> findList(Question question) {
         return super.findList(question);
-    }*/
+    }
+
+    /**
+     * 保存数据（插入或更新）
+     * @param question
+     */
+    @Override
+    @Transactional(readOnly=false)
+    public void save(Question question) {
+        super.save(question);
+        // 保存上传图片
+        FileUploadUtils.saveFileUpload(question.getId(), "testTree_image");
+        // 保存上传附件
+        FileUploadUtils.saveFileUpload(question.getId(), "testTree_file");
+    }
+
+    /**
+     * 更新状态
+     * @param question
+     */
+    @Override
+    @Transactional(readOnly=false)
+    public void updateStatus(Question question) {
+        super.updateStatus(question);
+    }
+
+    /**
+     * 删除数据
+     * @param question
+     */
+    @Override
+    @Transactional(readOnly=false)
+    public void delete(Question question) {
+        super.delete(question);
+    }
 }
