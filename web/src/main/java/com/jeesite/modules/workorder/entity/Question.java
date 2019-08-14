@@ -59,7 +59,7 @@ public class Question  extends TreeEntity<Question> {
     }
 
     @NotBlank(message="问题名称不能为空")
-    @Length(min=0, max=200, message="问题名称长度不能超过 200 个字符")
+    @Length(min=1, max=200, message="问题名称长度不能超过 200 个字符")
     public String getQuestionName() {
         return questionName;
     }

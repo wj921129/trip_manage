@@ -85,14 +85,14 @@ public class QuestionController  extends BaseController {
     /**
      * 查看编辑表单
      */
-    @RequiresPermissions("workorder:question:view")
+    /*@RequiresPermissions("workorder:question:view")
     @RequestMapping(value = "addAnswer")
     public String form1(Question question, Model model) {
         // 创建并初始化下一个节点信息
         question = createNextNode(question);
         model.addAttribute("question", question);
         return "modules/workorder/addAnswer";
-    }
+    }*/
 
     /**
      * 创建并初始化下一个节点信息，如：排序号、默认值
