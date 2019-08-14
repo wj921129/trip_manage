@@ -7,7 +7,7 @@
             </div>
         </div>
         <div class="box-body">
-            <#form:form id="searchForm" action="${ctx}/answer/listData" method="post" class="form-inline hide"
+            <#form:form id="searchForm" action="${ctx}/answer1/listData" method="post" class="form-inline hide"
             data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
         </#form:form>
         <table id="dataGrid"></table>
@@ -117,7 +117,7 @@
         }
 
         $.ajax({
-            url : "${ctx}/answer/updateAnswer",
+            url : "${ctx}/answer1/updateAnswer",
             data : {
                 kid : answerkid,
                 answer : $("#answer").val()
@@ -140,7 +140,7 @@
     function deleteAnswer(kid) {
         js.confirm("确定删除吗?",function () {
             $.ajax({
-                url : "${ctx}/answer/deleteAnswer",
+                url : "${ctx}/answer1/deleteAnswer",
                 data : {
                     kid : kid
                 },

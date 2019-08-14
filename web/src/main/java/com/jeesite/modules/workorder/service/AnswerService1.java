@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
-import com.jeesite.modules.workorder.entity.Answer;
+import com.jeesite.modules.workorder.entity.Answer1;
 import com.jeesite.modules.workorder.entity.AnswerUpdateInVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class AnswerService {
+public class AnswerService1 {
 
     @Value("${api.host}")
     private String apiHost;
@@ -27,7 +27,7 @@ public class AnswerService {
 
     private static final String deleteAnswer = "/workorder/answer/deleteAnswer";
 
-    public Page<Answer> queryAllAnswer(Page<Answer> page){
+    public Page<Answer1> queryAllAnswer(Page<Answer1> page){
 
         JSONObject ob = new JSONObject();
         ob.put("pageSize", page.getPageSize());
@@ -38,7 +38,7 @@ public class AnswerService {
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
                 if("200".equals(resultObject.getString("code"))){
-                    List<Answer> answers = (List<Answer>)resultObject.getJSONObject("data").get("entities");
+                    List<Answer1> answers = (List<Answer1>)resultObject.getJSONObject("data").get("entities");
 
                     page.setList(answers);
                     page.setCount(resultObject.getJSONObject("data").getLong("count"));

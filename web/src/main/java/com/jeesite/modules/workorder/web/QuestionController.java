@@ -83,6 +83,18 @@ public class QuestionController  extends BaseController {
     }
 
     /**
+     * 查看编辑表单
+     */
+    @RequiresPermissions("workorder:question:view")
+    @RequestMapping(value = "addAnswer")
+    public String form1(Question question, Model model) {
+        // 创建并初始化下一个节点信息
+        question = createNextNode(question);
+        model.addAttribute("question", question);
+        return "modules/workorder/addAnswer";
+    }
+
+    /**
      * 创建并初始化下一个节点信息，如：排序号、默认值
      */
     @RequiresPermissions("workorder:question:edit")
@@ -199,6 +211,7 @@ public class QuestionController  extends BaseController {
             Map<String, Object> map = MapUtils.newHashMap();
             map.put("id", e.getId());
             map.put("pId", e.getParentCode());
+            map.put("kid", e.getKid());
             map.put("name", StringUtils.getTreeNodeName(isShowCode, e.getQuestionCode(), e.getQuestionName()));
             mapList.add(map);
         }

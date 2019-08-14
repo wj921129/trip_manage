@@ -3,7 +3,7 @@ package com.jeesite.modules.workorder.entity;
 import lombok.Data;
 
 @Data
-public class Answer {
+public class Answer1 {
 
     private String kid = "";
 

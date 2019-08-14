@@ -3,11 +3,10 @@ package com.jeesite.modules.workorder.web;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.user.entity.UserInfo;
-import com.jeesite.modules.workorder.entity.Answer;
+import com.jeesite.modules.workorder.entity.Answer1;
 import com.jeesite.modules.workorder.entity.AnswerUpdateInVo;
-import com.jeesite.modules.workorder.entity.FormUpdateInVo;
-import com.jeesite.modules.workorder.service.AnswerService;
+import com.jeesite.modules.workorder.entity.Question;
+import com.jeesite.modules.workorder.service.AnswerService1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,18 +17,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
-@RequestMapping(value = "${adminPath}/answer")
-public class AnswerController  extends BaseController {
+@RequestMapping(value = "${adminPath}/answer1")
+public class AnswerController1 extends BaseController {
 
     @Autowired
-    private AnswerService answerService;
+    private AnswerService1 answerService;
 
     @RequestMapping(value = {"list", ""})
-    public String list(Answer answer, Model model) {
+    public String list(Answer1 answer, Model model) {
         model.addAttribute("answer", answer);
         return "modules/workorder/answerList";
     }
@@ -37,11 +34,11 @@ public class AnswerController  extends BaseController {
 
     @RequestMapping(value = "listData")
     @ResponseBody
-    public Page<Answer> listData(Answer answer, HttpServletRequest request, HttpServletResponse response) {
+    public Page<Answer1> listData(Answer1 answer, HttpServletRequest request, HttpServletResponse response) {
         String pageSize = request.getParameter("pageSize");
         String pageNo = request.getParameter("pageNo");
 
-        Page<Answer> page = new Page<>();
+        Page<Answer1> page = new Page<>();
         if(!StringUtils.isEmpty(pageSize)){
             page.setPageSize(Integer.parseInt(pageSize));
         }
@@ -49,7 +46,7 @@ public class AnswerController  extends BaseController {
             page.setPageNo(Integer.parseInt(pageNo));
         }
 
-        Page<Answer> answerPage = answerService.queryAllAnswer(page);
+        Page<Answer1> answerPage = answerService.queryAllAnswer(page);
 
         return answerPage;
     }
