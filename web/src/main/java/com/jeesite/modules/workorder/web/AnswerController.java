@@ -90,10 +90,17 @@ public class AnswerController extends BaseController {
 		Question question = questionService.get(searchQuestion);
 		questionKid = question.getKid();
 
-		answer.setQuestionKid(questionKid);
+		Answer searchAnswer = new Answer();
+		searchAnswer.setQuestionKid(questionKid);
+		List<Answer> list = answerService.findList(searchAnswer);
+		if(list != null && list.size() > 0){
+			return renderResult(Global.FALSE, text("该问题已有答案，请删除或者修改！"));
+		}else{
+			answer.setQuestionKid(questionKid);
+			answerService.save(answer);
+			return renderResult(Global.TRUE, text("保存数据成功！"));
+		}
 
-		answerService.save(answer);
-		return renderResult(Global.TRUE, text("保存数据成功！"));
 	}
 
 

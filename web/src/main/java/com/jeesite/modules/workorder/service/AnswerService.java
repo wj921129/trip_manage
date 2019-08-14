@@ -7,6 +7,8 @@ import com.jeesite.modules.workorder.entity.Answer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly=true)
 public class AnswerService extends CrudService<AnswerDao, Answer> {
@@ -14,6 +16,11 @@ public class AnswerService extends CrudService<AnswerDao, Answer> {
     @Override
     public Answer get(Answer answer) {
         return super.get(answer);
+    }
+
+    @Override
+    public List<Answer> findList(Answer answer){
+        return super.findList(answer);
     }
 
     @Override
