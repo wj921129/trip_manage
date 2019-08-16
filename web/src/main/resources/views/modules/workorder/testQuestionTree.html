@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>问题树形展示</title>
+    <style type="text/css">
+        .two{display:none;}
+        .three_tree{margin:20px;border:1px solid #ccc;}
+        .three_tree .tree_title_cut{width:100%;background-color:#f2f2f2;font-size:0;padding:8px 0;border-bottom:1px solid #ccc;}
+        .three_tree .tree_title_cut span{width:24%;display:inline-block;font-size:14px;}
+        .three_tree .tree_title_cut span:first-child{text-align:left;padding-left:20px;}
+        .list_group_li .list{width:100%;font-size:0;padding:8px 0;}
+        .list_group_li .list.on{background-color:rgba(0,0,0,.075);}
+        .list_group_li .list:hover{background-color:rgba(0,0,0,.035);}
+        .list_group_li .list.on:hover{background-color:rgba(0,0,0,.075);}
+        .list_group_li .list span{width:24%;font-size:14px;display:inline-block;}
+        .list_group_li .list span:first-child{text-align:left;padding-left:20px;}
+        .list_group_li .two{margin-left:15px;position:relative;}
+        .list_group_li >.two{margin-left:0;display:block;}
+        .list_group_li .list_box{position:relative;display:block;margin-left:0;}
+        .arrow_three{position:absolute;left:10px;top:12px;display:inline-block;width:0px;height:0px;border-top:5px solid transparent;border-right:5px solid  transparent;border-bottom:5px solid transparent;border-left:5px solid  #666;cursor:pointer;transition:0.1s;}
+        .arrow_three.on{transform:rotate(90deg);top:14px;left:6px;transition:0.1s;}
+        .arrow_three:hover{border-left:5px solid  #000;}
+        .button_a{padding-right: 20px;text-decoration: none;color: #3c8dbc;}
+        #zhezhao{
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.2);
+        }
+        #cuang{
+            width:600px;
+            margin: 10% auto;
+            background-color: white;
+            position: relative;
+            padding-top: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 40px;
+        }
+        .span{
+            display: inline-block;
+            background: #2a579a;
+            padding: 2px 10px;
+            border-radius: 5px;
+            cursor:pointer;
+            color: white;
+            margin: 0 5px;
+        }
+        #appendDiv img{
+            width: 200px;
+            height:200px;
+            display: inline-block;
+            margin-left: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div style="padding: 15px;">
+    <div style="float: left;">
+        <i style="font-size: 14px;"></i> ${text('数据管理')}
+    </div>
+    <div style="float: right;">
+        <a href="#" style="padding-right: 10px;text-decoration: none;color: #3c8dbc;">新增</a>
+    </div>
+</div>
+<div class="three_tree">
+    <div class="tree_title_cut">
+        <span>问题名称</span>
+        <span>问题顺序</span>
+        <span>最后一级</span>
+        <span>操作</span>
+    </div>
+    <div class="list_group_li click_add_on">
+    </div>
+</div>
+<div id="zhezhao">
+    <div id="cuang">
+        <div style="width: 100%;height: 85%">
+            <table style="width: 80%;margin:20px;">
+                <tr>
+                    <td>答案<span style="color: red;">*</span></td>
+                    <td><textarea id="answer" style="margin-top: 20px;resize:none;width:90%;"></textarea></td>
+                </tr>
+
+            </table>
+        </div>
+        <div style="float: right">
+            <span class="span" id="save" onclick="save();">提交</span>
+            <span class="span" id="close">关闭</span>
+        </div>
+    </div>
+</div>
+<script src="${ctxStatic}/jquery/jquery-1.12.4.min.js"></script>
+<script>
+
+    function threeTree(array,html,show) {
+        for (var i = 0; i < array.length; i++) {
+            var object = array[i];
+            if (object.children != "") {
+                var e = $('<div class="two"><i class="toggleOn arrow_three"></i></div>');
+                var f = $('<div class="list"><span>'+object.questionName+'</span><span>'+object.questionOrder+'</span><span>'+(object.isLastLevel ? "是" : "否")+'</span>' +
+                    '<span><a class="button_a" href="#">新增下级</a>' +
+                    '<a class="button_a" href="#">修改</a>' +
+                    '<a class="button_a" href="javascript:void(0);" onclick="deleteQuestion(\''+object.kid+'\');">删除</a>' +
+                    '</span></div>');
+                e.append(f);
+                html.append(e);
+                threeTree(object.children,e,show);
+            } else {
+                html.append('<div class="two"><div class="list"><span>'+object.questionName+'</span><span>'+object.questionOrder+'</span><span>'+(object.isLastLevel ? "是" : "否")+'</span>' +
+                    '<span><a class="button_a" href="#">新增下级</a>' +
+                    '<a class="button_a" href="#">修改</a>' +
+                    '<a class="button_a" href="javascript:void(0);" onclick="deleteQuestion(\''+object.kid+'\');">删除</a>' +
+                    '</span></div></div>');
+            }
+        }
+        // 是否展示全部
+        if (show) {
+            html.find(".two").addClass('show').find(".arrow_three").addClass("on");
+        }
+    }
+
+    $(function(){
+        // 多级树 点击添加类名on
+        $(document).on('click', '.click_add_on .list', function() {
+            $(this).parents(".click_add_on").find(".list").removeClass("on");
+            $(this).addClass("on");
+        });
+        // 多级树 toggle
+        $(document).on('click', '.click_add_on .arrow_three', function() {
+            if ($(this).hasClass("on")) {
+                $(this).removeClass("on").siblings(".two").hide();
+            }else{
+                $(this).addClass("on").siblings(".two").show();
+            }
+        });
+
+        $.ajax({
+            url : "${ctx}/question1/queryTreeQuestion",
+            type : "get",
+            dataType : "json",
+            async : false,
+            success : function(data) {
+                //console.log(data.data);
+                threeTree(data,$(".list_group_li"),false);
+            },
+            error : function(){
+                alert("操作失败！");
+            }
+        });
+
+    });
+
+
+    function deleteQuestion(kid) {
+        if(confirm("确认要删除该数据及所有子数据吗？")){
+            $.ajax({
+                url : "${ctx}/question1/deleteQuestion?kid="+kid,
+                type : "post",
+                dataType : "json",
+                async : false,
+                success : function(data) {
+                    if(data.result == "success"){
+                        alert("删除成功！");
+                        location.reload(true);
+                    }else if(data.result == "failed"){
+                        alert("操作成功！");
+                    }else if(data.result == "nullKid"){
+                        alert("kid不能为空！");
+                    }
+                },
+                error : function(){
+                    alert("操作失败！");
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>
