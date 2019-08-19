@@ -1,55 +1,165 @@
-<% layout('/layouts/default.html', {title: '答案管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
 <div class="main-content">
-	<div class="box box-main">
-		<div class="box-header">
-			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('数据管理')}
-			</div>
-			<div class="box-tools pull-right">
-				<a href="${ctx}/answer/form" class="btn btn-default btnTool" title="${text('新增答案')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
-			</div>
-		</div>
-		<div class="box-body">
-			<#form:form id="searchForm" model="${answer}" action="${ctx}/answer/listData" method="post" class="form-inline hide"
-					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
-			</#form:form>			
-			<table id="dataGrid"></table>
-			<div id="dataGridPage"></div>
-		</div>
-	</div>
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('数据管理')}
+            </div>
+            <div class="box-tools pull-right">
+                <a href="${ctx}/answer/form" class="btn btn-default btnTool" title="${text('新增')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" action="${ctx}/answer/listData" method="post" class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+        </#form:form>
+        <table id="dataGrid"></table>
+        <div id="dataGridPage"></div>
+    </div>
+</div>
+
+<div id="zhezhao">
+    <div id="cuang">
+        <div style="width: 100%;height: 85%">
+            <table style="width: 80%;margin:20px;">
+                <tr>
+                    <td>答案<span style="color: red;">*</span></td>
+                    <td><textarea id="answer" style="margin-top: 20px;resize:none;width:90%;"></textarea></td>
+                </tr>
+
+            </table>
+        </div>
+        <div style="float: right">
+            <span class="span" id="save" onclick="save();">提交</span>
+            <span class="span" id="close">关闭</span>
+        </div>
+    </div>
+</div>
+
 </div>
 <% } %>
+<style>
+    #zhezhao{
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.2);
+    }
+    #cuang{
+        width:600px;
+        margin: 10% auto;
+        background-color: white;
+        position: relative;
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 40px;
+    }
+    .span{
+        display: inline-block;
+        background: #2a579a;
+        padding: 2px 10px;
+        border-radius: 5px;
+        cursor:pointer;
+        color: white;
+        margin: 0 5px;
+    }
+    #appendDiv img{
+        width: 200px;
+        height:200px;
+        display: inline-block;
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+</style>
 <script>
-// 初始化DataGrid对象
-$('#dataGrid').dataGrid({
-	searchForm: $("#searchForm"),
-	columnModel: [
-		{header:'${text("answerCode")}', name:'answerCode', width:200, align:"center", hidden:true},
-		{header:'${text("问题kid")}', name:'questionKid', width:200, align:"center", hidden:true},
-		{header:'${text("问题名称")}', name:'questionName', width:200, align:"center", formatter: function (val, obj, row, act) {
-                if(val.length > 50){
-                    return "<span title='" + val + "'>" + val.substring(0,50) + "...</span>";
-                }else{
-                    return "<span title='" + val + "'>" + val + "</span>";
+    var answerkid;
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        columnModel: [
+            {header:'${text("kid")}', name:'kid', width:100, align:"center", hidden:true},
+            {header:'${text("问题kid")}', name:'questionKid', width:100, align:"center", hidden:true},
+            {header:'${text("问题名称")}', name:'questionName', width:200, align:"center", formatter: function (val, obj, row, act) {
+                    if(val.length > 30){
+                        return "<span title='" + val + "'>" + val.substring(0,30) + "...</span>";
+                    }else{
+                        return "<span title='" + val + "'>" + val + "</span>";
+                    }
+                }},
+            {header:'${text("答案")}', name:'answer', width:200, align:"center", formatter: function (val, obj, row, act) {
+                    if(val.length > 30){
+                        return "<span title='" + val + "'>" + val.substring(0,30) + "...</span>";
+                    }else{
+                        return "<span title='" + val + "'>" + val + "</span>";
+                    }
+                }},
+            {
+                header:'${text("操作")}', name:'actions', width:50,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
+                    return "<a href='${ctx}/answer/form?kid="+row.kid+"&questionKid="+row.questionKid+"&questionName="+row.questionName+"&answer="+row.answer+"' title='${text('修改')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;&nbsp;&nbsp;"
+                        + "<a href='javascript:void(0);' onclick='deleteAnswer(\""+row.kid+"\");' title='${text('删除')}'><i class='fa fa-trash-o'></i></a>"
+                }}
+        ],
+    });
+
+    function openUpdateWindow(kid) {
+        $("#zhezhao").css("display","block");
+        answerkid = kid;
+    }
+
+    $("#close").click(function () {
+        $("#zhezhao").css("display","none");
+    })
+
+    function save() {
+        if($("#answer").val() == ""){
+            js.showMessage("答案不能为空！");
+            return;
+        }
+
+        $.ajax({
+            url : "${ctx}/answer/updateAnswer",
+            data : {
+                kid : answerkid,
+                answer : $("#answer").val()
+            },
+            type : "post",
+            dataType : "json",
+            async : false,
+            success : function(data) {
+                js.showMessage(data.message);
+                $("#zhezhao").css("display","none");
+                $('#dataGrid').dataGrid('reloadGrid');
+            },
+            error : function(){
+                js.showMessage("操作失败！");
+            }
+        });
+    }
+
+
+    function deleteAnswer(kid) {
+        js.confirm("确定删除吗?",function () {
+            $.ajax({
+                url : "${ctx}/answer/deleteAnswer",
+                data : {
+                    kid : kid
+                },
+                type : "post",
+                dataType : "json",
+                async : false,
+                success : function(data) {
+                    js.showMessage(data.message);
+                    $("#zhezhao").css("display","none");
+                    $('#dataGrid').dataGrid('reloadGrid');
+                },
+                error : function(){
+                    js.showMessage("操作失败！");
                 }
-            }},
-		{header:'${text("答案")}', name:'answer', width:200, align:"center", formatter: function (val, obj, row, act) {
-                if(val.length > 50){
-                    return "<span title='" + val + "'>" + val.substring(0,50) + "...</span>";
-                }else{
-                    return "<span title='" + val + "'>" + val + "</span>";
-                }
-            }},
-        {header:'${text("操作")}', name:'actions', width:50,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
-                var actions = [];
-                actions.push('<a href="${ctx}/answer/updateForm?answerCode='+row.answerCode+'" class="btnList" title="${text("编辑数据")}"><i class="fa fa-pencil"></i></a>&nbsp;');
-                actions.push('<a href="${ctx}/answer/delete?answerCode='+row.answerCode+'" class="btnList" title="${text("删除数据")}" data-confirm="${text("确认要删除该数据吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
-                return actions.join('');
-		}}
-	],
-	// 加载成功后执行事件
-	ajaxSuccess: function(data){
-		
-	}
-});
+            });
+        });
+    }
+
 </script>

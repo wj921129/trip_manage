@@ -10,9 +10,11 @@ public class TreeQuestionOutVo {
 
     private String kid = "";
 
-    private String questionName = "";
-
     private String parentKid = "";
+
+    private String parentQuestionName = "";
+
+    private String questionName = "";
 
     private String questionOrder;
 

@@ -35,7 +35,8 @@ public class FormService {
         ob.put("pageNumber", page.getPageNo());
         ob.put("status", 10);
 
-        String result = ApiUtils.get(apiHost + queryFormList,ob);
+        //String result = ApiUtils.get(apiHost + queryFormList,ob);
+        String result = ApiUtils.get("http://127.0.0.1:7400" + queryFormList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -54,7 +55,8 @@ public class FormService {
 
 
     public String dealForm(FormUpdateInVo formUpdateInVo){
-        String result = ApiUtils.post(apiHost + updateForm, formUpdateInVo);
+        //String result = ApiUtils.post(apiHost + updateForm, formUpdateInVo);
+        String result = ApiUtils.post("http://127.0.0.1:7400" + updateForm,formUpdateInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");
@@ -67,7 +69,8 @@ public class FormService {
         JSONObject obj = new JSONObject();
         JSONArray imageArr = new JSONArray();
         JSONArray fileArr = new JSONArray();
-        String result = ApiUtils.get(apiHost + queryByKid + "?kid="+kid);
+        //String result = ApiUtils.get(apiHost + queryByKid + "?kid="+kid);
+        String result = ApiUtils.get("http://127.0.0.1:7400" + queryByKid + "?kid="+kid);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if("200".equals(resultObject.getString("code"))){

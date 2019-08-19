@@ -1,56 +1,126 @@
 <% layout('/layouts/default.html', {title: '数据管理', libs: ['validate','fileupload']}){ %>
 <div class="main-content">
-	<div class="box box-main">
-		<div class="box-header with-border">
-			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('新增答案')}
-			</div>
-			<div class="box-tools pull-right">
-				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-			</div>
-		</div>
-		<#form:form id="inputForm" model="${answer}" action="${ctx}/answer/save" method="post" class="form-horizontal">
-		<div class="box-body">
-			<div class="form-unit">${text('基本信息')}</div>
-			<div class="row">
-				<div class="col-xs-6">
-					<div class="form-group">
-						<label class="control-label col-sm-4"><span class="required ">*</span> ${text('问题')}：</label>
-						<div class="col-sm-8">
-							<#form:treeselect id="parent" title="${text('问题名称')}"
-							path="questionKid" labelPath="questionName"
-							url="${ctx}/question/treeData?excludeCode=${question.id}"
-							class="" allowClear="true" canSelectRoot="true" canSelectParent="true"/>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="form-group">
-						<label class="control-label col-sm-2" title="">
-							<span class="required ">*</span> ${text('答案')}：<i class="fa icon-question hide"></i></label>
-						<div class="col-sm-10">
-							<#form:textarea path="answer" rows="4" maxlength="500" class="form-control"/>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="box-footer">
-			<div class="row">
-				<div class="col-sm-offset-2 col-sm-10">
-					<% if (hasPermi('workorder:answer:edit')){ %>
-					<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('保 存')}</button>&nbsp;
-					<% } %>
-					<button type="button" class="btn btn-sm btn-default" id="btnCancel" onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}</button>
-				</div>
-			</div>
-		</div>
-	</#form:form>
+    <div class="box box-main">
+        <div class="box-header with-border">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> <font id="handleData">${text((answer.kid != null && answer.kid != "") ? '编辑数据' : '新增数据')}</font>
+            </div>
+        </div>
+        <#form:form id="inputForm" model="${answer}" action="${ctx}/answer/save" method="post" class="form-horizontal">
+        <div class="box-body">
+            <div class="form-unit">${text('基本信息')}</div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">
+                            <span class="required ">*</span> ${text('问题KID')}：</label>
+                        <div class="col-sm-8">
+                            <#form:input path="questionKid" class="form-control required" onclick="showTree();"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" title="">
+                            ${text('问题名称')}：<i class="fa icon-question hide"></i></label>
+                        <div class="col-sm-8">
+                            <#form:input path="questionName" maxlength="200" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" title="">
+                            <span class="required ">*</span> ${text('答案')}：<i class="fa icon-question hide"></i></label>
+                        <div class="col-sm-4">
+                            <#form:textarea path="answer" rows="4" maxlength="500" class="form-control required"/>
+                            <#form:hidden path="kid" maxlength="200" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('保 存')}</button>&nbsp;
+                    <button type="button" class="btn btn-sm btn-default" id="btnCancel" onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}</button>
+                </div>
+            </div>
+        </div>
+    </#form:form>
 </div>
+</div>
+<div id="zhezhao">
+    <div id="cuang">
+        <div style="width: 100%;height: 95%">
+            <div class="three_tree">
+                <div class="tree_title_cut">
+                    <span>问题名称</span>
+                </div>
+                <div class="list_group_li click_add_on">
+                </div>
+            </div>
+        </div>
+        <div style="float: right">
+            <span class="span" id="ok">确定</span>
+            <span class="span" id="close">关闭</span>
+        </div>
+    </div>
 </div>
 <% } %>
+<style type="text/css">
+    .two{display:none;}
+    .three_tree{margin:20px;border:1px solid #ccc;height: 400px;overflow-y: auto}
+    .three_tree .tree_title_cut{width:100%;background-color:#f2f2f2;font-size:0;padding:8px 0;border-bottom:1px solid #ccc;}
+    .three_tree .tree_title_cut span{width:100%;display:inline-block;font-size:14px;}
+    .three_tree .tree_title_cut span:first-child{text-align:left;padding-left:20px;}
+    .list_group_li .list{width:100%;font-size:0;padding:5px 0;}
+    .list_group_li .list.on{background-color:rgba(0,0,0,.075);}
+    .list_group_li .list:hover{background-color:rgba(0,0,0,.035);}
+    .list_group_li .list.on:hover{background-color:rgba(0,0,0,.075);}
+    .list_group_li .list span{width:100%;font-size:14px;display:inline-block;}
+    .list_group_li .list span:first-child{text-align:left;padding-left:20px;}
+    .list_group_li .two{margin-left:15px;position:relative;}
+    .list_group_li >.two{margin-left:0;display:block;}
+    .list_group_li .list_box{position:relative;display:block;margin-left:0;}
+    .arrow_three{position:absolute;left:10px;top:12px;display:inline-block;width:0px;height:0px;border-top:5px solid transparent;border-right:5px solid  transparent;border-bottom:5px solid transparent;border-left:5px solid  #666;cursor:pointer;transition:0.1s;}
+    .arrow_three.on{transform:rotate(90deg);top:14px;left:6px;transition:0.1s;}
+    .arrow_three:hover{border-left:5px solid  #000;}
+    .button_a{padding-right: 20px;text-decoration: none;color: #3c8dbc;}
+    #zhezhao{
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.2);
+    }
+    #cuang{
+        width:600px;
+        margin: 1% auto;
+        background-color: white;
+        position: relative;
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 40px;
+    }
+    .span{
+        display: inline-block;
+        background: #2a579a;
+        padding: 2px 10px;
+        border-radius: 5px;
+        cursor:pointer;
+        color: white;
+        margin: 0 5px;
+    }
+</style>
 <script>
     $("#inputForm").validate({
         submitHandler: function(form){
@@ -64,5 +134,86 @@
             }, "json");
         }
     });
+
+
+    function showTree(){
+        $("#zhezhao").css("display","block");
+    }
+
+
+    $(function(){
+        if($("#handleData").text() == "编辑数据"){
+            $("#questionKid").attr("readOnly","readOnly").removeAttr("onclick");
+        }else if($("#handleData").text() == "新增数据"){
+            $("#questionKid").removeAttr("readOnly","").attr("onclick","showTree();");
+        }
+
+        $("#questionName").attr("readOnly","readOnly");
+        $("#questionKid").attr("autocomplete","off");
+
+        // 多级树 点击添加类名on
+        $(document).on('click', '.click_add_on .list', function() {
+            $(this).parents(".click_add_on").find(".list").removeClass("on");
+            $(this).addClass("on");
+        });
+        // 多级树 toggle
+        $(document).on('click', '.click_add_on .arrow_three', function() {
+            if ($(this).hasClass("on")) {
+                $(this).removeClass("on").siblings(".two").hide();
+            }else{
+                $(this).addClass("on").siblings(".two").show();
+            }
+        });
+
+        $.ajax({
+            url : "${ctx}/question/queryTreeQuestion",
+            type : "get",
+            dataType : "json",
+            async : false,
+            success : function(data) {
+                //console.log(data.data);
+                threeTree(data,$(".list_group_li"),false);
+            },
+            error : function(){
+                js.showMessage("操作失败！");
+            }
+        });
+
+    });
+
+    function threeTree(array,html,show) {
+        for (var i = 0; i < array.length; i++) {
+            var object = array[i];
+            if (object.children != "") {
+                var e = $('<div class="two"><i class="toggleOn arrow_three"></i></div>');
+                var f = $('<div class="list"><span onclick="getQuestionKid(\''+object.kid+'\',\''+object.questionName+'\');">'+object.questionName+'</span><input type="hidden" value="'+object.kid+'">');
+                e.append(f);
+                html.append(e);
+                threeTree(object.children,e,show);
+            } else {
+                html.append('<div class="two"><div class="list"><span onclick="getQuestionKid(\''+object.kid+'\',\''+object.questionName+'\');">'+object.questionName+'</span><input type="hidden" value="'+object.kid+'">');
+            }
+        }
+        // 是否展示全部
+        if (show) {
+            html.find(".two").addClass('show').find(".arrow_three").addClass("on");
+        }
+    }
+
+    $("#close").click(function () {
+        $("#zhezhao").css("display","none");
+        $("#questionKid").val("");
+        $("#questionName").val("");
+    })
+
+    $("#ok").click(function () {
+        $("#zhezhao").css("display","none");
+    })
+
+
+    function getQuestionKid(questionKid,parentName){
+        $("#questionKid").val(questionKid);
+        $("#questionName").val(parentName);
+    }
 
 </script>

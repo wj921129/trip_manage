@@ -1,100 +1,136 @@
 <% layout('/layouts/default.html', {title: '数据管理', libs: ['dataGrid']}){ %>
 <div class="main-content">
-	<div class="box box-main">
-		<div class="box-header">
-			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('数据管理')}
-			</div>
-			<div class="box-tools pull-right">
-				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
-				<a href="#" class="btn btn-default" id="btnRefreshTree" title="${text('刷新')}"><i class="fa fa-refresh"></i> ${text('刷新')}</a>
-				<a href="#" class="btn btn-default" id="btnExpandTreeNode" title="${text('展开一级')}"><i class="fa fa-angle-double-down"></i> ${text('展开')}</a>
-				<a href="#" class="btn btn-default" id="btnCollapseTreeNode" title="${text('折叠全部')}"><i class="fa fa-angle-double-up"></i> ${text('折叠')}</a>
-				<% if(hasPermi('workorder:question:edit')){ %>
-				<a href="${ctx}/question/form" class="btn btn-default btnTool" title="${text('新增数据')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
-				<a href="#" class="btn btn-default" id="btnFixTreeData" title="修复树表数据（包含字段：parentCodes、treeLeaf、treeLevel、treeSorts、treeNames）"><i class="fa fa-refresh"></i> 修复</a>
-				<% } %>
-			</div>
-		</div>
-		<div class="box-body">
-			<#form:form id="searchForm" model="${question}" action="${ctx}/question/listData" method="post" class="form-inline hide"
-			data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
-			<div class="form-group">
-				<label class="control-label">${text('问题名称')}：</label>
-				<div class="control-inline">
-					<#form:input path="questionName" maxlength="200" class="form-control width-120"/>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="control-label">${text('备注信息')}：</label>
-				<div class="control-inline">
-					<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="control-label">${text('状态')}：</label>
-				<div class="control-inline width-120">
-					<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
-				</div>
-			</div>
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
-				<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
-			</div>
-		</#form:form>
-		<table id="dataGrid"></table>
-	</div>
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('数据管理')}
+            </div>
+            <div class="box-tools pull-right">
+                <a href="${ctx}/question/form" class="btn btn-default btnTool" title="${text('新增')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="three_tree">
+                <div class="tree_title_cut">
+                    <span>问题名称</span>
+                    <span>问题顺序</span>
+                    <span>最后一级</span>
+                    <span>操作</span>
+                </div>
+                <div class="list_group_li click_add_on">
+                </div>
+            </div>
+        <table id="dataGrid"></table>
+        <div id="dataGridPage"></div>
+    </div>
 </div>
-</div>
-<% } %>
+    <% } %>
+<style type="text/css">
+    .two{display:none;}
+    .three_tree{margin:20px;border:1px solid #ccc;}
+    .three_tree .tree_title_cut{width:100%;background-color:#f2f2f2;font-size:0;padding:8px 0;border-bottom:1px solid #ccc;}
+    .three_tree .tree_title_cut span{width:24%;display:inline-block;font-size:14px;}
+    .three_tree .tree_title_cut span:first-child{text-align:left;padding-left:20px;}
+    .list_group_li .list{width:100%;font-size:0;padding:8px 0;}
+    .list_group_li .list.on{background-color:rgba(0,0,0,.075);}
+    .list_group_li .list:hover{background-color:rgba(0,0,0,.035);}
+    .list_group_li .list.on:hover{background-color:rgba(0,0,0,.075);}
+    .list_group_li .list span{width:24%;font-size:14px;display:inline-block;}
+    .list_group_li .list span:first-child{text-align:left;padding-left:20px;}
+    .list_group_li .two{margin-left:15px;position:relative;}
+    .list_group_li >.two{margin-left:0;display:block;}
+    .list_group_li .list_box{position:relative;display:block;margin-left:0;}
+    .arrow_three{position:absolute;left:10px;top:12px;display:inline-block;width:0px;height:0px;border-top:5px solid transparent;border-right:5px solid  transparent;border-bottom:5px solid transparent;border-left:5px solid  #666;cursor:pointer;transition:0.1s;}
+    .arrow_three.on{transform:rotate(90deg);top:14px;left:6px;transition:0.1s;}
+    .arrow_three:hover{border-left:5px solid  #000;}
+    .button_a{padding-right: 20px;text-decoration: none;color: #3c8dbc;}
+</style>
+<script src="${ctxStatic}/jquery/jquery-1.12.4.min.js"></script>
 <script>
-    // 初始化DataGrid对象
-    $('#dataGrid').dataGrid({
-        searchForm: $("#searchForm"),
-        columnModel: [
-            {header:'${text("问题名称")}', name:'questionName', index:'a.question_name', width:250, align:"left", frozen:true, formatter: function(val, obj, row, act){
-                    return '( '+row.questionCode+' ) '+'<a href="${ctx}/question/form?questionCode='+row.questionCode+'" class="btnList" data-title="${text("编辑数据")}">'+(val||row.id)+'</a>';
-                }},
-            {header:'${text("kid")}', name:'kid', index:'a.kid', width:100, align:"center",hidden:true},
-            {header:'${text("本级排序号")}', name:'treeSort', index:'a.tree_sort', width:150, align:"center"},
-            {header:'${text("问题名称")}', name:'questionName', index:'a.question_name', width:150, align:"left"},
-            {header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
-                    return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
-                }},
-            {header:'${text("创建时间")}', name:'createDate', index:'a.create_date', width:150, align:"center"},
-            {header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
-            {header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
-                    var actions = [];
-                <% if(hasPermi('workorder:question:edit')){ %>
-                        actions.push('<a href="${ctx}/question/form?questionCode='+row.questionCode+'" class="btnList" title="${text("编辑数据")}"><i class="fa fa-pencil"></i></a>&nbsp;');
-                        if (row.status == Global.STATUS_NORMAL){
-                            actions.push('<a href="${ctx}/question/disable?questionCode='+row.questionCode+'" class="btnList" title="${text("停用数据")}" data-confirm="${text("确认要停用该数据吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
-                        }
-                        if (row.status == Global.STATUS_DISABLE){
-                            actions.push('<a href="${ctx}/question/enable?questionCode='+row.questionCode+'" class="btnList" title="${text("启用数据")}" data-confirm="${text("确认要启用该数据吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
-                        }
-                        actions.push('<a href="${ctx}/question/delete?questionCode='+row.questionCode+'" class="btnList" title="${text("删除数据")}" data-confirm="${text("确认要删除该数据及所有子数据吗？")}" data-deltreenode="'+row.id+'"><i class="fa fa-trash-o"></i></a>&nbsp;');
-                        actions.push('<a href="${ctx}/question/form?parentCode='+row.id+'" class="btnList" title="${text("新增下级数据")}"><i class="fa fa-plus-square"></i></a>&nbsp;');
-                        /*if (row.isTreeLeaf == true){
-                            actions.push('<a href="${ctx}/question/addAnswer?parentCode='+row.id+'" class="btnList" title="${text("新增答案")}"><i class="fa fa-plus-square"></i></a>&nbsp;');
-                        }*/
-					<% } %>
-                    return actions.join('');
-                }}
-        ],
-        treeGrid: true,			// 启用树结构表格
-        defaultExpandLevel: 0,	// 默认展开的层次
-        expandNodeClearPostData: 'treeName,remarks,', // 展开节点清理请求参数数据（一般设置查询条件的字段属性，否则在查询后，不能展开子节点数据）	// 加载成功后执行事件
-        ajaxSuccess: function(data){
 
+    function threeTree(array,html,show) {
+        for (var i = 0; i < array.length; i++) {
+            var object = array[i];
+            if (object.children != "") {
+                var e = $('<div class="two"><i class="toggleOn arrow_three"></i></div>');
+                var f = $('<div class="list"><span>'+object.questionName+'</span><span>'+object.questionOrder+'</span><span>'+(object.isLastLevel ? "是" : "否")+'</span>' +
+                    '<span><a href="${ctx}/question/form?parentKid='+object.kid+'&parentQuestionName='+object.questionName+'" class="btnList" title="${text("新增下级")}"><i class="fa fa-plus-square"></i></a>&nbsp;&nbsp;&nbsp;' +
+                    '<a href="${ctx}/question/form?parentKid='+object.parentKid+'&parentQuestionName='+object.parentQuestionName+'&kid='+object.kid+'&questionName='+object.questionName+'&questionOrder='+object.questionOrder+'" class="btnList" title="${text("修改")}"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;&nbsp;' +
+                    '<a href="javascript:void(0);" onclick="deleteQuestion(\''+object.kid+'\');" class="btnList" title="${text("删除")}"><i class="fa fa-trash-o"></i></a>' +
+                    '</span></div>');
+                e.append(f);
+                html.append(e);
+                threeTree(object.children,e,show);
+            } else {
+                html.append('<div class="two"><div class="list"><span>'+object.questionName+'</span><span>'+object.questionOrder+'</span><span>'+(object.isLastLevel ? "是" : "否")+'</span>' +
+                    '<span><a href="${ctx}/question/form?parentKid='+object.kid+'&parentQuestionName='+object.questionName+'" class="btnList" title="${text("新增下级")}"><i class="fa fa-plus-square"></i></a>&nbsp;&nbsp;&nbsp;' +
+                    '<a href="${ctx}/question/form?parentKid='+object.parentKid+'&parentQuestionName='+object.parentQuestionName+'&kid='+object.kid+'&questionName='+object.questionName+'&questionOrder='+object.questionOrder+'" class="btnList" title="${text("修改")}"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;&nbsp;' +
+                    '<a href="javascript:void(0);" onclick="deleteQuestion(\''+object.kid+'\');" class="btnList" title="${text("删除")}"><i class="fa fa-trash-o"></i></a>' +
+                    '</span></div></div>');
+            }
         }
+        // 是否展示全部
+        if (show) {
+            html.find(".two").addClass('show').find(".arrow_three").addClass("on");
+        }
+    }
+
+    $(function(){
+        // 多级树 点击添加类名on
+        $(document).on('click', '.click_add_on .list', function() {
+            $(this).parents(".click_add_on").find(".list").removeClass("on");
+            $(this).addClass("on");
+        });
+        // 多级树 toggle
+        $(document).on('click', '.click_add_on .arrow_three', function() {
+            if ($(this).hasClass("on")) {
+                $(this).removeClass("on").siblings(".two").hide();
+            }else{
+                $(this).addClass("on").siblings(".two").show();
+            }
+        });
+
+        $.ajax({
+            url : "${ctx}/question/queryTreeQuestion",
+            type : "get",
+            dataType : "json",
+            async : false,
+            success : function(data) {
+                //console.log(data.data);
+                threeTree(data,$(".list_group_li"),false);
+            },
+            error : function(){
+                js.showMessage("操作失败！");
+            }
+        });
+
     });
 
-    // 修复树表数据（包含字段：parentCodes、treeLeaf、treeLevel、treeSorts、treeNames）
-    $("#btnFixTreeData").click(function(){
-        js.ajaxSubmit("${ctx}/question/fixTreeData", function(data){
-            js.showMessage(data.message);
+
+    function deleteQuestion(kid) {
+        js.confirm("确认要删除该数据及所有子数据吗？",function () {
+            if(kid == "" || kid == null){
+                js.showMessage("kid不能为空！");
+            }else{
+                $.ajax({
+                    url : "${ctx}/question/deleteQuestion?kid="+kid,
+                    type : "post",
+                    dataType : "json",
+                    async : false,
+                    success : function(data) {
+                        if(data.result == "success"){
+                            js.showMessage("删除成功！");
+                            location.reload(true);
+                        }else if(data.result == "failed"){
+                            js.showMessage("删除失败！");
+                        }
+                    },
+                    error : function(){
+                        js.showMessage("操作失败！");
+                    }
+                });
+            }
+
         });
-        return false;
-    });
+    }
 </script>

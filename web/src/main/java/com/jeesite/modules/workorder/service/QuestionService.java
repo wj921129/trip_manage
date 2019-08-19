@@ -1,69 +1,93 @@
 package com.jeesite.modules.workorder.service;
 
-import com.jeesite.common.service.TreeService;
-import com.jeesite.modules.file.utils.FileUploadUtils;
-import com.jeesite.modules.workorder.dao.QuestionDao;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.jeesite.modules.commom.utils.ApiUtils;
+import com.jeesite.modules.workorder.entity.FormUpdateInVo;
 import com.jeesite.modules.workorder.entity.Question;
+import com.jeesite.modules.workorder.entity.TreeQuestionOutVo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional(readOnly=true)
-public class QuestionService  extends TreeService<QuestionDao, Question> {
+public class QuestionService {
 
-    /**
-     * 获取单条数据
-     * @param question
-     * @return
-     */
-    @Override
-    public Question get(Question question) {
-        return super.get(question);
+    @Value("${api.host}")
+    private String apiHost;
+
+    private static final String queryAnswerList = "/workorder/question/queryQuestionList";
+
+    private static final String queryTreeQuestion = "/workorder/question/queryTreeQuestion";
+
+    private static final String deleteQuestion = "/workorder/question/deleteQuestion";
+
+    private static final String addQuestion = "/workorder/question/addQuestion";
+
+    private static final String updateQuestion = "/workorder/question/updateQuestion";
+
+    public List<Question> questionList(){
+        List<Question> questions = new ArrayList<>();
+        //String result = ApiUtils.get(apiHost + queryAnswerList);
+        String result = ApiUtils.get("http://127.0.0.1:7400" + queryAnswerList);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            if("200".equals(resultObject.getString("code"))){
+                questions = (List<Question>)resultObject.get("data");
+            }
+        }
+        return questions;
     }
 
-    /**
-     * 查询列表数据
-     * @param question
-     * @return
-     */
-    @Override
-    public List<Question> findList(Question question) {
-        return super.findList(question);
+
+    public List<TreeQuestionOutVo> queryTreeQuestion(){
+        List<TreeQuestionOutVo> treeQuestionOutVos = new ArrayList<>();
+        //String result = ApiUtils.get(apiHost + queryTreeQuestion);
+        String result = ApiUtils.get("http://127.0.0.1:7400" + queryTreeQuestion);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            if("200".equals(resultObject.getString("code"))){
+                treeQuestionOutVos = (List<TreeQuestionOutVo>)resultObject.get("data");
+            }
+        }
+        return treeQuestionOutVos;
     }
 
-    /**
-     * 保存数据（插入或更新）
-     * @param question
-     */
-    @Override
-    @Transactional(readOnly=false)
-    public void save(Question question) {
-        super.save(question);
-        // 保存上传图片
-        FileUploadUtils.saveFileUpload(question.getId(), "testTree_image");
-        // 保存上传附件
-        FileUploadUtils.saveFileUpload(question.getId(), "testTree_file");
+
+    public JSONObject deleteQuestion(String kid){
+        JSONObject returnObj = new JSONObject();
+        returnObj.put("result", "failed");
+        //String result = ApiUtils.post(apiHost + deleteQuestion + "?kid="+kid,null);
+        String result = ApiUtils.post("http://127.0.0.1:7400" + deleteQuestion + "?kid="+kid,null);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            if("200".equals(resultObject.getString("code"))){
+                returnObj.put("result", "success");
+            }
+        }
+        return returnObj;
     }
 
-    /**
-     * 更新状态
-     * @param question
-     */
-    @Override
-    @Transactional(readOnly=false)
-    public void updateStatus(Question question) {
-        super.updateStatus(question);
+
+    public JSONObject save(Question question){
+        String result = "";
+        if(StringUtils.isEmpty(question.getKid())){//新增
+            //result = ApiUtils.post(apiHost + addQuestion, question);
+            result = ApiUtils.post("http://127.0.0.1:7400" + addQuestion,question);
+        }else{//修改
+            //result = ApiUtils.post(apiHost + updateQuestion, question);
+            result = ApiUtils.post("http://127.0.0.1:7400" + updateQuestion,question);
+        }
+
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            return resultObject;
+        }
+        return null;
     }
 
-    /**
-     * 删除数据
-     * @param question
-     */
-    @Override
-    @Transactional(readOnly=false)
-    public void delete(Question question) {
-        super.delete(question);
-    }
+
 }
