@@ -36,8 +36,8 @@ public class AnswerService {
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
 
-        //String result = ApiUtils.get(apiHost + queryAnswerList,ob);
-        String result = ApiUtils.get("http://127.0.0.1:7400" + queryAnswerList,ob);
+        String result = ApiUtils.get(apiHost + queryAnswerList,ob);
+        //String result = ApiUtils.get("http://127.0.0.1:7400" + queryAnswerList,ob);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if(resultObject != null){
@@ -58,11 +58,11 @@ public class AnswerService {
     public JSONObject save(Answer answer){
         String result = "";
         if(StringUtils.isEmpty(answer.getKid())){//新增
-            //result = ApiUtils.post(apiHost + addQuestion, question);
-            result = ApiUtils.post("http://127.0.0.1:7400" + addAnswer,answer);
+            result = ApiUtils.post(apiHost + addAnswer, answer);
+            //result = ApiUtils.post("http://127.0.0.1:7400" + addAnswer,answer);
         }else{//修改
-            //result = ApiUtils.post(apiHost + updateQuestion, question);
-            result = ApiUtils.post("http://127.0.0.1:7400" + updateAnswer,answer);
+            result = ApiUtils.post(apiHost + updateAnswer, answer);
+            //result = ApiUtils.post("http://127.0.0.1:7400" + updateAnswer,answer);
         }
 
         if(!StringUtils.isEmpty(result)){
@@ -74,8 +74,8 @@ public class AnswerService {
 
 
     public String updateAnswer(AnswerUpdateInVo answerUpdateInVo){
-        //String result = ApiUtils.post(apiHost + updateAnswer, answerUpdateInVo);
-        String result = ApiUtils.post("http://127.0.0.1:7400" + updateAnswer, answerUpdateInVo);
+        String result = ApiUtils.post(apiHost + updateAnswer, answerUpdateInVo);
+        //String result = ApiUtils.post("http://127.0.0.1:7400" + updateAnswer, answerUpdateInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");
@@ -85,8 +85,8 @@ public class AnswerService {
 
 
     public String deleteAnswer(String kid){
-        //String result = ApiUtils.post(apiHost + deleteAnswer + "?kid="+kid, null);
-        String result = ApiUtils.post("http://127.0.0.1:7400" + deleteAnswer + "?kid="+kid, null);
+        String result = ApiUtils.post(apiHost + deleteAnswer + "?kid="+kid, null);
+        //String result = ApiUtils.post("http://127.0.0.1:7400" + deleteAnswer + "?kid="+kid, null);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");

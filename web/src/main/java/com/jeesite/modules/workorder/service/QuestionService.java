@@ -31,8 +31,8 @@ public class QuestionService {
 
     public List<Question> questionList(){
         List<Question> questions = new ArrayList<>();
-        //String result = ApiUtils.get(apiHost + queryAnswerList);
-        String result = ApiUtils.get("http://127.0.0.1:7400" + queryAnswerList);
+        String result = ApiUtils.get(apiHost + queryAnswerList);
+        //String result = ApiUtils.get("http://127.0.0.1:7400" + queryAnswerList);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if("200".equals(resultObject.getString("code"))){
@@ -45,8 +45,8 @@ public class QuestionService {
 
     public List<TreeQuestionOutVo> queryTreeQuestion(){
         List<TreeQuestionOutVo> treeQuestionOutVos = new ArrayList<>();
-        //String result = ApiUtils.get(apiHost + queryTreeQuestion);
-        String result = ApiUtils.get("http://127.0.0.1:7400" + queryTreeQuestion);
+        String result = ApiUtils.get(apiHost + queryTreeQuestion);
+        //String result = ApiUtils.get("http://127.0.0.1:7400" + queryTreeQuestion);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if("200".equals(resultObject.getString("code"))){
@@ -60,8 +60,8 @@ public class QuestionService {
     public JSONObject deleteQuestion(String kid){
         JSONObject returnObj = new JSONObject();
         returnObj.put("result", "failed");
-        //String result = ApiUtils.post(apiHost + deleteQuestion + "?kid="+kid,null);
-        String result = ApiUtils.post("http://127.0.0.1:7400" + deleteQuestion + "?kid="+kid,null);
+        String result = ApiUtils.post(apiHost + deleteQuestion + "?kid="+kid,null);
+        //String result = ApiUtils.post("http://127.0.0.1:7400" + deleteQuestion + "?kid="+kid,null);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             if("200".equals(resultObject.getString("code"))){
@@ -75,11 +75,11 @@ public class QuestionService {
     public JSONObject save(Question question){
         String result = "";
         if(StringUtils.isEmpty(question.getKid())){//新增
-            //result = ApiUtils.post(apiHost + addQuestion, question);
-            result = ApiUtils.post("http://127.0.0.1:7400" + addQuestion,question);
+            result = ApiUtils.post(apiHost + addQuestion, question);
+            //result = ApiUtils.post("http://127.0.0.1:7400" + addQuestion,question);
         }else{//修改
-            //result = ApiUtils.post(apiHost + updateQuestion, question);
-            result = ApiUtils.post("http://127.0.0.1:7400" + updateQuestion,question);
+            result = ApiUtils.post(apiHost + updateQuestion, question);
+            //result = ApiUtils.post("http://127.0.0.1:7400" + updateQuestion,question);
         }
 
         if(!StringUtils.isEmpty(result)){
