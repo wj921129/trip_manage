@@ -14,16 +14,20 @@
 						<% if(orderDetailsVo.orderStatu == 10) {%>
 							<h4>待付款</h4>
 						  <% } else if(orderDetailsVo.orderStatu == 20){%>
-							<h4>待出行</h4>
+							<h4>付款中</h4>
 						  <% } else if(orderDetailsVo.orderStatu == 30){%>
-							<h4>已完成</h4>
+							<h4>付款失败</h4>
 						  <% } else if(orderDetailsVo.orderStatu == 40){%>
-							<h4>已评论</h4>
+							<h4>付款成功</h4>
 						  <% } else if(orderDetailsVo.orderStatu == 50){%>
-							<h4>退款单</h4>
+							<h4>待出行</h4>
 						  <% } else if(orderDetailsVo.orderStatu == 60){%>
-							<h4>已失效</h4>
-						  <%}%>
+							<h4>已完成</h4>
+						  <%} else if (orderDetailsVo.orderStatu == 70) {%>
+						    <h4>已评论</h4>
+						  <% } else if (orderDetailsVo.orderStatu == 80){ %>
+						    <h4>退款单</h4>
+						  <% } %>
 					</div>
 				</div>
 				<div class="row dd_yanshe" style="margin-top: 10px">

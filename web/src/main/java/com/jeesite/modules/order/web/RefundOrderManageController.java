@@ -91,9 +91,9 @@ public class RefundOrderManageController extends BaseController {
         }
     }
 
-    /**
+/*    *//**
      * 后台通过审核
-     */
+     *//*
     @RequiresPermissions("test:testData:edit")
     @RequestMapping(value = "examineYes")
     @ResponseBody
@@ -102,21 +102,21 @@ public class RefundOrderManageController extends BaseController {
         //调用通过审核接口
         refundOrderManageService.backstageAgreeRefund(refundOrderListVo);
         return renderResult(Global.TRUE, text("审核成功!"));
-    }
+    }*/
 
     /**
      * 后台不通过 跳转填写不通过原因页面
-     */
+     *//*
     @RequiresPermissions("test:testData:edit")
     @RequestMapping(value = "examineNo")
     public String examineNo(@Validated ExamineReasonVo examineReasonVo,Model model) {
         model.addAttribute("examineReasonVo",examineReasonVo);
         return "modules/order/examineNoReason";
-    }
+    }*/
 
     /**
      * 添加审核不通过原因
-     */
+     *//*
     @RequiresPermissions("test:testData:edit")
     @RequestMapping(value = "addReason")
     @ResponseBody
@@ -126,6 +126,6 @@ public class RefundOrderManageController extends BaseController {
         refundOrderManageService.backstageRefuseRefund(examineReasonVo);
         return renderResult(Global.TRUE, text("修改退款单状态[审核不通过]成功!"));
     }
-
+*/
 
 }

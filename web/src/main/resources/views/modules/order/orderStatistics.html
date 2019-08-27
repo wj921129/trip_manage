@@ -76,9 +76,9 @@
     <div><font id="dayFont1">昨日</font>订单数:</div>
     <div><font id="orderTotalCount">0</font></div>
     <div><font id="dayFont2">昨日</font>退款单数:</div>
-    <div><font id="orderCount50">0</font></div>
-    <div><font id="dayFont3">昨日</font>失效订单数:</div>
-    <div><font id="orderCount60">0</font></div>
+    <div><font id="orderCount80">0</font></div>
+    <div><font id="dayFont3">昨日</font>付款失败订单数:</div>
+    <div><font id="orderCount30">0</font></div>
 
 </div>
 <div style="width: 100%;display: flex">
@@ -87,7 +87,7 @@
         <div><span><input type="date" id="fromDay"></span>&nbsp;&nbsp;--&nbsp;&nbsp;<span><input type="date" id="toDay"></span>
             <span style="cursor: pointer;margin-left:20px;padding:5px;border: 1px solid #ccc;" onclick="searchData();">搜索</span></div>
         <table class="table_xc" style="height: 30px;">
-            <tr><th>时间</th><th>订单总数</th><th>待付款</th><th>待出行</th><th>已完成</th><th>已评价</th><th>退款单</th><th>支付超时</th></tr>
+            <tr><th>时间</th><th>订单总数</th><th>待付款</th><th>付款失败</th><th>付款成功</th><th>待出行</th><th>已完成</th><th>已评价</th><th>退款单</th></tr>
         </table>
         <table class="table table-hover text-center table_xc" id="dataTable" style="overflow: auto;display: block;height: 400px">
 
@@ -127,28 +127,31 @@ var subtextName="昨日"
          url : "${ctx}/order/echartsData?countValue="+value,
          dataType : "json",
          success : function(data) {
+             console.log("回调反参:"+ JSON.stringify(data))
              var totalCount = 0;
              var count10 = 0;
-             var count20 = 0;
              var count30 = 0;
              var count40 = 0;
              var count50 = 0;
              var count60 = 0;
+             var count70 = 0;
+             var count80 = 0;
              var echartsData = data.echartsData;
              if(echartsData.length > 0){
                  for (var i=0;i<echartsData.length;i++){
                      totalCount = totalCount + echartsData[i].orderCountTotal;
-                     count10 = count10 + echartsData[i].orderStatu10;
-                     count20 = count20 + echartsData[i].orderStatu20;
-                     count30 = count30 + echartsData[i].orderStatu30;
-                     count40 = count40 + echartsData[i].orderStatu40;
-                     count50 = count50 + echartsData[i].orderStatu50;
-                     count60 = count60 + echartsData[i].orderStatu60;
+                     count10 += echartsData[i].orderStatu10;
+                     count30 += echartsData[i].orderStatu30;
+                     count40 += echartsData[i].orderStatu40;
+                     count50 += echartsData[i].orderStatu50;
+                     count60 += echartsData[i].orderStatu60;
+                     count70 += echartsData[i].orderStatu70;
+                     count80 += echartsData[i].orderStatu80;
                  }
              }
              $("#orderTotalCount").text(totalCount);
-             $("#orderCount50").text(count50);
-             $("#orderCount60").text(count60);
+             $("#orderCount80").text(count80);
+             $("#orderCount30").text(count30);
              myChart.setOption({
                  title : {
                      text: '千应订单统计',
@@ -173,11 +176,12 @@ var subtextName="昨日"
                          radius: '55%',
                          data:[
                              {value:count10, name:'待付款订单'},
-                             {value:count20, name:'待出行订单'},
-                             {value:count30, name:'已完成订单'},
-                             {value:count40, name:'已评论订单'},
-                             {value:count50, name:'退款单'},
-                             {value:count60, name:'支付超时订单'}
+                             {value:count30, name:'付款失败订单'},
+                             {value:count40, name:'付款成功订单'},
+                             {value:count50, name:'待出行订单'},
+                             {value:count60, name:'已完成订单'},
+                             {value:count70, name:'已评论订单'},
+                             {value:count80, name:'退款单'}
                          ]
                      }
                  ]
@@ -237,7 +241,7 @@ function changeSize(size){
              if(tableData.length > 0){
                  var str = "";
                  for (var i=0;i<tableData.length;i++){
-                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].orderCountTotal+"</td><td>"+tableData[i].orderStatu10+"</td><td>"+tableData[i].orderStatu20+"</td><td>"+tableData[i].orderStatu30+"</td><td>"+tableData[i].orderStatu40+"</td><td>"+tableData[i].orderStatu50+"</td><td>"+tableData[i].orderStatu60+"</td></tr>";
+                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].orderCountTotal+"</td><td>"+tableData[i].orderStatu10+"</td><td>"+tableData[i].orderStatu30+"</td><td>"+tableData[i].orderStatu40+"</td><td>"+tableData[i].orderStatu50+"</td><td>"+tableData[i].orderStatu60+"</td><td>"+tableData[i].orderStatu70+"</td><td>"+tableData[i].orderStatu80+"</td></tr>";
                  }
                  $("#dataTable").html(str);
 
@@ -271,7 +275,7 @@ function changeSize(size){
              if(tableData.length > 0){
                  var str = "";
                  for (var i=0;i<tableData.length;i++){
-                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].orderCountTotal+"</td><td>"+tableData[i].orderStatu10+"</td><td>"+tableData[i].orderStatu20+"</td><td>"+tableData[i].orderStatu30+"</td><td>"+tableData[i].orderStatu40+"</td><td>"+tableData[i].orderStatu50+"</td><td>"+tableData[i].orderStatu60+"</td></tr>";
+                     str += "<tr><td>"+tableData[i].date+"</td><td>"+tableData[i].orderCountTotal+"</td><td>"+tableData[i].orderStatu10+"</td><td>"+tableData[i].orderStatu30+"</td><td>"+tableData[i].orderStatu40+"</td><td>"+tableData[i].orderStatu50+"</td><td>"+tableData[i].orderStatu60+"</td><td>"+tableData[i].orderStatu70+"</td><td>"+tableData[i].orderStatu80+"</td></tr>";
                  }
                  $("#dataTable").html(str);
 

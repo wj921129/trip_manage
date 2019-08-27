@@ -64,7 +64,7 @@ public class RefundOrderManageService {
        return null;
    }
 
-   //后台审核同意退款
+/*   //后台审核同意退款
    public void backstageAgreeRefund (RefundOrderListVo refundOrderListVo){
          String requestUrl = apiHost + "/order/refund/backstageAgreeRefund";
       // String requestUrl = "http://192.168.31.201:7120/order/refund/backstageAgreeRefund";
@@ -75,9 +75,9 @@ public class RefundOrderManageService {
                log.info("后台同意退款失败");
            }
        }
-   }
+   }*/
 
-    // 后台审核不同意退款
+  /*  // 后台审核不同意退款
     public void backstageRefuseRefund (ExamineReasonVo examineReasonVo){
          String requestUrl = apiHost + "/order/refund/backstageRefuseRefund";
        // String requestUrl = "http://192.168.31.201:7120/order/refund/backstageRefuseRefund";
@@ -89,6 +89,6 @@ public class RefundOrderManageService {
             }
         }
 
-    }
+    }*/
 
 }
