@@ -75,7 +75,7 @@ public class AnswerController extends BaseController {
                 return renderResult(Global.FALSE, jsonObject.getString("msg"));
             }
         }else{
-            return renderResult(Global.TRUE, "失败！");
+            return renderResult(Global.FALSE, "失败！");
         }
     }
 
