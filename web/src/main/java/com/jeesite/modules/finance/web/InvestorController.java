@@ -34,7 +34,7 @@ public class InvestorController  extends BaseController {
     /**
      * 查询列表
      */
-    @RequiresPermissions("test:testData:view")
+    //@RequiresPermissions("test:testData:view")
     @RequestMapping(value = {"list", ""})
     public String list(Investor investor, Model model) {
         model.addAttribute("investor", investor);
@@ -44,7 +44,7 @@ public class InvestorController  extends BaseController {
     /**
      * 查询列表数据
      */
-    @RequiresPermissions("test:testData:view")
+    //@RequiresPermissions("test:testData:view")
     @RequestMapping(value = "listData")
     @ResponseBody
     public Page<Investor> listData(Investor investor, HttpServletRequest request, HttpServletResponse response) {
@@ -68,7 +68,7 @@ public class InvestorController  extends BaseController {
     /**
      * 查看编辑表单
      */
-    @RequiresPermissions("test:testData:view")
+    //@RequiresPermissions("test:testData:view")
     @RequestMapping(value = "form")
     public String form(Investor investor, Model model) {
         model.addAttribute("inventor", investor);
@@ -78,7 +78,7 @@ public class InvestorController  extends BaseController {
     /**
      * 保存数据
      */
-    @RequiresPermissions("test:testData:edit")
+    //@RequiresPermissions("test:testData:edit")
     @PostMapping(value = "save")
     @ResponseBody
     public String save(@Validated Investor investor) {
@@ -92,7 +92,7 @@ public class InvestorController  extends BaseController {
     /**
      * 删除数据
      */
-    @RequiresPermissions("test:testData:edit")
+    //@RequiresPermissions("test:testData:edit")
     @RequestMapping(value = "delete")
     @ResponseBody
     public String delete(@Validated Investor investor) {

@@ -33,7 +33,7 @@ public class ConfigCenterController {
     /**
      * 查询列表
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = {"list", ""})
     public String list(ConfigCenterListVo configCenterListVo, Model model) {
         model.addAttribute("configCenterListVo", configCenterListVo);
@@ -43,7 +43,7 @@ public class ConfigCenterController {
     /**
      * 查询列表数据
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "listData")
     @ResponseBody
     public Page<ConfigCenterListVo> listData(ConfigCenterListVo configCenterListVo, HttpServletRequest request, HttpServletResponse response) {
@@ -73,7 +73,7 @@ public class ConfigCenterController {
      /*
      * 跳转到添加配置页面
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "toAdd")
     public String toAdd(AddConfigVo addConfigVo,Model model) {
         model.addAttribute("addConfigVo",addConfigVo);
@@ -83,7 +83,7 @@ public class ConfigCenterController {
     /*
      * 添加配置
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "add")
     @ResponseBody
     public String add(@Validated AddConfigVo addConfigVo) {
@@ -95,7 +95,7 @@ public class ConfigCenterController {
     /*
      * 跳转到修改配置页面
      */
-    @RequiresPermissions("test:testData:view")
+  //  @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "toUpdate")
     public String toUpdate (Model model,HttpServletRequest request){
         //获取表单参数
@@ -111,7 +111,7 @@ public class ConfigCenterController {
     /*
      * 修改配置
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "update")
     @ResponseBody
     public String update(@Validated UpdateConfigVo updateConfigVo) {

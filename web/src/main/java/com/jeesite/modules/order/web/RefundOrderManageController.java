@@ -37,7 +37,7 @@ public class RefundOrderManageController extends BaseController {
     /**
      * 查询列表
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = {"list", ""})
     public String list(RefundOrderListVo refundOrderListVo, Model model) {
         model.addAttribute("refundOrderListVo", refundOrderListVo);
@@ -47,7 +47,7 @@ public class RefundOrderManageController extends BaseController {
    /**
      * 查询列表数据
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "listData")
     @ResponseBody
     public Page<RefundOrderListVo> listData(RefundOrderListVo refundOrderListVo, HttpServletRequest request, HttpServletResponse response) {
@@ -77,7 +77,7 @@ public class RefundOrderManageController extends BaseController {
     /**
      * 查询退款单详情
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "view")
     public String form(RefundOrderDetailsVo refundOrderDetailsVo, Model model) {
         log.info("查询退款单详情入参:"+ JSONObject.toJSONString(refundOrderDetailsVo));

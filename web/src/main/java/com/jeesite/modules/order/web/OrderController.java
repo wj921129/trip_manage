@@ -35,7 +35,7 @@ public class OrderController extends BaseController {
     /**
      * 查询列表
      */
-    @RequiresPermissions("test:testData:view")
+    //@RequiresPermissions("test:testData:view")
     @RequestMapping(value = {"list", ""})
     public String list(OrderListVo order, Model model) {
         model.addAttribute("order", order);
@@ -45,7 +45,7 @@ public class OrderController extends BaseController {
    /**
      * 查询列表数据
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "listData")
     @ResponseBody
     public Page<OrderListVo> listData(OrderListVo orderListVo, HttpServletRequest request, HttpServletResponse response) {
@@ -75,7 +75,7 @@ public class OrderController extends BaseController {
     /**
      * 查看编辑表单
      */
-    @RequiresPermissions("test:testData:view")
+   // @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "form")
     public String form(OrderListVo orderListVo, Model model) {
         model.addAttribute("order", orderListVo);
@@ -85,7 +85,7 @@ public class OrderController extends BaseController {
     /**
      * 保存数据
      */
-    @RequiresPermissions("test:testData:edit")
+   // @RequiresPermissions("test:testData:edit")
     @PostMapping(value = "save")
     @ResponseBody
     public String save(@Validated AddOrderVo addOrderVo) {
@@ -102,7 +102,7 @@ public class OrderController extends BaseController {
     /**
      * 查看编辑表单
      */
-    @RequiresPermissions("test:testData:view")
+  //  @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "view")
     public String form(OrderDetailsVo orderDetailsVo, Model model) {
         log.info("查询订单详情入参:"+ JSONObject.toJSONString(orderDetailsVo));
