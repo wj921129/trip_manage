@@ -73,12 +73,18 @@
     $('#dataGrid').dataGrid({
         columnModel: [
             {header:'${text("lineKid")}', name:'lineKid', width:100, align:"center", hidden:true},
-            {header:'${text("路线标题")}', name:'lineTitle', width:100, align:"center", formatter: showLine},
+            {header:'${text("路线标题")}', name:'lineTitle', width:200, align:"center", formatter: function (val, obj, row, act) {
+                    if(val.length > 30){
+                        return "<span title='" + val + "'>" + val.substring(0,30) + "...</span>";
+                    }else{
+                        return "<span title='" + val + "'>" + val + "</span>";
+                    }
+                }},
             {header:'${text("举报次数")}', name:'reportCount', width:100, align:"center", formatter: showLineReportInfo},
             {
                 header: '${text("备注")}',
                 name: 'remarks',
-                width: 150,
+                width: 200,
                 align: "center",
                 hidden: false,
                 formatter: function (val, obj, row, act) {
@@ -134,11 +140,6 @@
     })
 
 
-    function showLine(val, obj, row, act) {
-
-        return "<a href='http://www.baidu.com' style='cursor: pointer;text-decoration: none;color: black;'>"+val+"</a>";
-    }
-    
     function showLineReportInfo(val, obj, row, act) {
         return "<a href='javascript:void(0);' style='cursor: pointer;text-decoration: none;color: black;' onclick='show(\""+row.lineKid+"\");'>"+val+"</a>";
     }
