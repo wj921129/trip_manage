@@ -121,17 +121,11 @@ public class LineController extends BaseController {
 
         NewLineDetailsOutVo lineDetailsOutVo = lineService.querySchedule(searchLineInVo.getLineKid(), searchLineInVo.getUserKid());
         model.addAttribute("lineInfo", lineDetailsOutVo.getLine());
-
 		model.addAttribute("touristInfo", lineDetailsOutVo.getTouristInfo());
-
 		model.addAttribute("lineCost", lineDetailsOutVo.getLineCost());
-
 		model.addAttribute("lineFeature", lineDetailsOutVo.getLineFeature());
-
 		model.addAttribute("lineComment", lineDetailsOutVo.getLineComment());
-
 		model.addAttribute("scheduleInfo", lineDetailsOutVo.getScheduleDetails());
-
 		model.addAttribute("lineDetails", lineDetails);
 
 		return "modules/line/lineForm";
@@ -162,7 +156,7 @@ public class LineController extends BaseController {
 			return renderResult(Global.TRUE, "操作失败,lineKid不能为空！");
 		}
 
-		if (flag == 60){
+		if (flag == 5){
 			if (StringUtils.isEmpty(remarks)){
 				return renderResult(Global.FALSE, "操作失败,强制下架请填写下架原因！");
 			}

@@ -167,19 +167,19 @@
                 header:'${text("操作")}', name:'actions', width:90,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
 
                     if (row.delFlag == 10){
-                        return "<a href='javascript:void(0);' onclick='auditDynamic(20,\""+row.kid+"\",\""+row.userKid+"\",1);' title='${text('下架')}'><i class='fa fa-pencil'></i></a>" +"&nbsp;"
+                        return "<a href='javascript:void(0);' onclick='auditDynamic(20,\""+row.kid+"\",\""+row.userKid+"\",1);' title='${text('下架')}'><i class='fa fa-download bian'></i></a>" +"&nbsp;"
                             + "<a href='javascript:void(0);' data-toggle='modal' data-target='.myModal' onclick='showDetails(\""+row.kid+"\");' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
                     }else {
-                        return "<a href='javascript:void(0);' onclick='auditDynamic(10,\""+row.kid+"\", null, null);' title='${text('上架')}'><i class='fa fa-remove'></i></a>" +"&nbsp;"
+                        return "<a href='javascript:void(0);' onclick='auditDynamic(10,\""+row.kid+"\", null, null);' title='${text('上架')}'><i class='fa fa-upload bian' ></i></a>" +"&nbsp;"
                             + "<a href='javascript:void(0);' data-toggle='modal' data-target='.myModal' onclick='showDetails(\""+row.kid+"\");'  title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle'></i></a>&nbsp;"
 
                     }
                 }}
         ],
-        // 双击表格行时调用
-        ondblClickRow: function (id, rownum, colnum, event) {
-            js.addTabPage(null, '编辑数据', '${ctx}/test/testData/form?id=' + id);
-        },
+        // // 双击表格行时调用
+        // ondblClickRow: function (id, rownum, colnum, event) {
+        //     js.addTabPage(null, '编辑数据', '${ctx}/test/testData/form?id=' + id);
+        // },
         // 加载成功后执行事件
         ajaxSuccess: function (data) {
             console.log("--------------")

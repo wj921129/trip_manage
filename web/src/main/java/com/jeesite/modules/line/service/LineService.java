@@ -98,7 +98,7 @@ public class LineService {
         JSONObject data = new JSONObject();
         String result = "";
         String message = "";
-        data.put("lineKid", lineKid);
+        data.put("kid", lineKid);
 
         if (flag == 1){ // 上架
             data.put("lineStatu", 20);
