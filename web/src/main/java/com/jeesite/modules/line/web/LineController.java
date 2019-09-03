@@ -9,6 +9,7 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.commom.utils.ApiPage;
 import com.jeesite.modules.line.entity.*;
 import com.jeesite.modules.line.service.LineService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
@@ -34,6 +35,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "${adminPath}/line")
+@Slf4j
 public class LineController extends BaseController {
 
 	@Autowired
@@ -150,7 +152,7 @@ public class LineController extends BaseController {
 	@RequestMapping(value = "upperOrLower")
 	@ResponseBody
 	public String upperOrLower(String lineKid, Integer flag, String remarks) {
-
+        log.info("路线上下架入参,flag :" + flag + "下架原因,remarks :" + remarks);
 		if (StringUtils.isEmpty(lineKid)){
 
 			return renderResult(Global.TRUE, "操作失败,lineKid不能为空！");
@@ -163,6 +165,7 @@ public class LineController extends BaseController {
 		}
 
 		String message = lineService.upperOrLower(lineKid, flag, remarks);
+        log.info("路线上下架出参 : " + message);
 		return renderResult(Global.TRUE, message);
 	}
 

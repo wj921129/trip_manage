@@ -95,6 +95,9 @@ public class LineService {
     }
 
     public String upperOrLower(String lineKid, Integer flag, String remarks){
+
+        log.info("apiHost : " + apiHost);
+
         JSONObject data = new JSONObject();
         String result = "";
         String message = "";
