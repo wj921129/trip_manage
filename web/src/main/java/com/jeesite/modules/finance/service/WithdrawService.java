@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
-import com.jeesite.modules.finance.entity.AuditRefundOrderlInVo;
+import com.jeesite.modules.finance.entity.DealWithdrawInVo;
 import com.jeesite.modules.finance.entity.Withdraw;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +21,8 @@ public class WithdrawService {
     private String apiHost;
 
     private static final String queryWalletWithdrawList = "/user/userWallet/queryWalletWithdrawList";
+
+    private static final String updateWithdrawStatu = "/user/userWallet/updateWithdrawStatu";
 
     public Page<Withdraw> queryWithdraw(Page<Withdraw> page){
 
@@ -44,6 +46,16 @@ public class WithdrawService {
         }
 
         return page;
+    }
+
+
+    public String dealWithdraw(DealWithdrawInVo dealWithdrawInVo){
+        String result = ApiUtils.post(apiHost + updateWithdrawStatu, dealWithdrawInVo);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            return resultObject.getString("code");
+        }
+        return null;
     }
 
 
