@@ -108,9 +108,13 @@ DIRECTIVE SAFE_OUTPUT_OPEN;
                 </div>
 
                 <!--路线特色-->
-                <div class="tab-pane route" id="route">
+                <div class="tab-pane route xq_img" id="route">
                     <#form:form id="lineFeature" model="${lineFeature}">
                     <p>${lineFeature.lineFeature}</p>
+                    <p>特色图片:</p>
+                    <%for(pics in lineFeature.lineFeaturePics){%>
+                    <img src="${pics.picUrl}"  class='img-rounded'  >
+                    <%}%>
                 </#form:form>
                 </div>
                     <!--行程安排-->

@@ -2,6 +2,7 @@ package com.jeesite.modules.line.entity;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -26,6 +27,8 @@ public class NewLineOutVo {
     private String lineAddress; // 路线游玩地址
 
     private List<LinePicOutVo> homePics; //主页图片存放数组
+
+    private List<LinePicOutVo> lineFeaturePics; //路线特色图片存放数组
 
     private Integer lineStatu; //路线状态（10 审核中  20 进行中  30已失效 40待审核）
 

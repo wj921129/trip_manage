@@ -125,7 +125,10 @@ public class LineController extends BaseController {
         model.addAttribute("lineInfo", lineDetailsOutVo.getLine());
 		model.addAttribute("touristInfo", lineDetailsOutVo.getTouristInfo());
 		model.addAttribute("lineCost", lineDetailsOutVo.getLineCost());
-		model.addAttribute("lineFeature", lineDetailsOutVo.getLineFeature());
+		LineFeatureOutVo lineFeatureOutVo = new LineFeatureOutVo();
+		lineFeatureOutVo.setLineFeature(lineDetailsOutVo.getLineFeature().getLineFeature());
+		lineFeatureOutVo.setLineFeaturePics(lineDetailsOutVo.getLine().getLineFeaturePics());
+		model.addAttribute("lineFeature", lineFeatureOutVo);
 		model.addAttribute("lineComment", lineDetailsOutVo.getLineComment());
 		model.addAttribute("scheduleInfo", lineDetailsOutVo.getScheduleDetails());
 		model.addAttribute("lineDetails", lineDetails);

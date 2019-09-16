@@ -144,7 +144,8 @@
                             "<a href='javascript:void(0);' onclick='deleteLine(4,\""+row.lineKid+"\");' title='${text('删除')}'><i class='fa fa-trash-o bian'></i></a>" +
                             "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
                     } else if (row.status == 50){ // 编辑状态
-
+                        return "<a href='javascript:void(0);' onclick='deleteLine(4,\""+row.lineKid+"\");' title='${text('删除')}'><i class='fa fa-trash-o bian'></i></a>" +
+                               "<a href='${ctx}/line/form?lineKid="+row.lineKid+"&userKid="+row.userKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
                     }
                 }}
         ],
