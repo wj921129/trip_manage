@@ -3,6 +3,7 @@ package com.jeesite.modules.user.web;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.user.entity.BatchCreateInVo;
 import com.jeesite.modules.user.entity.UserInfo;
 import com.jeesite.modules.user.entity.UserStatistics;
 import com.jeesite.modules.user.service.UserInfoService;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -100,6 +102,17 @@ public class UserInfoController extends BaseController {
         int pageSize = Integer.parseInt(request.getParameter("pageSize"));
 
         JSONObject object = userInfoService.tableDataByTime(fromDay, toDay, pageNo, pageSize);
+
+        return object;
+    }
+
+
+    @PostMapping(value = "createUser")
+    @ResponseBody
+    public JSONObject createUser(Integer createCount) {
+        BatchCreateInVo batchCreateInVo = new BatchCreateInVo();
+        batchCreateInVo.setCreateCount(createCount);
+        JSONObject object = userInfoService.createUser(batchCreateInVo);
 
         return object;
     }

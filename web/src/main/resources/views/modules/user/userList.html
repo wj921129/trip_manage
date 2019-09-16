@@ -3,7 +3,8 @@
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('数据管理')}
+				<i class="fa fa-list-alt"></i> ${text('批量生成用户')}<#form:input path="createCount" maxlength="150" class="form-control width-120" value="10" style="display:inline;"/>
+				<a href="javascript:void(0);" onclick="createUser();" class="btn btn-default" id="btnCreateUser" title="${text('确定')}">${text('确定')}</a>
 			</div>
 			<div class="box-tools pull-right">
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
@@ -59,4 +60,26 @@ $('#dataGrid').dataGrid({
 		}}*/
 	],
 });
+
+$("#createCount").attr("readonly","readonly");
+
+function createUser() {
+    $.ajax({
+        url : "${ctx}/user/createUser?createCount="+$("#createCount").val(),
+        type : "post",
+        async : false,
+        dataType : "json",
+        success : function(data) {
+            console.log(data);
+            if(data != null){
+                alert("成功，账号范围："+data.startNumber + "-" + data.endNumber);
+			}else{
+                alert("失败！");
+			}
+        },
+        error : function(){
+            js.showMessage("操作失败！");
+        }
+    });
+}
 </script>

@@ -5,13 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
+import com.jeesite.modules.user.entity.BatchCreateInVo;
 import com.jeesite.modules.user.entity.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +25,8 @@ public class UserInfoService {
     private static final String queryAllUser = "/user/baseInfo/queryAllUser";
 
     private static final String queryCount = "/support/userStatistics/queryCount";
+
+    private static final String batchCreate = "/user/baseInfo/batchCreate";
 
     public Page<UserInfo> queryAllUser(Page<UserInfo> page){
         Map<String, Object> otherData = page.getOtherData();
@@ -144,6 +146,24 @@ public class UserInfoService {
             if(resultObject != null){
                 if("200".equals(resultObject.getString("code"))){
                     return resultObject;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public JSONObject createUser(BatchCreateInVo batchCreateInVo){
+        JSONObject object = new JSONObject();
+        String result = ApiUtils.post(apiHost + batchCreate, batchCreateInVo);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            if(resultObject != null){
+                if("200".equals(resultObject.getString("code"))){
+                    JSONObject data = resultObject.getJSONObject("data");
+                    object.put("startNumber", data.getInteger("startNumber"));
+                    object.put("endNumber", data.getInteger("endNumber"));
+                    return object;
                 }
             }
         }
