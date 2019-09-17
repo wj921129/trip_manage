@@ -105,17 +105,17 @@ public class LineService {
 
         if (flag == 1){ // 上架
             data.put("lineStatu", 20);
-            result = ApiUtils.post(apiHost + cancelLine, data);
+//            result = ApiUtils.post(apiHost + cancelLine, data);
         }else if (flag == 2){ // 下架
             data.put("lineStatu", 30);
-            result = ApiUtils.post(apiHost + cancelLine, data);
+//            result = ApiUtils.post(apiHost + cancelLine, data);
         }else if (flag == 4){ // 删除
             result = ApiUtils.post(apiHost + deleteLine + "?lineKid=" + lineKid, null);
         }else if (flag == 5){ // 强制下架
             data.put("lineStatu", 60);
             data.put("remarks", remarks);
-            result = ApiUtils.post(apiHost + updateLineStatus, data);
         }
+        result = ApiUtils.post(apiHost + updateLineStatus, data);
 
         if (result != null){
             JSONObject jsonObject = JSONObject.parseObject(result);

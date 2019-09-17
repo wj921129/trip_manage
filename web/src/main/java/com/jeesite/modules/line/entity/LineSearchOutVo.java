@@ -27,7 +27,7 @@ public class LineSearchOutVo extends BaseEntity {
 
     private String phone = "";
 
-    private String pulishTime = "";
+    private String publishTime = "";
 
     private String auditTime = "";
 
