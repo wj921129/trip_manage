@@ -73,6 +73,13 @@ function createUser() {
             console.log(data);
             if(data != null){
                 alert("成功，账号范围："+data.startNumber + "-" + data.endNumber);
+                //成功之后禁用三秒
+                $("#btnCreateUser").removeAttr("onclick");
+                $("#btnCreateUser").attr("disabled",true);
+                setTimeout(function(){
+                    $("#btnCreateUser").attr("onclick","createUser();");
+                    $("#btnCreateUser").attr("disabled",false);
+                },3000)
 			}else{
                 alert("失败！");
 			}
@@ -81,5 +88,6 @@ function createUser() {
             js.showMessage("操作失败！");
         }
     });
+
 }
 </script>
