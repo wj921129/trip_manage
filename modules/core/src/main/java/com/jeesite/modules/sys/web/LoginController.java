@@ -236,6 +236,7 @@ public class LoginController extends BaseController{
 
 		//获取当前会话对象
 		Session session = UserUtils.getSession();
+		session.setAttribute("username",user.getUserName());
 		
 		// 是否是登录操作
 		boolean isLogin = "true".equals(session.getAttribute("__login"));

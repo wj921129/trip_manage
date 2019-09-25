@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="${ctxStatic}/jquery/jquery-1.12.4.min.js"></script>
+    <script src="https://qyimage-1258867350.cos.ap-chengdu.myqcloud.com/other/cos-js-sdk-v5.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .form_top{
+        width: 100%;
+        height: 40px;
+        border-bottom: 1px silver solid;
+    }
+    .form_top span{
+        font-weight: bold;
+        line-height: 40px;
+        margin-left: 10px;
+    }
+    .form_body{
+        width: 100%;
+        overflow: hidden;
+        clear: both;
+        padding-top: 20px;
+        background-color: #F2F2F2;
+
+    }
+    .form_quan{
+        width: 80%;
+        margin: 0 auto;
+    }
+    .form_zhuantai{
+        width: 100%;
+        background-color: white;
+        box-shadow: -1px 2px 3px #888888;
+        height: 80px;
+        line-height: 80px;
+        font-size: 14px;
+        color: #A0A0A0;
+    }
+    .form_zhuantai span{
+        display: inline-block;
+        margin-left: 10px;
+        margin-right: 5px;
+    }
+    .form_zhuantai p{
+        display: inline-block;
+        float: left;
+        margin-left: 10px;
+    }
+    .form_zhuantai p span{
+        font-weight: bold;
+    }
+    .form_zhuantai ul li{
+        margin-left: 10px;
+        float: right;
+        display: inline-block;
+    }
+    .form_zhuantai ul li span{
+        color: #19191B;
+        font-weight: bold;
+    }
+    .form_huifu{
+        background-color: #006EFF;
+        color: white;
+        padding: 6px 0;
+        margin-right: 10px;
+        display: inline-block;
+        margin-top: 15px;
+        margin-left: 75%;
+        width: 5%;
+        text-align: center;
+        text-decoration: none;
+    }
+    .form_gouton{
+        margin-top: 30px;
+        width: 100%;
+        background-color: white;
+        box-shadow: -1px 2px 3px #888888;
+        padding: 15px;
+        font-size: 14px;
+        color: #A0A0A0;
+        margin-bottom: 30px;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
+    }
+    .form_gouton1{
+        font-weight: bold;
+        color: #19191B;
+    }
+    .form_jilu{
+        display: flex;
+        margin-top: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed  #D3D3D3;
+    }
+    .form_jiluimg{
+        flex: 1;
+        padding: 0 15px 0 0;
+    }
+    .form_jiluimg img{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    .form_jiluwt{
+        flex: 20;
+    }
+    .form_jiluwt1{
+        margin-top: 5px;
+        overflow: hidden;
+        clear: both;
+        margin-bottom: 5px;
+    }
+    .form_jiluwt1 span:nth-child(1){
+        float: left;
+    }
+    .form_jiluwt1 span:nth-child(2){
+        float: right;
+    }
+    .form_jiluwt2{
+        width: 100%;
+
+    }
+    .form_jiluwt2 img{
+        margin:10px;
+
+    }
+    .form_jiedan{
+        height: 10px;
+        background-color: #006EFF;
+        color: white;
+        padding: 5px 15px;
+        margin-right: 10px;
+        text-decoration: none;
+    }
+</style>
+<body>
+<div>
+    <div class="form_top">
+        <span>工单详情</span>
+    </div>
+    <#form:form id="baseInfo" model="${baseInfo}">
+    <#form:form id="detail" model="${detail}">
+    <#form:form id="username" model="${username}">
+    <div class="form_body">
+        <div class="form_quan">
+            <div class="form_zhuantai">
+                <p>当前状态
+                    <% if(baseInfo.status == 10){%>
+                    <span style="color: black;">待处理</span>
+                    <%} else if(baseInfo.status == 20){%>
+                    <span style = 'color: green;'>处理中</span>
+                    <% } else if(baseInfo.status == 30){%>
+                    <span style='color: gray;'>已完成</span>
+                    <%}%>
+                </p>
+                <ul>
+                    <% if(baseInfo.status == 10 || baseInfo.status == 20){%>
+                        <li><a class="form_jiedan" href="javascript:void(0);" onclick="doneDeal();">结单</a></li>
+                        <li>联系电话<span>${baseInfo.phone}</span></li>
+                    <%} else if(baseInfo.status == 30){%>
+                    <li>联系电话<span style="margin-right: 15px;">${baseInfo.phone}</span></li>
+                    <%}%>
+                    <li>提单人<span>${baseInfo.username}</span></li>
+                    <li>工单号<span>${baseInfo.kid}</span></li>
+                </ul>
+            </div>
+            <div class="form_gouton">
+                <div class="form_gouton1">
+                    沟通记录
+                </div>
+                <div>
+                    <% for (formDetailOutVo in detail) {%>
+                    <div class="form_jilu">
+                        <div class="form_jiluimg">
+                            <img src="${formDetailOutVo.userImage}" alt="">
+                        </div>
+                        <div class="form_jiluwt">
+                            <div class="form_jiluwt1">
+                                <span>${formDetailOutVo.username}</span>
+                                <span>${formDetailOutVo.createTime}</span>
+                            </div>
+                            <div class="form_jiluwt2" style="color:black;">
+                                ${formDetailOutVo.detailDesc}
+                            </div>
+                            <div class="form_jiluwt2" style="color:black;">
+                                <% for (formFile in formDetailOutVo.formFileOutVos) {%>
+                                <img src="${formFile.imageUrl}"  style='display: inline-block' width="200px" height="200px">
+                                <% }%>
+                            </div>
+                        </div>
+                    </div>
+                    <% }%>
+                </div>
+
+                <% if(baseInfo.status == 10 || baseInfo.status == 20){%>
+                <div id="replyDiv">
+                    <input type="hidden" id="workOrderKid" value="${baseInfo.kid}">
+                    <input type="hidden" id="loginUsername" value="${username}">
+                    <textarea id="replyDesc" style="margin-top: 20px;resize:none;width:80%;height:120px;"  maxlength="400" onchange="this.value=this.value.substring(0, 400)" onkeydown="this.value=this.value.substring(0, 400)" onkeyup="this.value=this.value.substring(0, 400)"></textarea>
+                    <span style="font-size: 12px;color: #666666;">字数小于400</span>
+                    <div><input id="fileInput" type="file" multiple><span id="upload" onclick="upload();" style="color:black;cursor:pointer;">上传</span></div>
+                    <div><a class="form_huifu" href="javascript:void(0);" onclick="addReply();">回复</a></div>
+                </div>
+                <%}%>
+            </div>
+        </div>
+    </div>
+    </#form:form>
+    </#form:form>
+    </#form:form>
+</body>
+
+<script>
+    var picArr=new Array()
+    function addReply() {
+        if($("#replyDesc").val() == null || $("#replyDesc").val() == ""){
+            alert("回复内容不能为空！");
+            return;
+        }
+
+        var picStr = "";
+        if(picArr.length > 0){
+            for(var i=0;i<picArr.length;i++){
+                picStr += picArr[i] + ",";
+            }
+            picStr = picStr.substring(0,picStr.length-1);
+        }
+        console.log(picStr);
+        $.ajax({
+            url : "${ctx}/form/addReply",
+            data : {
+                workOrderKid : $("#workOrderKid").val(),
+                replyDesc : $("#replyDesc").val(),
+                replyType : 20,
+                //replyUsername : $("#loginUsername").val(),//这个地方需要取到当前登录的用户，目前还未取到是写死的，需要优化
+                replyUsername : "system",
+                picStr : picStr
+            },
+            type : "post",
+            async : false,
+            dataType : "json",
+            success : function(data) {
+                if(data.msg == "success"){
+                    alert("回复成功！");
+                    location.reload(true);
+                }else if(data.msg == "failed"){
+                    alert("回复失败！");
+                }else{
+                    alert("操作失败！");
+                }
+            },
+            error : function(){
+                alert("操作失败！");
+            }
+        });
+    }
+
+
+    function doneDeal() {
+        $.ajax({
+            url : "${ctx}/form/doneDeal",
+            data : {
+                workOrderKid : $("#workOrderKid").val(),
+                status : 30
+            },
+            type : "post",
+            async : false,
+            dataType : "json",
+            success : function(data) {
+                if(data.msg == "success"){
+                    alert("成功！");
+                    location.reload(true);
+                }else if(data.msg == "failed"){
+                    alert("失败！");
+                }else{
+                    alert("操作失败！");
+                }
+            },
+            error : function(){
+                alert("操作失败！");
+            }
+        });
+    }
+
+    function upload() {
+        var Bucket = 'qyimage-1258867350';
+        var Region = 'ap-chengdu';
+        var cos = new COS({
+            SecretId: 'AKIDph0KQqUiriUq7tymi5Xap7PJZjMyvegw',
+            SecretKey: 'YM5Phw9Q57hFgNOVYS0aL9Z2RKBtWNWd',
+        });
+        var files = document.getElementById("fileInput").files;
+
+        var d = new Date().getTime();
+        if (window.performance && typeof window.performance.now === "function") {
+            d += performance.now(); //use high-precision timer if available
+        }
+        console.log(files.length);
+        if(files.length == 0){
+            alert("请选择图片！");
+        }else{
+            for (var i = 0, len = files.length; i < len; i++) {
+                //console.log(files[i]);
+                var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    var r = (d + Math.random() * 16) % 16 | 0;
+                    d = Math.floor(d / 16);
+                    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                });
+
+                cos.putObject({
+                    Bucket: Bucket,
+                    Region: Region,
+                    Key: "other/"+uuid+'.png',
+                    Sign:false,
+                    Body:files[i],
+                    StorageClass: 'STANDARD_IA',
+                    onProgress: function(progressData) {
+                    }
+                }, function (err, data) {
+                    //console.log(data);
+                    var url='http://'+data.Location
+                    console.log(url);
+                    picArr.push(url);
+                });
+            }
+        }
+    }
+
+</script>
+</html>

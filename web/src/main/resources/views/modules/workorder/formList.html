@@ -5,137 +5,52 @@
 			<div class="box-title">
 				<i class="fa fa-list-alt"></i> ${text('数据管理')}
 			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+			</div>
 		</div>
 		<div class="box-body">
 			<#form:form id="searchForm" action="${ctx}/form/listData" method="post" class="form-inline hide"
 			data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+			<div class="form-group">
+				<label class="control-label">${text('工单状态')}：</label>
+				<div class="control-inline" style="width: 150px;">
+					<#form:select path="status" dictType="workorder_status" blankOption="true" class="form-control"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+				<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+			</div>
+
 		</#form:form>
 		<table id="dataGrid"></table>
 		<div id="dataGridPage"></div>
 	</div>
 </div>
-
-<div id="zhezhao">
-	<div id="cuang">
-		<div style="width: 100%;height: 85%">
-			<table style="width: 80%;margin:20px;">
-				<tr>
-					<td>解决方式<span style="color: red;">*</span></td>
-					<td><select id="solutions">
-						<option value="10" selected>平台单聊</option>
-						<option value="20">电话沟通</option>
-						<option value="30">发送邮件</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td>解决方法<span style="color: red;">*</span></td>
-					<td><textarea id="resolvent" style="margin-top: 20px;resize:none;"></textarea></td>
-				</tr>
-
-			</table>
-		</div>
-		<div style="float: right">
-			<span class="span" id="save" onclick="save();">提交</span>
-			<span class="span" id="close">关闭</span>
-		</div>
-	</div>
-</div>
-
-
-<div id="zhezhao1">
-	<div id="cuang1">
-		<div style="width: 100%;height: 85%">
-			<div id="appendDiv" >
-			</div>
-		</div>
-		<div style="float: right">
-			<span id="close1">关闭</span>
-		</div>
-	</div>
-</div>
-
 </div>
 <% } %>
-<style>
-	#zhezhao{
-		display: none;
-		position: fixed;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0,0,0,0.2);
-	}
-	#cuang{
-		width:500px;
-		margin: 10% auto;
-		background-color: white;
-		position: relative;
-		padding-top: 10px;
-		padding-left: 10px;
-		padding-right: 10px;
-		padding-bottom: 40px;
-	}
-	.span{
-		display: inline-block;
-		background: #2a579a;
-		padding: 2px 10px;
-		border-radius: 5px;
-		cursor:pointer;
-		color: white;
-		margin: 0 5px;
-	}
-
-	#zhezhao1{
-		display: none;
-		position: fixed;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0,0,0,0.2);
-	}
-	#cuang1{
-		width:650px;
-		margin: 3% auto;
-		background-color: white;
-		position: relative;
-		padding-top: 10px;
-		padding-left: 10px;
-		padding-right: 10px;
-		padding-bottom: 40px;
-	}
-	#cuang1 span{
-		display: inline-block;
-		background: #2a579a;
-		padding: 2px 10px;
-		border-radius: 5px;
-		cursor:pointer;
-		color: white;
-		margin: 0 5px;
-	}
-	#appendDiv{
-		width: 100%;
-	}
-	#appendDiv img{
-		width: 200px;
-		height:200px;
-		display: inline-block;
-		margin-left: 5px;
-		margin-top: 5px;
-	}
-
-</style>
 <script>
 	var formkid;
     // 初始化DataGrid对象
     $('#dataGrid').dataGrid({
         columnModel: [
-            {header:'${text("kid")}', name:'kid', width:100, align:"center", hidden:true},
+            {header:'${text("工单编号")}', name:'kid', width:100, align:"center", formatter: function (val, obj, row, act) {
+                    return "<a style='text-decoration: none;' href='${ctx}/form/form?kid="+row.kid+"'>" + val + "</a>";
+                }},
             {header:'${text("用户kid")}', name:'userKid', width:100, align:"center", hidden:true},
             {header:'${text("用户昵称")}', name:'nickname', width:100, align:"center"},
             {header:'${text("分类kid")}', name:'categoryKid', width:100, align:"center", hidden:true},
             {header:'${text("分类名称")}', name:'categoryName', width:100, align:"center"},
+            {header:'${text("工单状态")}', name:'status', width:80, align:"center", formatter: function (val, obj, row, act) {
+                    if(val == 10){
+                        return "<span title='待处理' style='color: black;'>待处理</span>";
+                    }else if(val == 20){
+                        return "<span title='处理中' style = 'color: green;'>处理中</span>";
+                    }else if(val == 30){
+                        return "<span title='已完成' style='color: gray;'>已完成</span>";
+                    }
+                }},
             {header:'${text("问题描述")}', name:'questionDesc', width:200, align:"center", formatter: function (val, obj, row, act) {
                     if(val.length > 30){
                         return "<span title='" + val + "'>" + val.substring(0,30) + "...</span>";
@@ -143,98 +58,12 @@
                         return "<span title='" + val + "'>" + val + "</span>";
                     }
                 }},
-            {header:'${text("真实姓名")}', name:'realname', width:100, align:"center"},
-            {header:'${text("电话")}', name:'phone', width:100, align:"center"},
-            {header:'${text("邮箱")}', name:'email', width:100, align:"center"},
-            {
+            {header:'${text("发布时间")}', name:'createTime', width:100, align:"center"}
+            /*{
                 header:'${text("操作")}', name:'actions', width:50,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
 					return "<a href='javascript:void(0);' onclick='showFile(\""+row.kid+"\");'title='${text('查看附件')}'><i class='fa fa-eye'></i></a>" +"&nbsp;&nbsp;&nbsp;"
 					+ "<a href='javascript:void(0);' onclick='openDealWindow(\""+row.kid+"\");' title='${text('完成处理')}'><i class='fa fa-pencil'></i></a>"
-                }}
+                }}*/
         ],
     });
-
-
-    function openDealWindow(kid) {
-        $("#zhezhao").css("display","block");
-        formkid = kid;
-    }
-
-    $("#close").click(function () {
-        $("#zhezhao").css("display","none");
-    });
-
-	function save() {
-		if($("#resolvent").val() == ""){
-            js.showMessage("解决方法不能为空！");
-            return;
-		}
-
-        $.ajax({
-            url : "${ctx}/form/dealForm",
-            data : {
-                kid : formkid,
-                solutions : $("#solutions").val(),
-                resolvent : $("#resolvent").val()
-            },
-            type : "post",
-            dataType : "json",
-            async : false,
-            success : function(data) {
-                js.showMessage(data.message);
-                $("#zhezhao").css("display","none");
-                $('#dataGrid').dataGrid('reloadGrid');
-            },
-            error : function(){
-                js.showMessage("操作失败！");
-            }
-        });
-    }
-
-    function showFile(kid) {
-        $.ajax({
-            url : "${ctx}/form/formFile",
-            data : {
-                kid : kid
-            },
-            type : "post",
-            dataType : "json",
-            async : false,
-            success : function(data) {
-                $("#appendDiv").html("");
-                if(data.imageArr.length > 0 || data.fileArr.length > 0){
-
-                    if(data.imageArr.length > 0){
-                        var str = "";
-                        for(var i=0;i<data.imageArr.length;i++){
-                            //alert(data.imageArr[i].fileUrl);
-                            str += "<img src='"+data.imageArr[i].fileUrl+"'>";
-                        }
-                        $("#appendDiv").append(str);
-                    }
-
-                    if(data.fileArr.length > 0){
-                        for(var i=0;i<data.fileArr.length;i++){
-                            //alert(data.fileArr[i].fileUrl);
-                            $("#appendDiv").append("<div style='margin-left:5px;margin-top:10px;'><a href='"+data.fileArr[i].fileUrl+"'>"+data.fileArr[i].fileUrl+"</a></div>");
-                        }
-                    }
-
-                    $("#zhezhao1").css("display","block");
-
-                }else{
-                    js.showMessage("该条工单没有附件！");
-                }
-            },
-            error : function(){
-                js.showMessage("操作失败！");
-            }
-        });
-    }
-
-
-    $("#close1").click(function () {
-        $("#zhezhao1").css("display","none");
-    });
-
 </script>

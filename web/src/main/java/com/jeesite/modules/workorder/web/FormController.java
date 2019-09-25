@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.workorder.entity.Form;
-import com.jeesite.modules.workorder.entity.FormUpdateInVo;
+import com.jeesite.modules.sys.utils.UserUtils;
+import com.jeesite.modules.workorder.entity.*;
 import com.jeesite.modules.workorder.service.FormService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "${adminPath}/form")
@@ -45,6 +51,11 @@ public class FormController  extends BaseController {
         if(!StringUtils.isEmpty(pageNo)){
             page.setPageNo(Integer.parseInt(pageNo));
         }
+        Map<String, Object> paramterMap = new HashMap<>();
+        if(request.getParameter("status") != null){
+            paramterMap.put("status", request.getParameter("status"));
+        }
+        page.setOtherData(paramterMap);
 
         Page<Form> formPage = formService.queryAllForm(page);
 
@@ -52,40 +63,84 @@ public class FormController  extends BaseController {
     }
 
 
-    @PostMapping(value = "dealForm")
-    @ResponseBody
-    public String dealForm(String kid, Integer solutions, String resolvent) {
+    @RequestMapping(value = "form")
+    public String form(String kid, Model model, HttpServletRequest request) {
         if(StringUtils.isEmpty(kid)){
             return renderResult(Global.FALSE, "工单kid不能为空！");
         }
 
-        if(solutions == null){
-            return renderResult(Global.FALSE, "解决方式不能为空！");
+        FormByKidOutVo formByKidOutVo = formService.queryByKid(kid);
+        FormByKidBaseInfoOutVo baseInfoOutVo = new FormByKidBaseInfoOutVo();
+        try {
+            BeanUtils.copyProperties(baseInfoOutVo, formByKidOutVo);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
-
-        if(StringUtils.isEmpty(resolvent)){
-            return renderResult(Global.FALSE, "解决方法不能为空！");
-        }
-
-        FormUpdateInVo formUpdateInVo = new FormUpdateInVo();
-        formUpdateInVo.setKid(kid);
-        formUpdateInVo.setSolutions(solutions);
-        formUpdateInVo.setResolvent(resolvent);
-        String result = formService.dealForm(formUpdateInVo);
-        if("200".equals(result)){
-            return renderResult(Global.TRUE, "处理成功！");
-        }else{
-            return renderResult(Global.FALSE, "处理失败！");
-        }
+        //得到当前登录用户名
+        String username = (String) UserUtils.getSession().getAttribute("username");
+        model.addAttribute("baseInfo", baseInfoOutVo);
+        model.addAttribute("detail", formByKidOutVo.getFormDetailOutVos());
+        model.addAttribute("username", username);
+        return "modules/workorder/form";
     }
 
 
-    @PostMapping(value = "formFile")
+    @PostMapping(value = "addReply")
     @ResponseBody
-    public JSONObject formFile(String kid) {
-        JSONObject obj = formService.formFile(kid);
-        return obj;
+    public JSONObject addReply(String workOrderKid, String replyDesc, Integer replyType, String replyUsername, String picStr) {
+        JSONObject obj = new JSONObject();
+        obj.put("msg", "error");
 
+        List<String> imageUrls = new ArrayList<>();
+        if(!StringUtils.isEmpty(picStr)){
+            String[] split = picStr.split(",");
+            if(split.length > 0){
+                for (int i=0;i<split.length;i++){
+                    imageUrls.add(split[i]);
+                }
+            }
+        }
+
+        FormReplyAddInVo formReplyAddInVo = new FormReplyAddInVo();
+        formReplyAddInVo.setWorkOrderKid(workOrderKid);
+        formReplyAddInVo.setReplyDesc(replyDesc);
+        formReplyAddInVo.setReplyType(replyType);
+        formReplyAddInVo.setReplyUsername(replyUsername);
+        formReplyAddInVo.setImageUrls(imageUrls);
+
+        String result = formService.addReply(formReplyAddInVo);
+        if(!StringUtils.isEmpty(result)){
+            if("200".equals(result)){
+                obj.put("msg", "success");
+            }else{
+                obj.put("msg", "failed");
+            }
+        }
+        return obj;
+    }
+
+
+    @PostMapping(value = "doneDeal")
+    @ResponseBody
+    public JSONObject doneDeal(String workOrderKid, Integer status) {
+        JSONObject obj = new JSONObject();
+        obj.put("msg", "error");
+
+        FormUpdateInVo formUpdateInVo = new FormUpdateInVo();
+        formUpdateInVo.setKid(workOrderKid);
+        formUpdateInVo.setStatus(status);
+
+        String result = formService.doneDeal(formUpdateInVo);
+        if(!StringUtils.isEmpty(result)){
+            if("200".equals(result)){
+                obj.put("msg", "success");
+            }else{
+                obj.put("msg", "failed");
+            }
+        }
+        return obj;
     }
 
 }

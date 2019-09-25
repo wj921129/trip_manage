@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
 import com.jeesite.modules.workorder.entity.Form;
+import com.jeesite.modules.workorder.entity.FormByKidOutVo;
+import com.jeesite.modules.workorder.entity.FormReplyAddInVo;
 import com.jeesite.modules.workorder.entity.FormUpdateInVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -24,16 +27,19 @@ public class FormService {
 
     private static final String queryFormList = "/workorder/form/queryFormList";
 
-    private static final String updateForm = "/workorder/form/updateForm";
-
     private static final String queryByKid = "/workorder/form/queryByKid";
 
+    private static final String addReply = "/workorder/form/addReply";
+
+    private static final String updateForm = "/workorder/form/updateForm";
+
     public Page<Form> queryAllForm(Page<Form> page){
+        Map<String, Object> otherData = page.getOtherData();
 
         JSONObject ob = new JSONObject();
         ob.put("pageSize", page.getPageSize());
         ob.put("pageNumber", page.getPageNo());
-        ob.put("status", 10);
+        ob.put("status", otherData.get("status"));
 
         String result = ApiUtils.get(apiHost + queryFormList,ob);
         //String result = ApiUtils.get("http://127.0.0.1:7400" + queryFormList,ob);
@@ -54,9 +60,24 @@ public class FormService {
     }
 
 
-    public String dealForm(FormUpdateInVo formUpdateInVo){
-        String result = ApiUtils.post(apiHost + updateForm, formUpdateInVo);
-        //String result = ApiUtils.post("http://127.0.0.1:7400" + updateForm,formUpdateInVo);
+    public FormByKidOutVo queryByKid(String kid){
+        FormByKidOutVo formByKidOutVo = new FormByKidOutVo();
+        String result = ApiUtils.get(apiHost + queryByKid + "?kid=" + kid);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject resultObject = JSON.parseObject(result);
+            if(resultObject != null){
+                if("200".equals(resultObject.getString("code"))){
+                    formByKidOutVo = resultObject.getObject("data", FormByKidOutVo.class);
+                }
+            }
+        }
+
+        return formByKidOutVo;
+    }
+
+
+    public String addReply(FormReplyAddInVo formReplyAddInVo){
+        String result = ApiUtils.post(apiHost + addReply, formReplyAddInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
             return resultObject.getString("code");
@@ -65,22 +86,14 @@ public class FormService {
     }
 
 
-    public JSONObject formFile(String kid){
-        JSONObject obj = new JSONObject();
-        JSONArray imageArr = new JSONArray();
-        JSONArray fileArr = new JSONArray();
-        String result = ApiUtils.get(apiHost + queryByKid + "?kid="+kid);
-        //String result = ApiUtils.get("http://127.0.0.1:7400" + queryByKid + "?kid="+kid);
+    public String doneDeal(FormUpdateInVo formUpdateInVo){
+        String result = ApiUtils.post(apiHost + updateForm, formUpdateInVo);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
-            if("200".equals(resultObject.getString("code"))){
-                imageArr = resultObject.getJSONObject("data").getJSONArray("imageOutVos");
-                fileArr = resultObject.getJSONObject("data").getJSONArray("fileOutVos");
-            }
+            return resultObject.getString("code");
         }
-        obj.put("imageArr", imageArr);
-        obj.put("fileArr", fileArr);
-        return obj;
+        return null;
     }
+
 
 }

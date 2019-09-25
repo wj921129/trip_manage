@@ -6,7 +6,6 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.modules.commom.utils.ApiUtils;
 import com.jeesite.modules.workorder.entity.Answer;
 import com.jeesite.modules.workorder.entity.AnswerUpdateInVo;
-import com.jeesite.modules.workorder.entity.Question;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

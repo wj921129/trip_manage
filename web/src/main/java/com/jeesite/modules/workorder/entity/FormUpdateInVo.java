@@ -7,9 +7,6 @@ public class FormUpdateInVo {
 
     private String kid;
 
-    private Integer solutions;
-
-    private String resolvent;
-
+    private Integer status;
 
 }
