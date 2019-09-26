@@ -239,8 +239,7 @@
                 workOrderKid : $("#workOrderKid").val(),
                 replyDesc : $("#replyDesc").val(),
                 replyType : 20,
-                //replyUsername : $("#loginUsername").val(),//这个地方需要取到当前登录的用户，目前还未取到是写死的，需要优化
-                replyUsername : "system",
+                replyUsername : '${@UserUtils.getUser()}',
                 picStr : picStr
             },
             type : "post",

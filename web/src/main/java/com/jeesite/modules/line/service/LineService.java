@@ -72,8 +72,9 @@ public class LineService {
                 lineDetailsOutVo = jsonObject.getObject("data", NewLineDetailsOutVo.class);
             }else {
                 if (jsonObject.getString("errorMsg") != null){
+                    log.info(jsonObject.getString("errorMsg"));
                 }
-                log.info(jsonObject.getString("errorMsg"));
+
             }
         }
 

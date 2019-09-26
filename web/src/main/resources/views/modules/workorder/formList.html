@@ -36,7 +36,8 @@
     $('#dataGrid').dataGrid({
         columnModel: [
             {header:'${text("工单编号")}', name:'kid', width:100, align:"center", formatter: function (val, obj, row, act) {
-                    return "<a style='text-decoration: none;' href='${ctx}/form/form?kid="+row.kid+"'>" + val + "</a>";
+
+                    return "<a href='${ctx}/form/form?kid="+row.kid+"' class='btnList' title='${text('查看')}' >"+val+"</a>&nbsp;";
                 }},
             {header:'${text("用户kid")}', name:'userKid', width:100, align:"center", hidden:true},
             {header:'${text("用户昵称")}', name:'nickname', width:100, align:"center"},
