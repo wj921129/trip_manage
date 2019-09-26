@@ -33,8 +33,8 @@ public class CashoutService {
         object.put("cashoutKid",page.getOtherData().get("cashoutKid"));
         object.put("cashoutStatus",page.getOtherData().get("cashoutStatus"));
 
-        //String requestUrl = apiHost + "/support/cashout/queryCashoutList";
-          String requestUrl = "http://192.168.31.201:7150/support/cashout/queryCashoutList";
+        String requestUrl = apiHost + "/support/cashout/queryCashoutList";
+//          String requestUrl = "http://192.168.31.201:7150/support/cashout/queryCashoutList";
         String result = ApiUtils.post(requestUrl, object);
         if(!StringUtils.isEmpty(result)){
             JSONObject resultObject = JSON.parseObject(result);
