@@ -1,0 +1,154 @@
+<% layout('/layouts/default.html', {title: '提现审核', libs: ['dataGrid']}){ %>
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('提现审核')}
+            </div>
+            <div class="box-tools pull-right">
+                <a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i>
+                    ${text('查询')}</a>
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" model="${cashout}" action="${ctx}/cashout/cashoutData/listData" method="post"
+            class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
+            data-order-by="${parameter.orderBy}">
+            <div class="form-group">
+                <label class="control-label">${text('提现编号')}：</label>
+                <div class="control-inline">
+                    <#form:input path="cashoutKid" maxlength="200" class="form-control width-120"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">${text('提现状态')}：</label>
+                <div class="control-inline width-150">
+                    <#form:select path="cashoutStatus" dictType="cashout_status" blankOption="true" blankOptionLabel="全部提现状态" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+                <button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+            </div>
+        </#form:form>
+        <table id="dataGrid"></table>
+        <div id="dataGridPage"></div>
+    </div>
+ </div>
+</div>
+<% } %>
+<script>
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        searchForm: $("#searchForm"),
+        columnModel: [
+            {
+                header: '${text("提现编号")}',
+                name: 'kid',
+                width: 150,
+                align: "left",
+                frozen: true,
+            },
+            {
+                header: '${text("提现人kid")}',
+                name: 'userKid',
+                width: 150,
+                align: "left",
+                frozen: true,
+            },
+            {
+                header: '${text("提现金额")}',
+                name: 'cashoutMoney',
+                width: 150,
+                align: "left",
+                frozen: true,
+            },
+
+            {
+                header: '${text("提现类型")}',
+                name: 'cashoutType',
+                width: 150,
+                align: "left",
+                frozen: true,
+                formatter: function (val, obj, row, act) {
+                    return js.getDictLabel(${@DictUtils.getDictListJson('cashout_type')}, val, '${text("未知")}', true);
+                }
+            },
+            {
+                header: '${text("提现备注")}',
+                name: 'cashoutRemarks',
+                width: 150,
+                align: "left",
+                frozen: true,
+            },
+            {
+                header: '${text("提现时间")}',
+                name: 'cashoutTime',
+                width: 150,
+                align: "left",
+                frozen: true,
+            },
+            {
+                header: '${text("提现状态")}',
+                name: 'cashoutStatus',
+                width: 150,
+                align: "left",
+                frozen: true,
+                formatter: function (val, obj, row, act) {
+                    return js.getDictLabel(${@DictUtils.getDictListJson('cashout_status')}, val, '${text("未知")}', true);
+                }
+            },
+
+            {
+                header: '${text("操作")}',
+                name: 'actions',
+                width: 150,
+                sortable: false,
+                title: false,
+                formatter: function (val, obj, row, act) {
+                  if(row.cashoutStatus == 10){
+
+                    <% if (hasPermi('test:testData:edit')){ %>
+                            return "<a href='javascript:void(0);' onclick='agreeCashout(\""+row.kid+"\");' title='${text('同意提现')}'><i class='fa fa-check'></i></a>" +"&nbsp;"
+                                    + "<a href='${ctx}/cashout/cashoutData/form?kid="+row.kid+"' class='btnList' title='${text('拒绝提现')}' ><i class='fa fa-times'></i></a>&nbsp;"
+                    <% } %>
+                   } else {
+                      <% if (hasPermi('test:testData:edit')){ %>
+                          return "<a href='javascript:void(0);' onclick='deleteCashout(\""+row.kid+"\");' title='${text('删除')}'><i class='fa fa-trash-o'></i></a>" +"&nbsp;"
+                      <% } %>
+                   }
+                }
+            }
+        ],
+    });
+    function agreeCashout(kid) {
+       $.ajax({
+          url: '${ctx}/cashout/cashoutData/agreeCashout',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+             kid:kid
+          },
+           success: function (result) {
+               js.showMessage(result.message);
+               $('#dataGrid').dataGrid('reloadGrid');
+           }
+       })
+    };
+    function deleteCashout(kid) {
+        $.ajax({
+            url: '${ctx}/cashout/cashoutData/deleteCashout',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                kid:kid
+            },
+            success: function (result) {
+                js.showMessage(result.message);
+                $('#dataGrid').dataGrid('reloadGrid');
+            }
+        })
+    };
+</script>

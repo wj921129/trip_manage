@@ -39,9 +39,10 @@ public class ConfigCenterService {
                     page.setList(configCenterListVoList);
                     page.setCount(resultObject.getJSONObject("data").getLong("count"));
                 }
+                return page;
             }
         }
-        return page;
+        return null;
     }
 
     //添加配置
