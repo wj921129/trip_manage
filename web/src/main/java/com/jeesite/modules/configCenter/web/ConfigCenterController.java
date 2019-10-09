@@ -62,11 +62,16 @@ public class ConfigCenterController {
         if(!StringUtils.isEmpty(request.getParameter("operationName"))){
             paramterMap.put("operationName", request.getParameter("operationName"));
         }
-        if(!StringUtils.isEmpty(request.getParameter("configKid"))){
-            paramterMap.put("configKid", request.getParameter("configKid"));
+        if(!StringUtils.isEmpty(request.getParameter("configKey"))){
+            paramterMap.put("configKey", request.getParameter("configKey"));
         }
         page.setOtherData(paramterMap);
-        return configCenterService.loadConfigCenterList(page);
+        Page<ConfigCenterListVo> result = configCenterService.loadConfigCenterList(page);
+        if(result != null){
+            return result;
+        }else {
+            return new Page<ConfigCenterListVo>();
+        }
     }
 
 
@@ -97,12 +102,14 @@ public class ConfigCenterController {
      */
   //  @RequiresPermissions("test:testData:view")
     @RequestMapping(value = "toUpdate")
-    public String toUpdate (Model model,HttpServletRequest request){
-        //获取表单参数
-        String configKid = request.getParameter("configKid");
+    public String toUpdate (Model model,HttpServletRequest request){        //获取表单参数
+        String configKey = request.getParameter("configKey");
         QueryConfigVo queryConfigVo = new QueryConfigVo();
-        queryConfigVo.setConfigKid(configKid);
+        queryConfigVo.setConfigKey(configKey);
         ConfigEntity configEntity = configCenterService.queryConfig(queryConfigVo);
+       /* String configValue = configEntity.getConfigValue();
+        String replace = configValue.replace("\"", "\\\"");
+        configEntity.setConfigValue(replace);*/
         model.addAttribute("configEntity",configEntity);
         return "modules/configCenter/configCenterDataUpdate";
     }
@@ -115,7 +122,7 @@ public class ConfigCenterController {
     @RequestMapping(value = "update")
     @ResponseBody
     public String update(@Validated UpdateConfigVo updateConfigVo) {
-        log.info("添加配置入参:" + JSONObject.toJSONString(updateConfigVo));
+        log.info("修改配置入参:" + JSONObject.toJSONString(updateConfigVo));
         configCenterService.updateConfig(updateConfigVo);
         return renderResult(Global.TRUE, text("修改配置成功！"));
     }

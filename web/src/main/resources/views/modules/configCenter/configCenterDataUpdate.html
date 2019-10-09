@@ -8,15 +8,15 @@
 		</div>
 		<#form:form id="inputForm" model="${configEntity}" action="${ctx}/configCenter/configData/update" method="post" class="form-horizontal">
 			<div class="box-body">
-				<div class="form-unit">${text('添加配置')}</div>
+				<div class="form-unit">${text('修改配置')}</div>
 
 				<div class="row" align="center">
 					<div class="col-xs-6 col-md-offset-2">
 						<div class="form-group">
 							<label class="control-label col-sm-4 " title="">
-								<span class="required hide">*</span> ${text('配置类型')}：<i class="fa icon-question hide"></i></label>
+								<span class="required hide">*</span> ${text('配置key')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="configType" maxlength="200" class="form-control"/>
+								<#form:input path="configKey"  readonly="true" maxlength="200" class="form-control"/>
 							</div>
 						</div>
 					</div>
@@ -40,7 +40,19 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('配置值')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="configValue" maxlength="200" class="form-control"/>
+								<#form:input  id= "configValue" name = "configValue" value="" maxlength="200" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-6 col-md-offset-2">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('配置描述')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:textarea path ="configRemarks" rows="3" maxlength="200" class="form-control"/>
 							</div>
 						</div>
 					</div>
@@ -58,23 +70,11 @@
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-xs-6 col-md-offset-2">
-						<div class="form-group">
-							<label class="control-label col-sm-4" title="">
-								<span class="required hide">*</span> ${text('配置kid')}：<i class="fa icon-question hide"></i></label>
-							<div class="col-sm-8">
-								<#form:input path="configKid" readonly="true" maxlength="200" class="form-control"/>
-							</div>
-						</div>
-					</div>
-				</div>
-
 			<div class="box-footer">
 				<div class="row" align="center">
 					<div class="col-sm-12">
 						<% if (hasPermi('test:testData:edit')){ %>
-							<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('添 加')}</button>&nbsp;
+							<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('修 改')}</button>&nbsp;
 						<% } %>
 						<button type="button" class="btn btn-sm btn-default" id="btnCancel" onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}</button>
 					</div>
@@ -97,4 +97,9 @@ $("#inputForm").validate({
 		}, "json");
     }
 });
+window.onload=function () {
+	var a = '${@configEntity.getConfigValue()}';
+	document.getElementById("configValue").value = a;
+
+}
 </script>

@@ -26,7 +26,7 @@ public class ConfigCenterService {
         JSONObject object = new JSONObject();
         object.put("pageSize",page.getPageSize());
         object.put("pageNumber",page.getPageNo());
-        object.put("configKid",page.getOtherData().get("configKid"));
+        object.put("configKey",page.getOtherData().get("configKey"));
         object.put("operationName",page.getOtherData().get("operationName"));
 
         String requestUrl = apiHost + "/support/config/loadConfigList";
@@ -37,12 +37,17 @@ public class ConfigCenterService {
                 if("200".equals(resultObject.getString("code"))){
                     List<ConfigCenterListVo> configCenterListVoList = (List<ConfigCenterListVo>)resultObject.getJSONObject("data").get("entities");
                     page.setList(configCenterListVoList);
-                    page.setCount(resultObject.getJSONObject("data").getLong("count"));
+                   String s = resultObject.getJSONObject("data").toJSONString();
+                    if(!s.equals("{}")){
+                        page.setCount(resultObject.getJSONObject("data").getLong("count"));
+                    }else {
+                        page.setCount(0);
+                    }
                 }
                 return page;
             }
         }
-        return null;
+        return null ;
     }
 
     //添加配置

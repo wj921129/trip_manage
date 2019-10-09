@@ -20,9 +20,9 @@
             data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
             data-order-by="${parameter.orderBy}">
             <div class="form-group">
-                <label class="control-label">${text('配置编号')}：</label>
+                <label class="control-label">${text('配置key')}：</label>
                 <div class="control-inline">
-                    <#form:input path="configKid" maxlength="200" class="form-control width-120"/>
+                    <#form:input path="configKey" maxlength="200" class="form-control width-120"/>
                 </div>
             </div>
 
@@ -57,8 +57,8 @@
                 frozen: true,
             },
             {
-                header: '${text("配置类型")}',
-                name: 'configType',
+                header: '${text("配置key")}',
+                name: 'configKey',
                 width: 150,
                 align: "left",
                 frozen: true,
@@ -81,6 +81,13 @@
             {
                 header: '${text("操作人")}',
                 name: 'operationName',
+                width: 150,
+                align: "left",
+                frozen: true,
+            },
+            {
+                header: '${text("配置描述")}',
+                name: 'configRemarks',
                 width: 150,
                 align: "left",
                 frozen: true,
@@ -109,7 +116,7 @@
                 formatter: function (val, obj, row, act) {
                     var actions = [];
                 <% if (hasPermi('test:testData:edit')) { %>
-                        actions.push('<a href="${ctx}/configCenter/configData/toUpdate?configKid=' + row.configKid + '" class="btnList" title="${text("修改配置")}"><i class="fa fa-anchor"></i></a>&nbsp;');
+                        actions.push('<a href="${ctx}/configCenter/configData/toUpdate?configKey=' + row.configKey + '" class="btnList" title="${text("修改配置")}"><i class="fa fa-anchor"></i></a>&nbsp;');
                 <%  } %>
                     return actions.join('');
                 }
