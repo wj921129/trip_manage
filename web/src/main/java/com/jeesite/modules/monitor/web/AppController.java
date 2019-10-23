@@ -3,23 +3,32 @@
  */
 package com.jeesite.modules.monitor.web;
 
+import com.alibaba.druid.sql.visitor.functions.If;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
+import com.jeesite.common.config.Global;
+import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.monitor.entity.App;
-import com.jeesite.modules.monitor.entity.AppDto;
+import com.jeesite.modules.commom.utils.ApiPage;
+import com.jeesite.modules.monitor.entity.AppOut;
+import com.jeesite.modules.monitor.entity.AppIn;
 import com.jeesite.modules.monitor.service.AppService;
-import com.jeesite.modules.think.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping(value = "${adminPath}/app")
 public class AppController extends BaseController {
@@ -27,42 +36,138 @@ public class AppController extends BaseController {
     @Autowired
     private AppService appService;
 
+    /**
+     * 查看编辑服务表单
+     * @param appIn
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "form")
+    public String form(AppIn appIn, Model model) {
+        model.addAttribute("appIn",appIn);
+        return "modules/monitor/monitorDataForm";
+    }
 
     /**
-     * 创建监控服务
+     * 创建编辑监控服务
      */
 //	@RequiresPermissions("qianying:app")
+//    @PostMapping(value = "create")
     @RequestMapping(value = "create")
-    public String create(@RequestBody AppDto appDto, Model model) {
+    @ResponseBody
+    public String create(AppIn appIn ) {
 
-        AppDto app = new AppDto();
-
-        try {
-            BeanUtils.copyProperties(app, appDto);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        log.info("创建或编辑服务的名称，appName :" + appIn.getAppName() + " 中文名称 :" + appIn.getName() + " 服务状态+ :" + appIn.getAppStatus() + " 启动命令 :" +
+                appIn.getAppStart());
+        if (appIn.getAppName() == null || StringUtils.isEmpty(appIn.getAppName())){
+            return renderResult(Global.FALSE, text("操作失败,服务名称不能为空！"));
+        }else if(appIn.getName() == null || StringUtils.isEmpty(appIn.getName())){
+            return renderResult(Global.FALSE, "操作失败,服务中文名称不能为空！");
+        }else if(appIn.getAppStatus() == null) {
+            return renderResult(Global.FALSE, "操作失败,服务状态不能为空！");
+        }else if(appIn.getAppStart() == null || StringUtils.isEmpty(appIn.getAppStart())) {
+            return renderResult(Global.FALSE, "操作失败,启动命令不能为空！");
         }
-
-        appService.create(app);
-
-        model.addAttribute("app", appDto);
-        return "modules/user/userStatistics";
+        String message = appService.createServ(appIn);
+        return renderResult(Global.TRUE, text("保存数据成功！"));
 
     }
 
     /**
-     * 监控服务列表
+     * 监控服务列表--跳转页面功能
      */
 //	@RequiresPermissions("qianying:app")
     @RequestMapping(value = {"list", ""})
-    public String list(AppDto appDto, Model model) {
+    public String list(AppIn appIn) {
+//        List<AppOut> apps = appService.list();
+//        model.addAttribute("appIn", appIn);
+        return "modules/monitor/serviceList";
+    }
 
-        List<App> apps = appService.list();
+    /**
+     * 查询单个服务，
+     * @param appIn
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "queryServ")
+    public String queryServ(AppIn appIn, Model model) {
+        AppIn appIn2 = appService.queryBykid(appIn.getKid());
+        model.addAttribute("appIn", appIn2);
+        return "modules/monitor/monitorDataForm";
+    }
 
-        model.addAttribute("apps", apps);
-        return "modules/user/userStatistics";
+    /**
+     * 根据Kid删除服务
+     * @param appIn
+     * @return
+     */
+    @RequestMapping(value = "deleteServ")
+    @ResponseBody
+    public String deleteServ(AppIn appIn) {
+        String message = "";
+        if(StringUtils.isEmpty(appIn.getKid())) {
+            return renderResult(Global.TRUE, "操作失败！");
+        }
+        message = appService.deleteServ(appIn);
+        return renderResult(Global.TRUE, message);
+    }
+
+    @RequiresPermissions("line:view")
+    @RequestMapping(value = "listData")
+    @ResponseBody
+    public Page<AppOut> listData(AppIn appIn, Model model, HttpServletRequest request, HttpServletResponse response) {
+        System.err.println(JSONObject.toJSONString(appIn));
+        List<AppOut> appOuts = null;
+        if(null == appIn.getName()) {
+            appIn.setName("");
+        }
+        if(null == appIn.getAppName()) {
+            appIn.setAppName("");
+        }
+        if((!appIn.getName().isEmpty()) || (!appIn.getAppName().isEmpty())) {
+            appOuts = appService.queryListServ(appIn);
+        }else {
+            appOuts = appService.queryAll(appIn);
+        }
+        List<AppOut> outApps = page(request, appIn, appOuts);
+        Page<AppOut> page = new Page();
+        page.setList(outApps);
+        page.setCount(appOuts.size());
+        page.setPageNo(appIn.getPageNumber());
+        page.setPageSize(20);
+        return page;
+    }
+
+    /*
+    分页
+     */
+    private List<AppOut> page(HttpServletRequest request, AppIn appIn, List<AppOut> list){
+        Integer size = 20;
+        Integer num = appIn.getPageNumber();
+        List<AppOut> outApps = new ArrayList<AppOut>();
+        String pageSize = request.getParameter("pageSize");
+        String pageNo = request.getParameter("pageNo");
+        if(!StringUtils.isEmpty(pageSize)){
+            size = Integer.parseInt(pageSize);
+            appIn.setPageSize(size);
+        }
+        if(!StringUtils.isEmpty(pageNo)){
+            num = Integer.parseInt(pageNo);
+            appIn.setPageNumber(num);
+        }
+        int mo = list.size() % size;
+        if(mo == 0) {
+            outApps = list.subList((num-1) * size, num * size);
+            log.info(JSONObject.toJSONString(outApps));
+        }else {
+            if(list.size()/(num*size) == 0) {
+                outApps = list.subList((num-1)*size, list.size());
+            }else {
+                outApps = list.subList((num-1) * size, num * size);
+            }
+        }
+        return outApps;
     }
 
     /**
@@ -75,10 +180,30 @@ public class AppController extends BaseController {
 //    @RequiresPermissions("qianying:app")
     @RequestMapping(value = "exec")
     @ResponseBody
-    public Integer exec(@RequestBody AppDto appDto) {
-
-        Integer result = appService.exec(appDto);
-
-        return result;
+    public String exec(AppIn appIn) {
+        String message = "";
+        Integer commandType = appIn.getCommandType();
+        if(appIn.getAppName().isEmpty()) {
+            return renderResult(Global.TRUE, "操作失败！");
+        }
+        if(commandType==1 || commandType==2 || commandType==3) {
+            message = appService.exec(appIn);
+        }else {
+            return renderResult(Global.TRUE, "操作失败！");
+        }
+        return renderResult(Global.TRUE, message);
     }
+
+    @GetMapping(value = "execAll")
+    @ResponseBody
+    public String oneKeyExec(@RequestParam Integer command) {
+        String message = "";
+        if(command ==1 || command == 2) {
+            message = appService.oneKeyExec(command);
+        }else {
+            return renderResult(Global.TRUE, "操作失败！");
+        }
+        return renderResult(Global.TRUE, message);
+    }
+
 }

@@ -1,0 +1,211 @@
+<% layout('/layouts/default.html', {title: '服务管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('服务管理')}
+            </div>
+            <div class="box-tools pull-right">
+                <!--跟刷新走同一个接口，有冲突！-->
+                <!--<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i>-->
+                    <!--${text('查询')}</a>-->
+                <% if(hasPermi('line:edit')){ %>
+                <a href="${ctx}/app/form" class="btn btn-default btnTool" title="${text('新增服务')}"><i
+                        class="fa fa-plus"></i> ${text('新增')}</a>
+                <a href="javascript:void(0);" onclick="execAll(1)" title="${text('一键开启')}"><i class="fa fa-play">${text('一键开启')}</i></a>
+                <a href="javascript:void(0);" onclick="execAll(2)" title="${text('一键开启')}"><i class="fa fa-play">${text('一键关闭')}</i></a>
+                <% } %>
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" model="${appIn}" action="${ctx}/app/listData" method="post"
+                class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
+            data-order-by="${parameter.orderBy}">
+            <div class="form-group">
+                <label class="control-label">${text('服务名称')}：</label>
+                <div class="control-inline">
+                    <#form:input path="name" maxlength="200" class="form-control width-120"  placeholder="请输入服务名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">${text('服务中文名称')}：</label>
+                <div class="control-inline">
+                    <#form:input path="appName" maxlength="200" class="form-control width-120"  placeholder="请输入服务中文名称')}："/>
+                </div>
+            </div>
+            <!--<div class="form-group">-->
+                <!--<label class="control-label">${text('状态')}：</label>-->
+                <!--<div class="control-inline width-120">-->
+                    <!--<#form:select path="lineStatu" dictType="line_status" blankOption="true" class="form-control"/>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label class="control-label">${text('每页显示')}：</label>-->
+                <!--<div class="control-inline width-60">-->
+                    <!--<#form:select path="pageSize" dictType="show_page_number" blankOption="true" class="form-control"/>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">
+                <!--<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>-->
+                <!--<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>-->
+            </div>
+        </#form:form>
+        <table id="dataGrid">
+
+
+        </table>
+        <div id="dataGridPage"></div>
+    </div>
+</div>
+</div>
+
+<% } %>
+<style>
+    .ui-jqgrid .actions>a i{
+     margin: 0 3px 2px 3px;
+ }
+</style>
+<script>
+
+    console.log($("#searchForm"))
+    // 初始化DataGrid对象
+        $('#dataGrid').dataGrid({
+            searchForm: $("#searchForm"),
+            columnModel: [
+                {
+                    header:'${text("服务中文名称")}',
+                    name:'name',
+                    width:150,
+                    align: "center"
+                },
+                {
+                    header: '${text("服务名称")}',
+                    name: 'appName',
+                    width: 150,
+                    align: "center",
+                },
+                {
+                    header:'${text("服务状态")}',
+                    name:'appStatus',
+                    width:100,
+                    align: "center",
+                    formatter: function (val, obj, row, act) {
+                        return js.getDictLabel(${@DictUtils.getDictListJson('server_status')}, val, '${text("未知")}', true);
+                    }
+                },
+                {
+                    header: '${text("启动命令")}',
+                    name: 'appStart',
+                    width: 300,
+                    align: "center",
+                    maxlength : 300
+                },
+                {
+                    header:'${text("操作")}', name:'actions', width:90,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
+                        var actions = [];
+
+                        <% if (hasPermi('test:testData:edit')) { %>
+                         // actions.push('<a href="${ctx}/app/form?kid='+row.kid+'&appName='+row.appName+'&name='+row.name+'&appStatus='+row.appStatus+'&appStart='+row.appStart+'" class="btnList" title="${text("编辑服务")}"><i class="fa fa-paper-plane"></i></a>&nbsp;');
+                            actions.push('<a href="${ctx}/app/queryServ?kid=' + row.kid + '" class="btnList" title="${text("查看详情")}"><i class="fa fa-paper-plane"></i></a>&nbsp;');
+                            // actions.push('<a href="${ctx}/app/deleteServ?kid=' + row.kid + '" class="btnList" title="${text("删除服务")}"><i class="fa fa-times"></i></a>&nbsp;');
+                        <%  } %>
+                        return actions.join('')+
+                            "<a href='javascript:void(0);' onclick='deleteServ(\""+row.kid+"\");' title='${text('删除')}'><i class='fa fa-times'></i></a>"+
+                            "<a href='javascript:void(0);' onclick='execServ(1,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('启动服务')}'><i class='fa fa-play'></i></a>"+
+                            "<a href='javascript:void(0);' onclick='execServ(2,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('关闭服务')}'><i class='fa fa-stop-circle' ></i></a>"+
+                            "<a href='javascript:void(0);' onclick='execServ(3,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('重启服务')}'><i class='fa fa-hourglass-start' ></i></a>";
+
+                    }
+                }
+            ]
+            // // 双击表格行时调用
+            // ondblClickRow: function (id, rownum, colnum, event) {
+            //
+            //     console.log(id);
+            //     console.log(rownum);
+            //     console.log(colnum);
+            //     console.log(event);
+            //     js.addTabPage(null, '编辑数据', '${ctx}/line/form?lineKid='+row.lineKid+'&userKid='+row.userKid);
+            // },
+            // // 加载成功后执行事件
+            // ajaxSuccess: function (data) {
+            //     console.log("--------------")
+            // }
+
+        });
+
+    var time = setTimeout(digui, 10000);
+    //定时刷新页面
+    function digui () {
+        $.ajax({
+            type : "POST",
+            url : "${ctx}/app/listData",
+            dataType : "json",
+            async : true,
+            success : function () {
+                clearInterval(time);
+                time = setInterval(digui, 10000);
+                $('#dataGrid').dataGrid('reloadGrid');
+            }
+        })
+    }
+
+    function deleteServ(kid) {
+        clearInterval(time);
+        $.ajax({
+            type: 'GET',
+            url: "${ctx}/app/deleteServ?kid="+kid,
+            dataType: 'json',
+            async : false,
+            success : function (result) {
+                if (result.message){
+                    js.showMessage(result.message);
+                    $('#dataGrid').dataGrid('reloadGrid');
+                }
+                time = setTimeout(digui, 10000);
+            }
+        });
+    }
+    
+    function execServ(commandType, appName, appStart) {
+        clearInterval(time);
+        $.ajax({
+            type : 'POST',
+            url: "${ctx}/app/exec",
+            datatype : 'json',
+            async : false,
+            data : {
+                commandType : commandType,
+                appName : appName,
+                appStart : appStart
+            },
+            success: function (result) {
+                result = JSON.parse(result);
+                if (result.message){
+                    js.showMessage(result.message);
+                    $('#dataGrid').dataGrid('reloadGrid');
+                }
+                time = setTimeout(digui, 10000);
+            }
+        })
+    }
+
+    function execAll(command) {
+        clearInterval(time);
+        $.ajax({
+            type : "GET",
+            url : "${ctx}/app/execAll?command=" + command,
+            dataType : "json",
+            async : true,
+            success : function (result) {
+                if (result.message){
+                    js.showMessage(result.message);
+                    $('#dataGrid').dataGrid('reloadGrid');
+                }
+                time = setTimeout(digui, 10000);
+            }
+        })
+    }
+
+</script>
