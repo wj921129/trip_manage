@@ -13,7 +13,7 @@
                 <a href="${ctx}/app/form" class="btn btn-default btnTool" title="${text('新增服务')}"><i
                         class="fa fa-plus"></i> ${text('新增')}</a>
                 <a href="javascript:void(0);" onclick="execAll(1)" title="${text('一键开启')}"><i class="fa fa-play">${text('一键开启')}</i></a>
-                <a href="javascript:void(0);" onclick="execAll(2)" title="${text('一键开启')}"><i class="fa fa-play">${text('一键关闭')}</i></a>
+                <a href="javascript:void(0);" onclick="execAll(2)" title="${text('一键开启')}"><i class="fa fa-stop-circle">${text('一键关闭')}</i></a>
                 <% } %>
             </div>
         </div>
@@ -135,7 +135,7 @@
 
         });
 
-    var time = setTimeout(digui, 10000);
+    var time = setTimeout(digui, 15000);
     //定时刷新页面
     function digui () {
         $.ajax({
@@ -145,7 +145,7 @@
             async : true,
             success : function () {
                 clearInterval(time);
-                time = setInterval(digui, 10000);
+                time = setInterval(digui, 30000);
                 $('#dataGrid').dataGrid('reloadGrid');
             }
         })
@@ -163,7 +163,7 @@
                     js.showMessage(result.message);
                     $('#dataGrid').dataGrid('reloadGrid');
                 }
-                time = setTimeout(digui, 10000);
+                time = setTimeout(digui, 30000);
             }
         });
     }
@@ -186,7 +186,7 @@
                     js.showMessage(result.message);
                     $('#dataGrid').dataGrid('reloadGrid');
                 }
-                time = setTimeout(digui, 10000);
+                time = setTimeout(digui, 30000);
             }
         })
     }
@@ -203,7 +203,7 @@
                     js.showMessage(result.message);
                     $('#dataGrid').dataGrid('reloadGrid');
                 }
-                time = setTimeout(digui, 10000);
+                time = setTimeout(digui, 30000);
             }
         })
     }
