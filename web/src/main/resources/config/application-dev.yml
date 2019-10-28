@@ -7,7 +7,8 @@ eureka:
       defaultZone: http://192.168.31.201:7010/eureka/
 
 api:
-  host: http://192.168.31.201:7020
+#  host: http://192.168.31.201:7020
+  host: http://localhost:7020
 
 
 
