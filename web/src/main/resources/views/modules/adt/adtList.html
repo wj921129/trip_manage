@@ -1,0 +1,169 @@
+<% layout('/layouts/default.html', {title: '广告列表', libs: ['dataGrid']}){ %>
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('广告列表')}
+            </div>
+        </div>
+            <#form:form id="searchForm" model="${adt}" action="${ctx}/adt/listData" method="post"
+            class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
+            data-order-by="${parameter.orderBy}">
+            <#form:select path="pageSize" dictType="show_page_number" blankOption="true" class="form-control" class="form-inline hide"/>
+        </#form:form>
+        <table id="dataGrid">
+
+        </table>
+        <div id="dataGridPage"></div>
+    </div>
+</div>
+</div>
+
+<% } %>
+<style>
+    .ui-jqgrid .actions>a i{
+     margin: 0 3px 2px 3px;
+ }
+</style>
+<script>
+
+    console.log($("#searchForm"))
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        searchForm: $("#searchForm"),
+        columnModel: [
+            {
+                header:'${text("广告kid")}',
+                name:'kid',
+                width:150,
+                align: "center"
+            },
+            {
+                header:'${text("广告资源kid")}',
+                name:'adtResourceKid',
+                width:150,
+                align: "center"
+            },
+            {
+                header:'${text("广告发布人kid")}',
+                name:'adtUserKid',
+                width:150,
+                align: "center"
+            },
+            {
+                header: '${text("广告内容")}',
+                name: 'adtContent',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("广告标题")}',
+                name: 'adtTitle',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("广告图片")}',
+                name: 'adtImageUrl',
+                width: 150,
+                align: "center",
+                formatter: function (val, obj, row, act) {
+
+                    return '<image src="'+val+'" style="border-radius: 50%;width: 50px;height: 50px;"></image>'
+                }
+            },
+            {
+                header: '${text("广告资源类型")}',
+                name: 'adtType',
+                width: 150,
+                align: "center",
+                formatter: function (val, obj, row, act) {
+                    return js.getDictLabel(${@DictUtils.getDictListJson('adt_type')}, val, "未知", true);
+                }
+            },
+            {
+                header: '${text("广告开始时间")}',
+                name: 'adtStartTime',
+                width: 150,
+                align: "center"
+            },
+            {
+                header: '${text("广告结束时间")}',
+                name: 'adtEndTime',
+                width: 150,
+                align: "center"
+                // formatter: function (val, obj, row, act) {
+                //     return js.getDictLabel(${@DictUtils.getDictListJson('line_status')}, val, "未知", true);
+                // }
+            },
+            {
+                header: '${text("广告发布时间")}',
+                name: 'adtPublishTime',
+                width: 120,
+                align: "center"
+            },
+            {
+                header: '${text("广告展示状态")}',
+                name: 'adtStatus',
+                width: 120,
+                align: "center",
+                formatter: function (val, obj, row, act) {
+                    return js.getDictLabel(${@DictUtils.getDictListJson('adt_status')}, val, "未知", true);
+                }
+            },
+            {
+                header:'${text("操作")}', name:'actions', width:90,  align: "center",sortable:false, title:false, formatter: function(val, obj, row, act){
+
+                    if (row.adtStatus == 10){ // 已展示
+
+                        if (row.adtType == 10){ // 路线
+                            return "<a href='javascript:void(0);' onclick='editAdt(20,\""+row.kid+"\");' title='${text('下架')}'><i class='fa fa-download bian' ></i></a>" +
+                                "<a href='javascript:void(0);' onclick='editAdt(30,\""+row.kid+"\");' title='${text('删除')}'><i class='fa fa-trash-o bian'></i></a>" +
+                                "<a href='${ctx}/line/form?lineKid="+row.adtResourceKid+"&userKid="+row.adtUserKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
+                        }else if (row.adtType == 20){ // 其他
+
+                        }
+                    }else if (row.adtStatus == 20) { // 未展示
+                        if (row.adtType == 10){ // 路线
+                            return "<a href='javascript:void(0);' onclick='editAdt(10,\""+row.kid+"\");' title='${text('展示')}'><i class='fa fa-upload bian'></i></a>" +
+                                "<a href='javascript:void(0);' onclick='editAdt(30,\""+row.kid+"\");' title='${text('删除')}'><i class='fa fa-trash-o bian'></i></a>" +
+                                "<a href='${ctx}/line/form?lineKid="+row.adtResourceKid+"&userKid="+row.adtUserKid+"' class='btnList' title='${text('查看')}' ><i class='glyphicon glyphicon-ok-circle bian'></i></a>&nbsp;"
+                        }else if (row.adtType == 20){ // 其他
+
+                        }
+                    }
+                }}
+        ],
+        // 双击表格行时调用
+        ondblClickRow: function (id, rownum, colnum, event) {
+        },
+        // 加载成功后执行事件
+        ajaxSuccess: function (data) {
+            console.log("--------------")
+        }
+    });
+
+    function editAdt(adtStatus, kid) {
+        $.ajax({
+            type: 'POST',
+            url: "${ctx}/adt/editAdt",
+            dataType: 'json',
+            async : false,
+            data: {
+                kid : kid,
+                adtStatus : adtStatus
+            },
+            success: function (result) {
+
+                if (result.message){
+                    js.showMessage(result.message);
+                    $('#dataGrid').dataGrid('reloadGrid');
+                }
+
+            }
+
+        });
+    }
+
+</script>
