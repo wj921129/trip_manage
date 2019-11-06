@@ -1,11 +1,40 @@
 <% layout('/layouts/default.html', {title: '服务管理', libs: ['dataGrid']}){ %>
+
+<style>
+    .shurukuang{
+        margin-top: 10px;
+        position: relative;
+        border: 1px silver solid;
+        height: 120px;
+        width:270px;
+        display: inline-block;
+        padding: 10px 5px;
+        border-radius: 15px;
+    }
+    .biaoti {
+        position: absolute;
+        top: -20px;
+        left: 15px;
+        background-color: white;
+
+    }
+
+</style>
+
 <div class="main-content">
     <div class="box box-main">
         <div class="box-header">
-            <div class="box-title">
-                <i class="fa fa-list-alt"></i> ${text('服务管理')}
+            <div style="clear: both;overflow: hidden">
+                <div class="box-title" >
+                    <i class="fa fa-list-alt"></i> ${text('服务管理')}
+                </div>
             </div>
             <div class="box-tools pull-right">
+
+
+
+
+
                 <!--跟刷新走同一个接口，有冲突！-->
                 <!--<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i>-->
                     <!--${text('查询')}</a>-->
@@ -15,6 +44,34 @@
                 <a href="javascript:void(0);" onclick="execAll(1)" title="${text('一键开启')}"><i class="fa fa-play">${text('一键开启')}</i></a>
                 <a href="javascript:void(0);" onclick="execAll(2)" title="${text('一键开启')}"><i class="fa fa-stop-circle">${text('一键关闭')}</i></a>
                 <% } %>
+            </div>
+
+            <div class="shurukuang">
+                <div class="biaoti">CPU</div>
+                <label>当前时间 : </label><label id="cpu_currentTime">${systemInfo.cpu != null?systemInfo.cpu.currentTime:""}</label><br>
+                <label>运行时间 : </label><label id="cpu_runTime">${systemInfo.cpu.runTime}</label><br>
+                <label>系统负载 : </label><label id="cpu_loadAverage1">${systemInfo.cpu.loadAverage1}</label><br>
+                <label>进程总数 : </label><label id="cpu_taskTotal">${systemInfo.cpu.taskTotal}</label>
+                <label>运行中 : </label><label id="cpu_taskRunning">${systemInfo.cpu.taskRunning}</label>
+                <label>等待 : </label><label id="cpu_taskSleeping">${systemInfo.cpu.taskSleeping}</label>
+
+            </div>
+            <div class="shurukuang">
+                <div class="biaoti">内存</div>
+                <!--<label>内存名字 : </label><label id="memory_total">${systemInfo.memory.name}</label>-->
+                <label>总大小 : </label><label id="memory_total">${systemInfo.memory.total}M</label><br>
+                <label>已使用 : </label><label id="memory_used">${systemInfo.memory.used}M</label><br>
+                <label>空闲 : </label><label id="memory_free">${systemInfo.memory.free}M</label><br>
+                <label>使用率 : </label><label id="memory_useRate">${systemInfo.memory.useRate}%</label><br>
+            </div>
+            <div class="shurukuang">
+                <div class="biaoti">硬盘</div>
+                <!--<label>文件路径 : </label><label>${systemInfo.disk.fileSystem}</label>-->
+                <label>硬盘大小 : </label><label id="disk_size">${systemInfo.disk.size}M</label><br>
+                <label>已用大小 : </label><label id="disk_used">${systemInfo.disk.used}M</label><br>
+                <label>可使用大小 : </label><label id="disk_avail">${systemInfo.disk.avail}M</label><br>
+                <label>使用率 : </label><label id="disk_useRate">${systemInfo.disk.useRate}</label><br>
+                <!--<label>挂载 : </label><label>${systemInfo.disk.mounted}</label><br><br>-->
             </div>
         </div>
         <div class="box-body">
@@ -143,12 +200,46 @@
             url : "${ctx}/app/listData",
             dataType : "json",
             async : true,
-            success : function () {
+            success : function (result) {
                 clearInterval(time);
                 time = setInterval(digui, 30000);
                 $('#dataGrid').dataGrid('reloadGrid');
             }
         })
+    }
+
+    setInterval(function(){updateSystemMonitor();},3000);
+
+    function updateSystemMonitor() {
+        $.ajax({
+            type: 'GET',
+            url: "${ctx}/app/getSystemMonitor",
+            dataType: 'json',
+            async : false,
+            success : function (result) {
+                console.log(result)
+                if(result.cpu) {
+                    document.getElementById("cpu_currentTime").innerHTML = result.cpu.currentTime;
+                    document.getElementById("cpu_runTime").innerHTML = result.cpu.runTime;
+                    document.getElementById("cpu_loadAverage1").innerHTML = result.cpu.loadAverage1;
+                    document.getElementById("cpu_taskTotal").innerHTML = result.cpu.taskTotal;
+                    document.getElementById("cpu_taskRunning").innerHTML = result.cpu.taskRunning;
+                    document.getElementById("cpu_taskSleeping").innerHTML = result.cpu.taskSleeping;
+                }
+                if(result.memory) {
+                    document.getElementById("memory_total").innerHTML = result.memory.total + "M";
+                    document.getElementById("memory_used").innerHTML = result.memory.used + "M";
+                    document.getElementById("memory_free").innerHTML = result.memory.free + "M";
+                    document.getElementById("memory_useRate").innerHTML = result.memory.useRate + "%";
+                }
+                if(result.disk) {
+                    document.getElementById("disk_size").innerHTML = result.disk.size + "M";
+                    document.getElementById("disk_used").innerHTML = result.disk.used + "M";
+                    document.getElementById("disk_avail").innerHTML = result.disk.avail + "M";
+                    document.getElementById("disk_useRate").innerHTML = result.disk.useRate;
+                }
+            }
+        });
     }
 
     function deleteServ(kid) {

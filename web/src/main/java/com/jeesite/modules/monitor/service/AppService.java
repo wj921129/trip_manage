@@ -1,11 +1,16 @@
 package com.jeesite.modules.monitor.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.commom.utils.ApiResult;
 import com.jeesite.modules.commom.utils.ApiUtils;
 import com.jeesite.modules.monitor.entity.AppOut;
 import com.jeesite.modules.monitor.entity.AppIn;
+import com.jeesite.modules.monitor.entity.po.Cpu;
+import com.jeesite.modules.monitor.entity.po.Disk;
+import com.jeesite.modules.monitor.entity.po.Memory;
+import com.jeesite.modules.monitor.entity.vo.SystemInfo;
 import com.jeesite.modules.test.dao.TestDataDao;
 import com.jeesite.modules.test.entity.TestData;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -35,6 +41,12 @@ public class AppService extends CrudService<TestDataDao, TestData> {
     private static final String exec = "/monitor/app/exec";
 
     private static final String execAll = "/monitor/app/execAll";
+
+    private static final String getCpuInfo = "/monitor/system/getCpuInfo";
+    private static final String getMemInfo = "/monitor/system/getMemInfo";
+    private static final String getDiskInfo = "/monitor/system/getDiskInfo";
+
+    Gson gson = new Gson();
 
     /**
      * 创建或编辑监控服务
@@ -189,5 +201,53 @@ public class AppService extends CrudService<TestDataDao, TestData> {
             }
         }
         return message;
+    }
+
+
+    public SystemInfo getSystemInfo() {
+        ApiResult<Cpu> cpuResult = ApiUtils.getSingle(apiHost + getCpuInfo, Cpu.class);
+        ApiResult<List<Memory>> memoryResult = ApiUtils.get(apiHost + getMemInfo, Memory.class);
+        ApiResult<List<Disk>> diskResult = ApiUtils.get(apiHost + getDiskInfo, Disk.class);
+
+        log.info("cpu info : " + gson.toJson(cpuResult));
+        log.info("memory info : " + gson.toJson(memoryResult));
+        log.info("disk info : " + gson.toJson(diskResult));
+        SystemInfo systemInfo = new SystemInfo();
+
+        if (null != cpuResult && null != cpuResult.getData()) {
+            Cpu cpu = cpuResult.getData();
+            cpu.setLoadAverage1(cpu.getLoadAverage1() + cpu.getLoadAverage5() + cpu.getLoadAverage15());
+            systemInfo.setCpu(cpu);
+        }
+
+        if (null != memoryResult && null != memoryResult.getData() && memoryResult.getData().size() > 0) {
+            Memory memory = memoryResult.getData().get(0);
+
+            Double useRate = Double.valueOf(memory.getUsed()) / Double.valueOf(memory.getTotal());
+
+            BigDecimal b = new BigDecimal(useRate);
+            useRate = b.setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
+            Integer rate =  (int)(useRate * 100);
+
+            memory.setUseRate(rate.toString());
+
+            systemInfo.setMemory(memory);
+        }
+
+//        Disk disk = diskResult.getData().get(0);
+//
+//        Double diskUseRate = Double.valueOf(disk.getUsed()) / Double.valueOf(disk.getSize());
+//
+//        BigDecimal diskB = new BigDecimal(diskUseRate);
+//        diskUseRate = diskB.setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
+//
+//        disk.setUseRate(diskUseRate.toString());
+
+        if (null != diskResult && null != diskResult.getData() && diskResult.getData().size() > 0) {
+            systemInfo.setDisk(diskResult.getData().get(0));
+        }
+
+        log.info("system info : " + gson.toJson(systemInfo));
+        return systemInfo;
     }
 }

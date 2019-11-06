@@ -12,7 +12,9 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.commom.utils.ApiPage;
 import com.jeesite.modules.monitor.entity.AppOut;
 import com.jeesite.modules.monitor.entity.AppIn;
+import com.jeesite.modules.monitor.entity.vo.SystemInfo;
 import com.jeesite.modules.monitor.service.AppService;
+import com.jeesite.modules.think.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -78,9 +80,16 @@ public class AppController extends BaseController {
      */
 //	@RequiresPermissions("qianying:app")
     @RequestMapping(value = {"list", ""})
-    public String list(AppIn appIn) {
+    public String list(AppIn appIn, Model model) {
 //        List<AppOut> apps = appService.list();
 //        model.addAttribute("appIn", appIn);
+
+
+        SystemInfo systemInfo = appService.getSystemInfo();
+
+         model.addAttribute("systemInfo", systemInfo);
+
+
         return "modules/monitor/serviceList";
     }
 
@@ -114,6 +123,14 @@ public class AppController extends BaseController {
     }
 
     @RequiresPermissions("line:view")
+    @RequestMapping(value = "getSystemMonitor")
+    @ResponseBody
+    public SystemInfo getSystemMonitor() {
+        SystemInfo systemInfo = appService.getSystemInfo();
+        return systemInfo;
+    }
+
+    @RequiresPermissions("line:view")
     @RequestMapping(value = "listData")
     @ResponseBody
     public Page<AppOut> listData(AppIn appIn, Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -136,6 +153,14 @@ public class AppController extends BaseController {
         page.setCount(appOuts.size());
         page.setPageNo(appIn.getPageNumber());
         page.setPageSize(20);
+
+
+        SystemInfo systemInfo = appService.getSystemInfo();
+
+        model.addAttribute("systemInfo", systemInfo);
+
+
+
         return page;
     }
 
