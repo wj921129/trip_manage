@@ -48,30 +48,27 @@
 
             <div class="shurukuang">
                 <div class="biaoti">CPU</div>
-                <label>当前时间 : </label><label id="cpu_currentTime">${systemInfo.cpu != null?systemInfo.cpu.currentTime:""}</label><br>
-                <label>运行时间 : </label><label id="cpu_runTime">${systemInfo.cpu.runTime}</label><br>
-                <label>系统负载 : </label><label id="cpu_loadAverage1">${systemInfo.cpu.loadAverage1}</label><br>
-                <label>进程总数 : </label><label id="cpu_taskTotal">${systemInfo.cpu.taskTotal}</label>
-                <label>运行中 : </label><label id="cpu_taskRunning">${systemInfo.cpu.taskRunning}</label>
-                <label>等待 : </label><label id="cpu_taskSleeping">${systemInfo.cpu.taskSleeping}</label>
+                <label>当前时间 : </label><label id="cpu_currentTime">${systemInfo.cpu != null?systemInfo.cpu.currentTime:" / "}</label><br>
+                <label>运行时间 : </label><label id="cpu_runTime">${systemInfo.cpu != null?systemInfo.cpu.runTime:" / "}</label><br>
+                <label>系统负载 : </label><label id="cpu_loadAverage1">${systemInfo.cpu != null?systemInfo.cpu.loadAverage1:" / "}</label><br>
+                <label>进程总数 : </label><label id="cpu_taskTotal">${systemInfo.cpu != null?systemInfo.cpu.taskTotal:" / "}</label>
+                <label>运行中 : </label><label id="cpu_taskRunning">${systemInfo.cpu != null?systemInfo.cpu.taskRunning:" / "}</label>
+                <label>等待 : </label><label id="cpu_taskSleeping">${systemInfo.cpu != null?systemInfo.cpu.taskSleeping:" / "}</label>
 
             </div>
             <div class="shurukuang">
                 <div class="biaoti">内存</div>
-                <!--<label>内存名字 : </label><label id="memory_total">${systemInfo.memory.name}</label>-->
-                <label>总大小 : </label><label id="memory_total">${systemInfo.memory.total}M</label><br>
-                <label>已使用 : </label><label id="memory_used">${systemInfo.memory.used}M</label><br>
-                <label>空闲 : </label><label id="memory_free">${systemInfo.memory.free}M</label><br>
-                <label>使用率 : </label><label id="memory_useRate">${systemInfo.memory.useRate}%</label><br>
+                <label>总大小 : </label><label id="memory_total">${systemInfo.memory!= null?systemInfo.memory.total:" / "}M</label><br>
+                <label>已使用 : </label><label id="memory_used">${systemInfo.memory!= null?systemInfo.memory.used:" / "}M</label><br>
+                <label>空闲 : </label><label id="memory_free">${systemInfo.memory!= null?systemInfo.memory.free:" / "}M</label><br>
+                <label>使用率 : </label><label id="memory_useRate">${systemInfo.memory!= null?systemInfo.memory.useRate:" / "}%</label><br>
             </div>
             <div class="shurukuang">
                 <div class="biaoti">硬盘</div>
-                <!--<label>文件路径 : </label><label>${systemInfo.disk.fileSystem}</label>-->
-                <label>硬盘大小 : </label><label id="disk_size">${systemInfo.disk.size}M</label><br>
-                <label>已用大小 : </label><label id="disk_used">${systemInfo.disk.used}M</label><br>
-                <label>可使用大小 : </label><label id="disk_avail">${systemInfo.disk.avail}M</label><br>
-                <label>使用率 : </label><label id="disk_useRate">${systemInfo.disk.useRate}</label><br>
-                <!--<label>挂载 : </label><label>${systemInfo.disk.mounted}</label><br><br>-->
+                <label>硬盘大小 : </label><label id="disk_size">${systemInfo.disk!= null?systemInfo.disk.size:" / "}M</label><br>
+                <label>已用大小 : </label><label id="disk_used">${systemInfo.disk!= null?systemInfo.disk.used:" / "}M</label><br>
+                <label>可使用大小 : </label><label id="disk_avail">${systemInfo.disk!= null?systemInfo.disk.avail:" / "}M</label><br>
+                <label>使用率 : </label><label id="disk_useRate">${systemInfo.disk!= null?systemInfo.disk.useRate:" / "}</label><br>
             </div>
         </div>
         <div class="box-body">
