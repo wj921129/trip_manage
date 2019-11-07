@@ -46,30 +46,30 @@
                 <% } %>
             </div>
 
-            <!--<div class="shurukuang">-->
-                <!--<div class="biaoti">CPU</div>-->
-                <!--<label>当前时间 : </label><label id="cpu_currentTime">${systemInfo.cpu != null?systemInfo.cpu.currentTime:" / "}</label><br>-->
-                <!--<label>运行时间 : </label><label id="cpu_runTime">${systemInfo.cpu != null?systemInfo.cpu.runTime:" / "}</label><br>-->
-                <!--<label>系统负载 : </label><label id="cpu_loadAverage1">${systemInfo.cpu != null?systemInfo.cpu.loadAverage1:" / "}</label><br>-->
-                <!--<label>进程总数 : </label><label id="cpu_taskTotal">${systemInfo.cpu != null?systemInfo.cpu.taskTotal:" / "}</label>-->
-                <!--<label>运行中 : </label><label id="cpu_taskRunning">${systemInfo.cpu != null?systemInfo.cpu.taskRunning:" / "}</label>-->
-                <!--<label>等待 : </label><label id="cpu_taskSleeping">${systemInfo.cpu != null?systemInfo.cpu.taskSleeping:" / "}</label>-->
+            <div class="shurukuang">
+                <div class="biaoti">CPU</div>
+                <label>当前时间 : </label><label id="cpu_currentTime">${systemInfo.cpu != null?systemInfo.cpu.currentTime:" / "}</label><br>
+                <label>运行时间 : </label><label id="cpu_runTime">${systemInfo.cpu != null?systemInfo.cpu.runTime:" / "}</label><br>
+                <label>系统负载 : </label><label id="cpu_loadAverage1">${systemInfo.cpu != null?systemInfo.cpu.loadAverage1:" / "}</label><br>
+                <label>进程总数 : </label><label id="cpu_taskTotal">${systemInfo.cpu != null?systemInfo.cpu.taskTotal:" / "}</label>
+                <label>运行中 : </label><label id="cpu_taskRunning">${systemInfo.cpu != null?systemInfo.cpu.taskRunning:" / "}</label>
+                <label>等待 : </label><label id="cpu_taskSleeping">${systemInfo.cpu != null?systemInfo.cpu.taskSleeping:" / "}</label>
 
-            <!--</div>-->
-            <!--<div class="shurukuang">-->
-                <!--<div class="biaoti">内存</div>-->
-                <!--<label>总大小 : </label><label id="memory_total">${systemInfo.memory!= null?systemInfo.memory.total:" / "}M</label><br>-->
-                <!--<label>已使用 : </label><label id="memory_used">${systemInfo.memory!= null?systemInfo.memory.used:" / "}M</label><br>-->
-                <!--<label>空闲 : </label><label id="memory_free">${systemInfo.memory!= null?systemInfo.memory.free:" / "}M</label><br>-->
-                <!--<label>使用率 : </label><label id="memory_useRate">${systemInfo.memory!= null?systemInfo.memory.useRate:" / "}%</label><br>-->
-            <!--</div>-->
-            <!--<div class="shurukuang">-->
-                <!--<div class="biaoti">硬盘</div>-->
-                <!--<label>硬盘大小 : </label><label id="disk_size">${systemInfo.disk!= null?systemInfo.disk.size:" / "}M</label><br>-->
-                <!--<label>已用大小 : </label><label id="disk_used">${systemInfo.disk!= null?systemInfo.disk.used:" / "}M</label><br>-->
-                <!--<label>可使用大小 : </label><label id="disk_avail">${systemInfo.disk!= null?systemInfo.disk.avail:" / "}M</label><br>-->
-                <!--<label>使用率 : </label><label id="disk_useRate">${systemInfo.disk!= null?systemInfo.disk.useRate:" / "}</label><br>-->
-            <!--</div>-->
+            </div>
+            <div class="shurukuang">
+                <div class="biaoti">内存</div>
+                <label>总大小 : </label><label id="memory_total">${systemInfo.memory!= null?systemInfo.memory.total:" / "}M</label><br>
+                <label>已使用 : </label><label id="memory_used">${systemInfo.memory!= null?systemInfo.memory.used:" / "}M</label><br>
+                <label>空闲 : </label><label id="memory_free">${systemInfo.memory!= null?systemInfo.memory.free:" / "}M</label><br>
+                <label>使用率 : </label><label id="memory_useRate">${systemInfo.memory!= null?systemInfo.memory.useRate:" / "}%</label><br>
+            </div>
+            <div class="shurukuang">
+                <div class="biaoti">硬盘</div>
+                <label>硬盘大小 : </label><label id="disk_size">${systemInfo.disk!= null?systemInfo.disk.size:" / "}M</label><br>
+                <label>已用大小 : </label><label id="disk_used">${systemInfo.disk!= null?systemInfo.disk.used:" / "}M</label><br>
+                <label>可使用大小 : </label><label id="disk_avail">${systemInfo.disk!= null?systemInfo.disk.avail:" / "}M</label><br>
+                <label>使用率 : </label><label id="disk_useRate">${systemInfo.disk!= null?systemInfo.disk.useRate:" / "}</label><br>
+            </div>
         </div>
         <div class="box-body">
             <#form:form id="searchForm" model="${appIn}" action="${ctx}/app/listData" method="post"
@@ -198,6 +198,9 @@
             dataType : "json",
             async : true,
             success : function (result) {
+
+                updateSystemMonitor();
+
                 clearInterval(time);
                 time = setInterval(digui, 30000);
                 $('#dataGrid').dataGrid('reloadGrid');
@@ -207,37 +210,37 @@
 
     // setInterval(function(){updateSystemMonitor();},3000);
 
-    // function updateSystemMonitor() {
-    //     $.ajax({
-    //         type: 'GET',
-    //         url: "${ctx}/app/getSystemMonitor",
-    //         dataType: 'json',
-    //         async : false,
-    //         success : function (result) {
-    //             console.log(result)
-    //             if(result.cpu) {
-    //                 document.getElementById("cpu_currentTime").innerHTML = result.cpu.currentTime;
-    //                 document.getElementById("cpu_runTime").innerHTML = result.cpu.runTime;
-    //                 document.getElementById("cpu_loadAverage1").innerHTML = result.cpu.loadAverage1;
-    //                 document.getElementById("cpu_taskTotal").innerHTML = result.cpu.taskTotal;
-    //                 document.getElementById("cpu_taskRunning").innerHTML = result.cpu.taskRunning;
-    //                 document.getElementById("cpu_taskSleeping").innerHTML = result.cpu.taskSleeping;
-    //             }
-    //             if(result.memory) {
-    //                 document.getElementById("memory_total").innerHTML = result.memory.total + "M";
-    //                 document.getElementById("memory_used").innerHTML = result.memory.used + "M";
-    //                 document.getElementById("memory_free").innerHTML = result.memory.free + "M";
-    //                 document.getElementById("memory_useRate").innerHTML = result.memory.useRate + "%";
-    //             }
-    //             if(result.disk) {
-    //                 document.getElementById("disk_size").innerHTML = result.disk.size + "M";
-    //                 document.getElementById("disk_used").innerHTML = result.disk.used + "M";
-    //                 document.getElementById("disk_avail").innerHTML = result.disk.avail + "M";
-    //                 document.getElementById("disk_useRate").innerHTML = result.disk.useRate;
-    //             }
-    //         }
-    //     });
-    // }
+    function updateSystemMonitor() {
+        $.ajax({
+            type: 'GET',
+            url: "${ctx}/app/getSystemMonitor",
+            dataType: 'json',
+            async : false,
+            success : function (result) {
+                console.log(result)
+                if(result.cpu) {
+                    document.getElementById("cpu_currentTime").innerHTML = result.cpu.currentTime;
+                    document.getElementById("cpu_runTime").innerHTML = result.cpu.runTime;
+                    document.getElementById("cpu_loadAverage1").innerHTML = result.cpu.loadAverage1;
+                    document.getElementById("cpu_taskTotal").innerHTML = result.cpu.taskTotal;
+                    document.getElementById("cpu_taskRunning").innerHTML = result.cpu.taskRunning;
+                    document.getElementById("cpu_taskSleeping").innerHTML = result.cpu.taskSleeping;
+                }
+                if(result.memory) {
+                    document.getElementById("memory_total").innerHTML = result.memory.total + "M";
+                    document.getElementById("memory_used").innerHTML = result.memory.used + "M";
+                    document.getElementById("memory_free").innerHTML = result.memory.free + "M";
+                    document.getElementById("memory_useRate").innerHTML = result.memory.useRate + "%";
+                }
+                if(result.disk) {
+                    document.getElementById("disk_size").innerHTML = result.disk.size + "M";
+                    document.getElementById("disk_used").innerHTML = result.disk.used + "M";
+                    document.getElementById("disk_avail").innerHTML = result.disk.avail + "M";
+                    document.getElementById("disk_useRate").innerHTML = result.disk.useRate;
+                }
+            }
+        });
+    }
 
     function deleteServ(kid) {
         clearInterval(time);
