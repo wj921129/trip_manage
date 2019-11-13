@@ -161,32 +161,27 @@
 
                         <% if (hasPermi('test:testData:edit')) { %>
                          // actions.push('<a href="${ctx}/app/form?kid='+row.kid+'&appName='+row.appName+'&name='+row.name+'&appStatus='+row.appStatus+'&appStart='+row.appStart+'" class="btnList" title="${text("编辑服务")}"><i class="fa fa-paper-plane"></i></a>&nbsp;');
-                            actions.push('<a href="${ctx}/app/queryServ?kid=' + row.kid + '" class="btnList" title="${text("查看详情")}"><i class="fa fa-paper-plane"></i></a>&nbsp;');
+                            actions.push('<a href="${ctx}/app/queryServ?kid=' + row.kid + '" class="btnList" title="${text("编辑")}"><i class="fa fa-paper-plane"></i></a>&nbsp;');
                             // actions.push('<a href="${ctx}/app/deleteServ?kid=' + row.kid + '" class="btnList" title="${text("删除服务")}"><i class="fa fa-times"></i></a>&nbsp;');
                         <%  } %>
+                        var isContains = row.appName.indexOf("manage")!=-1 || row.appName.indexOf("monitor")!=-1 ? false : true;
+                        console.log(isContains);
+                     if(isContains) {
                         return actions.join('')+
                             "<a href='javascript:void(0);' onclick='deleteServ(\""+row.kid+"\");' title='${text('删除')}'><i class='fa fa-times'></i></a>"+
                             "<a href='javascript:void(0);' onclick='execServ(1,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('启动服务')}'><i class='fa fa-play'></i></a>"+
                             "<a href='javascript:void(0);' onclick='execServ(2,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('关闭服务')}'><i class='fa fa-stop-circle' ></i></a>"+
                             "<a href='javascript:void(0);' onclick='execServ(3,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('重启服务')}'><i class='fa fa-hourglass-start' ></i></a>";
+                        }else {
+                         return actions.join('')+
+                             "<a href='javascript:void(0);' onclick='execServ(1,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('启动服务')}'><i class='fa fa-play'></i></a>"+
+                             "<a href='javascript:void(0);' onclick='execServ(3,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('重启服务')}'><i class='fa fa-hourglass-start' ></i></a>";
+                        }
+
 
                     }
                 }
             ]
-            // // 双击表格行时调用
-            // ondblClickRow: function (id, rownum, colnum, event) {
-            //
-            //     console.log(id);
-            //     console.log(rownum);
-            //     console.log(colnum);
-            //     console.log(event);
-            //     js.addTabPage(null, '编辑数据', '${ctx}/line/form?lineKid='+row.lineKid+'&userKid='+row.userKid);
-            // },
-            // // 加载成功后执行事件
-            // ajaxSuccess: function (data) {
-            //     console.log("--------------")
-            // }
-
         });
 
     var time = setTimeout(digui, 15000);

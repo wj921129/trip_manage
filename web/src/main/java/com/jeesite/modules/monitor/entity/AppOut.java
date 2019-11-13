@@ -14,6 +14,8 @@ public class AppOut {
     private String name;
     //服务状态
     private Integer appStatus;
+    //服务排序规则--从小到大
+    private Integer appSort;
     //启动命令
     private String appStart;
     //删除标志

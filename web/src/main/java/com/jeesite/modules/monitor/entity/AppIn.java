@@ -13,6 +13,8 @@ public class AppIn extends BaseEntity {
     private String name;
     //服务状态
     private Integer appStatus;
+    //服务排序
+    private Integer appSort;
     //启动命令
     private String appStart;
     //命令类型

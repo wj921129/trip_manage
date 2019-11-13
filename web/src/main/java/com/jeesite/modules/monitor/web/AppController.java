@@ -65,8 +65,8 @@ public class AppController extends BaseController {
             return renderResult(Global.FALSE, text("操作失败,服务名称不能为空！"));
         }else if(appIn.getName() == null || StringUtils.isEmpty(appIn.getName())){
             return renderResult(Global.FALSE, "操作失败,服务中文名称不能为空！");
-        }else if(appIn.getAppStatus() == null) {
-            return renderResult(Global.FALSE, "操作失败,服务状态不能为空！");
+        }else if(appIn.getAppSort() == null) {
+            return renderResult(Global.FALSE, "操作失败,服务序号不能为空！");
         }else if(appIn.getAppStart() == null || StringUtils.isEmpty(appIn.getAppStart())) {
             return renderResult(Global.FALSE, "操作失败,启动命令不能为空！");
         }
