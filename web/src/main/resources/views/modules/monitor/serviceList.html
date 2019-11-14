@@ -41,8 +41,8 @@
                 <% if(hasPermi('line:edit')){ %>
                 <a href="${ctx}/app/form" class="btn btn-default btnTool" title="${text('新增服务')}"><i
                         class="fa fa-plus"></i> ${text('新增')}</a>
-                <a href="javascript:void(0);" onclick="execAll(1)" title="${text('一键开启')}"><i class="fa fa-play">${text('一键开启')}</i></a>
-                <a href="javascript:void(0);" onclick="execAll(2)" title="${text('一键开启')}"><i class="fa fa-stop-circle">${text('一键关闭')}</i></a>
+                <a href="javascript:void(0);" onclick="execAll(2)" title="${text('一键关闭')}"><i class="fa fa-stop-circle">${text('一键关闭')}</i></a>
+                <a href="javascript:void(0);" onclick="execAll(3)" title="${text('一键重启')}"><i class="fa fa-hourglass-start">${text('一键重启')}</i></a>
                 <% } %>
             </div>
 
@@ -174,7 +174,6 @@
                             "<a href='javascript:void(0);' onclick='execServ(3,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('重启服务')}'><i class='fa fa-hourglass-start' ></i></a>";
                         }else {
                          return actions.join('')+
-                             "<a href='javascript:void(0);' onclick='execServ(1,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('启动服务')}'><i class='fa fa-play'></i></a>"+
                              "<a href='javascript:void(0);' onclick='execServ(3,\""+row.appName+"\",\""+row.appStart+"\");' title='${text('重启服务')}'><i class='fa fa-hourglass-start' ></i></a>";
                         }
 

@@ -223,7 +223,7 @@ public class AppController extends BaseController {
     @ResponseBody
     public String oneKeyExec(@RequestParam Integer command) {
         String message = "";
-        if(command ==1 || command == 2) {
+        if(command ==1 || command == 2 || command == 3) {
             message = appService.oneKeyExec(command);
         }else {
             return renderResult(Global.TRUE, "操作失败！");
